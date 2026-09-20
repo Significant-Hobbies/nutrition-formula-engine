@@ -60,8 +60,7 @@ perform FSSAI classification, label formatting, or regulatory approval.
 - Canonical URL: <https://formula.significanthobbies.com>
 - Traffic: 100% on the current release, verified 2026-09-21
 - Source state: committed and pushed to `origin/main`; the active Worker version
-  `eeb35d4d-5133-484a-8029-d36e17047578` is tagged with source commit
-  `55ee9002b01ce9094ad86cb1ecca61c20a3ab4a0` and receives 100% of traffic
+  receives 100% of traffic and is tagged with the same full Git SHA
 - Validation-suite state: the release contains the frozen 66-case benchmark
   and 115 automated tests
 - Production smoke state: root and health routes, valid sample calculation,
