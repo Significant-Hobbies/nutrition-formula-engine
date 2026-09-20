@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "batch": {"name": "DailyMed: Potassium phosphates injection 1 mL", "final_quantity": {"value": "1", "unit": "mL"}},
+  "ingredients": [
+    {"material_id": "potassium_phosphate_monobasic_usp", "quantity": {"value": "224", "unit": "mg"}},
+    {"material_id": "potassium_phosphate_dibasic_usp", "quantity": {"value": "236", "unit": "mg"}}
+  ]
+}

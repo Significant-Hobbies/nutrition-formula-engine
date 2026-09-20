@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "batch": {
+    "name": "DailyMed: Calcium chloride dihydrate 100 mg/mL",
+    "final_quantity": {"value": "1", "unit": "mL"}
+  },
+  "ingredients": [
+    {"material_id": "calcium_chloride_dihydrate_usp", "quantity": {"value": "100", "unit": "mg"}}
+  ]
+}

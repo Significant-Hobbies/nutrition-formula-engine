@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "batch": {
+    "name": "DailyMed: Cupric chloride dihydrate 1.07 mg/mL",
+    "final_quantity": {"value": "1", "unit": "mL"}
+  },
+  "ingredients": [
+    {"material_id": "cupric_chloride_dihydrate_usp", "quantity": {"value": "1.07", "unit": "mg"}}
+  ]
+}

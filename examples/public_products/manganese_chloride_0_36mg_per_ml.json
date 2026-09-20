@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "batch": {"name": "DailyMed: Manganese chloride tetrahydrate 0.36 mg/mL", "final_quantity": {"value": "1", "unit": "mL"}},
+  "ingredients": [
+    {"material_id": "manganese_chloride_tetrahydrate_usp", "quantity": {"value": "0.36", "unit": "mg"}}
+  ]
+}

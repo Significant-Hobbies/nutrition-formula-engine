@@ -210,6 +210,10 @@ def _add_material(
                 nutrient.get("maximum", nutrient["value"]),
                 f"{material_id}.{nutrient_id}.maximum",
             )
+            if nutrient_minimum < 0 or nutrient_value < 0 or nutrient_maximum < 0:
+                raise CalculationError(
+                    f"{material_id}.{nutrient_id} profile values cannot be negative"
+                )
             if not nutrient_minimum <= nutrient_value <= nutrient_maximum:
                 raise CalculationError(
                     f"{material_id}.{nutrient_id} requires minimum <= value <= maximum"
@@ -442,19 +446,24 @@ def calculate(catalog: dict[str, Any], formula: dict[str, Any]) -> dict[str, Any
     serving = formula.get("serving")
     if serving:
         serving_value = decimal(serving["value"], "serving.value")
+        if serving_value <= 0:
+            raise CalculationError("serving.value must be greater than zero")
         try:
-            if dimension(serving["unit"]) == "mass":
+            serving_dimension = dimension(serving["unit"])
+            if serving_dimension == "mass":
                 serving_mass_g = convert(serving_value, serving["unit"], "g")
                 if batch.get("final_density_g_per_ml"):
                     serving_volume_ml = serving_mass_g / decimal(
                         batch["final_density_g_per_ml"], "batch.final_density_g_per_ml"
                     )
-            elif dimension(serving["unit"]) == "volume":
+            elif serving_dimension == "volume":
                 serving_volume_ml = convert(serving_value, serving["unit"], "ml")
                 if batch.get("final_density_g_per_ml"):
                     serving_mass_g = serving_volume_ml * decimal(
                         batch["final_density_g_per_ml"], "batch.final_density_g_per_ml"
                     )
+            else:
+                raise CalculationError(f"Unsupported serving unit {serving['unit']!r}")
         except ValueError as exc:
             raise CalculationError(str(exc)) from exc
 

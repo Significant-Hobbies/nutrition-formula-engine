@@ -19,7 +19,23 @@
     "elemental_magnesium": {"name": "Elemental magnesium", "class": "active moiety", "unit": "mg"},
     "elemental_iron": {"name": "Elemental iron", "class": "active moiety", "unit": "mg"},
     "elemental_zinc": {"name": "Elemental zinc", "class": "active moiety", "unit": "mg"},
-    "elemental_calcium": {"name": "Elemental calcium", "class": "active moiety", "unit": "mg"}
+    "elemental_calcium": {"name": "Elemental calcium", "class": "active moiety", "unit": "mg"},
+    "elemental_copper": {"name": "Elemental copper", "class": "active moiety", "unit": "mg"},
+    "elemental_selenium": {"name": "Elemental selenium", "class": "active moiety", "unit": "ug"},
+    "phosphorus": {"name": "Phosphorus", "class": "ion", "unit": "mmol"},
+    "elemental_potassium": {"name": "Elemental potassium", "class": "active moiety", "unit": "mg"},
+    "elemental_manganese": {"name": "Elemental manganese", "class": "active moiety", "unit": "mg"},
+    "elemental_chromium": {"name": "Elemental chromium", "class": "active moiety", "unit": "ug"},
+    "total_fat": {"name": "Total fat", "class": "macro", "unit": "g"},
+    "carbohydrate": {"name": "Carbohydrate", "class": "macro", "unit": "g"},
+    "total_sugars": {"name": "Total sugars", "class": "macro", "unit": "g"},
+    "food_calcium": {"name": "Calcium", "class": "mineral", "unit": "mg"},
+    "food_potassium": {"name": "Potassium", "class": "mineral", "unit": "mg"},
+    "food_sodium": {"name": "Sodium", "class": "mineral", "unit": "mg"},
+    "vitamin_c": {"name": "Vitamin C", "class": "vitamin", "unit": "mg"},
+    "vitamin_d": {"name": "Vitamin D", "class": "vitamin", "unit": "ug"},
+    "cholesterol": {"name": "Cholesterol", "class": "macro", "unit": "mg"},
+    "saturated_fat": {"name": "Saturated fat", "class": "macro", "unit": "g"}
   },
   "materials": {
     "sodium_chloride_usp": {
@@ -47,7 +63,8 @@
       "basis": {"value": "100", "unit": "g"},
       "nutrients": {
         "calcium": {"value": "1360.35913481159025982859474901", "unit": "mEq"},
-        "chloride": {"value": "1360.35913481159025982859474901", "unit": "mEq"}
+        "chloride": {"value": "1360.35913481159025982859474901", "unit": "mEq"},
+        "elemental_calcium": {"value": "27263.451465886674375892796", "unit": "mg"}
       },
       "unlisted_nutrients_are_zero": true,
       "source": {"kind": "official_label", "reference": "DailyMed molecular weight 147.02 g/mol"}
@@ -264,6 +281,217 @@
         "kind": "official_formula",
         "reference": "WHO therapeutic milk recipe; macro contribution treated as zero"
       }
+    },
+    "magnesium_sulfate_heptahydrate_usp": {
+      "name": "Magnesium sulfate heptahydrate USP",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "magnesium": {"value": "811.424862057773450178513671", "unit": "mEq"},
+        "elemental_magnesium": {"value": "9860.840635143824853942510548", "unit": "mg"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {
+        "kind": "stoichiometric_conversion",
+        "reference": "PubChem CID 24843; MgSO4.7H2O, formula mass 246.48 g/mol"
+      }
+    },
+    "zinc_chloride_usp": {
+      "name": "Zinc chloride USP",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "elemental_zinc": {"value": "47967.718268525311812179017", "unit": "mg"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {
+        "kind": "stoichiometric_conversion",
+        "reference": "PubChem CID 5727; ZnCl2, formula mass 136.3 g/mol"
+      }
+    },
+    "cupric_chloride_dihydrate_usp": {
+      "name": "Cupric chloride dihydrate USP",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "elemental_copper": {"value": "37274.753636790826489910253", "unit": "mg"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {
+        "kind": "stoichiometric_conversion",
+        "reference": "PubChem CID 61482; CuCl2.2H2O, formula mass 170.48 g/mol"
+      }
+    },
+    "selenious_acid_usp": {
+      "name": "Selenious acid USP",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "elemental_selenium": {"value": "61237305.217458717730056594", "unit": "ug"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {
+        "kind": "stoichiometric_conversion",
+        "reference": "PubChem CID 1091; H2SeO3, formula mass 128.99 g/mol"
+      }
+    },
+    "calcium_gluconate_anhydrous_usp": {
+      "name": "Calcium gluconate anhydrous USP",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "elemental_calcium": {"value": "9312.9167925273601784511001", "unit": "mg"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {
+        "kind": "stoichiometric_conversion",
+        "reference": "PubChem CID 9290; C12H22CaO14, formula mass 430.37 g/mol"
+      }
+    },
+    "calcium_saccharate_tetrahydrate_usp": {
+      "name": "Calcium D-saccharate tetrahydrate USP",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "elemental_calcium": {"value": "12514.0823081246487229126335", "unit": "mg"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {
+        "kind": "stoichiometric_conversion",
+        "reference": "PubChem CID 11954337; C6H16CaO12, formula mass 320.26 g/mol"
+      }
+    },
+    "potassium_phosphate_monobasic_usp": {
+      "name": "Potassium phosphate monobasic USP",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "phosphorus": {"value": "734.829446085563540702203018679", "unit": "mmol"},
+        "potassium": {"value": "734.829446085563540702203018679", "unit": "mEq"},
+        "elemental_potassium": {"value": "28730.5821318871889834369442852", "unit": "mg"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {
+        "kind": "stoichiometric_conversion",
+        "reference": "PubChem CID 516951; KH2PO4, formula mass 136.086 g/mol"
+      }
+    },
+    "potassium_phosphate_dibasic_usp": {
+      "name": "Potassium phosphate dibasic USP",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "phosphorus": {"value": "574.131912548227080654051074775", "unit": "mmol"},
+        "potassium": {"value": "1148.26382509645416130810214955", "unit": "mEq"},
+        "elemental_potassium": {"value": "44895.1635127686937350725702737", "unit": "mg"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {
+        "kind": "stoichiometric_conversion",
+        "reference": "PubChem CID 24450; K2HPO4, formula mass 174.176 g/mol"
+      }
+    },
+    "sodium_phosphate_monobasic_monohydrate_usp": {
+      "name": "Sodium phosphate monobasic monohydrate USP",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "phosphorus": {"value": "724.690194941662439307196173636", "unit": "mmol"},
+        "sodium": {"value": "724.690194941662439307196173636", "unit": "mEq"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {
+        "kind": "stoichiometric_conversion",
+        "reference": "PubChem CID 516949; NaH2PO4.H2O, formula mass 137.99 g/mol"
+      }
+    },
+    "sodium_phosphate_dibasic_anhydrous_usp": {
+      "name": "Sodium phosphate dibasic anhydrous USP",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "phosphorus": {"value": "704.428743510450200409977528723", "unit": "mmol"},
+        "sodium": {"value": "1408.85748702090040081995505745", "unit": "mEq"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {
+        "kind": "stoichiometric_conversion",
+        "reference": "PubChem CID 24203; Na2HPO4, formula mass 141.959 g/mol"
+      }
+    },
+    "manganese_chloride_tetrahydrate_usp": {
+      "name": "Manganese chloride tetrahydrate USP",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "elemental_manganese": {"value": "27760.5068216270843860535624053", "unit": "mg"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {
+        "kind": "stoichiometric_conversion",
+        "reference": "PubChem CID 643989; MnCl2.4H2O, formula mass 197.90 g/mol"
+      }
+    },
+    "chromic_chloride_hexahydrate_usp": {
+      "name": "Chromic chloride hexahydrate USP",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "elemental_chromium": {"value": "19515125.3565530701095931541811", "unit": "ug"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {
+        "kind": "stoichiometric_conversion",
+        "reference": "PubChem CID 104957; CrCl3.6H2O, formula mass 266.44 g/mol"
+      }
+    },
+    "yogurt_vanilla_lowfat_fdc_172219": {
+      "name": "Yogurt, vanilla, low fat, fortified with vitamin D",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "energy": {"value": "85", "unit": "kcal"},
+        "protein": {"value": "4.93", "unit": "g"},
+        "total_fat": {"value": "1.25", "unit": "g"},
+        "saturated_fat": {"value": "0.806", "unit": "g"},
+        "carbohydrate": {"value": "13.8", "unit": "g"},
+        "total_sugars": {"value": "13.8", "unit": "g"},
+        "food_calcium": {"value": "171", "unit": "mg"},
+        "food_potassium": {"value": "219", "unit": "mg"},
+        "food_sodium": {"value": "66", "unit": "mg"},
+        "vitamin_c": {"value": "0", "unit": "mg"},
+        "vitamin_d": {"value": "1.2", "unit": "ug"},
+        "cholesterol": {"value": "5", "unit": "mg"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "reference_database", "reference": "USDA FoodData Central SR Legacy FDC 172219"}
+    },
+    "skim_milk_fdc_2705388": {
+      "name": "Milk, fat free (skim)",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "energy": {"value": "34", "unit": "kcal"},
+        "protein": {"value": "3.43", "unit": "g"},
+        "total_fat": {"value": "0.08", "unit": "g"},
+        "saturated_fat": {"value": "0.049", "unit": "g"},
+        "carbohydrate": {"value": "4.92", "unit": "g"},
+        "total_sugars": {"value": "5.05", "unit": "g"},
+        "food_calcium": {"value": "132", "unit": "mg"},
+        "food_potassium": {"value": "167", "unit": "mg"},
+        "food_sodium": {"value": "41", "unit": "mg"},
+        "vitamin_c": {"value": "0", "unit": "mg"},
+        "vitamin_d": {"value": "1.1", "unit": "ug"},
+        "cholesterol": {"value": "3", "unit": "mg"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "reference_database", "reference": "USDA FoodData Central FNDDS FDC 2705388"}
+    },
+    "orange_juice_concentrate_fdc_2709191": {
+      "name": "Orange juice, 100%, frozen, not reconstituted",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "energy": {"value": "148", "unit": "kcal"},
+        "protein": {"value": "2.4", "unit": "g"},
+        "total_fat": {"value": "0.25", "unit": "g"},
+        "saturated_fat": {"value": "0.059", "unit": "g"},
+        "carbohydrate": {"value": "35.2", "unit": "g"},
+        "total_sugars": {"value": "29.7", "unit": "g"},
+        "food_calcium": {"value": "38", "unit": "mg"},
+        "food_potassium": {"value": "629", "unit": "mg"},
+        "food_sodium": {"value": "7", "unit": "mg"},
+        "vitamin_c": {"value": "145", "unit": "mg"},
+        "vitamin_d": {"value": "0", "unit": "ug"},
+        "cholesterol": {"value": "0", "unit": "mg"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "reference_database", "reference": "USDA FoodData Central FNDDS FDC 2709191"}
     }
   }
 }

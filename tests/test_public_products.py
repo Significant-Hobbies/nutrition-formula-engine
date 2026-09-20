@@ -183,6 +183,87 @@ class PublicProductValidationTests(unittest.TestCase):
             "0.1",
         )
 
+    def test_magnesium_sulfate_injection_matches_declared_magnesium(self) -> None:
+        result = self.calculate("magnesium_sulfate_500mg_per_ml.json")
+        self.assert_within_percent(
+            Decimal(metric(result, "magnesium")["total_batch"]), "4.06", "0.1"
+        )
+
+    def test_calcium_chloride_injection_matches_declared_elemental_calcium(self) -> None:
+        result = self.calculate("calcium_chloride_100mg_per_ml.json")
+        self.assert_within_percent(
+            Decimal(metric(result, "elemental_calcium")["total_batch"]), "27", "1"
+        )
+
+    def test_calcium_gluconate_injection_matches_declared_elemental_calcium(self) -> None:
+        result = self.calculate("calcium_gluconate_100mg_per_ml.json")
+        self.assert_within_percent(
+            Decimal(metric(result, "elemental_calcium")["total_batch"]), "9.3", "0.2"
+        )
+
+    def test_zinc_chloride_injection_matches_declared_elemental_zinc(self) -> None:
+        result = self.calculate("zinc_chloride_2_09mg_per_ml.json")
+        self.assert_within_percent(
+            Decimal(metric(result, "elemental_zinc")["total_batch"]), "1", "0.3"
+        )
+
+    def test_cupric_chloride_injection_matches_declared_elemental_copper(self) -> None:
+        result = self.calculate("cupric_chloride_1_07mg_per_ml.json")
+        self.assert_within_percent(
+            Decimal(metric(result, "elemental_copper")["total_batch"]), "0.4", "0.3"
+        )
+
+    def test_selenious_acid_injection_matches_declared_elemental_selenium(self) -> None:
+        result = self.calculate("selenious_acid_65_4ug_per_ml.json")
+        self.assert_within_percent(
+            Decimal(metric(result, "elemental_selenium")["total_batch"]), "40", "0.2"
+        )
+
+    def test_potassium_phosphates_injection_matches_declared_potassium(self) -> None:
+        result = self.calculate("potassium_phosphates_1ml.json")
+        self.assert_within_percent(
+            Decimal(metric(result, "elemental_potassium")["total_batch"]), "170", "0.2"
+        )
+        self.assert_within_percent(
+            Decimal(metric(result, "phosphorus")["total_batch"]), "3", "0.04"
+        )
+
+    def test_sodium_phosphates_injection_matches_declared_ions(self) -> None:
+        result = self.calculate("sodium_phosphates_1ml.json")
+        self.assert_within_percent(
+            Decimal(metric(result, "sodium")["total_batch"]), "4", "0.02"
+        )
+        self.assert_within_percent(
+            Decimal(metric(result, "phosphorus")["total_batch"]), "3", "0.02"
+        )
+
+    def test_manganese_chloride_injection_matches_declared_manganese(self) -> None:
+        result = self.calculate("manganese_chloride_0_36mg_per_ml.json")
+        self.assert_within_percent(
+            Decimal(metric(result, "elemental_manganese")["total_batch"]), "0.1", "0.07"
+        )
+
+    def test_chromic_chloride_injection_matches_declared_chromium(self) -> None:
+        result = self.calculate("chromic_chloride_20_5ug_per_ml.json")
+        self.assert_within_percent(
+            Decimal(metric(result, "elemental_chromium")["total_batch"]), "4", "0.02"
+        )
+
+    def test_myplate_yogurt_smoothie_reproduces_key_food_nutrients(self) -> None:
+        result = self.calculate("myplate_yogurt_smoothie_1_serving.json")
+        for metric_id, expected, tolerance in [
+            ("energy", "77", "3"),
+            ("protein", "4", "5"),
+            ("carbohydrate", "14", "5"),
+            ("food_calcium", "127", "2"),
+            ("food_potassium", "237", "2"),
+            ("vitamin_c", "17", "1"),
+        ]:
+            with self.subTest(metric_id=metric_id):
+                self.assert_within_percent(
+                    Decimal(metric(result, metric_id)["total_batch"]), expected, tolerance
+                )
+
 
 if __name__ == "__main__":
     unittest.main()

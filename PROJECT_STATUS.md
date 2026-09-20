@@ -42,12 +42,14 @@ perform FSSAI classification, label formatting, or regulatory approval.
 - Separate coverage, evidence-confidence, and bounded-range reporting
 - Named missing-information requests instead of user-facing coverage percentages
 - Decimal propagation of ingredient quantity, assay, and final-yield ranges
-- Fifteen public-formula checks against WHO and DailyMed published compositions,
-  including F-75/F-100 macros, a six-ion solution, sodium bicarbonate, and five
+- Twenty-six public-formula checks against WHO, USDA MyPlate, and DailyMed
+  published compositions, including F-75/F-100 macros, a food recipe, a six-ion
+  solution, sodium bicarbonate, and fifteen
   marketed-medicine salt-to-active-moiety comparisons
 - Three 1,000 L manufacturing-style reference formulations and regression tests
-- A frozen 35-case benchmark: 10 extraction, 10 identity, and 15 calculation cases
-- 51 Python engine/API tests and 28 browser/data tests
+- A frozen 66-case benchmark: 20 extraction, 20 identity, and 26 calculation cases
+- 76 Python engine/API tests and 29 browser/data tests, plus 220 deterministic
+  generated arithmetic trials and 48 parser-alias combinations
 
 ## Public release
 
@@ -55,8 +57,9 @@ perform FSSAI classification, label formatting, or regulatory approval.
 - Traffic: 100% on the current release, verified 2026-09-21
 - Source state: committed and pushed to `origin/main`; the active Worker version
   is tagged with the same full Git SHA
-- Validation-suite state: all 35 frozen benchmark cases and 79 automated tests
-  described above are included in the deployed source
+- Validation-suite state: the deployed release contains the prior 35-case benchmark
+  and 79 automated tests; the expanded local 66-case/105-test candidate has not
+  been deployed
 - Production smoke state: root and health routes, valid sample calculation,
   malformed JSON, local candidate search, browser calculation, browser-only
   save, reload, and resume were verified against the public domain

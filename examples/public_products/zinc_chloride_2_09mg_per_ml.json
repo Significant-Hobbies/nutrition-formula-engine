@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "batch": {
+    "name": "DailyMed: Zinc chloride 2.09 mg/mL",
+    "final_quantity": {"value": "1", "unit": "mL"}
+  },
+  "ingredients": [
+    {"material_id": "zinc_chloride_usp", "quantity": {"value": "2.09", "unit": "mg"}}
+  ]
+}

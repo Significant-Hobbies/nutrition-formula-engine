@@ -18,8 +18,8 @@ test("frozen extraction benchmark recovers all expected rows exactly", () => {
 });
 
 test("benchmark stages and thresholds stay explicit", () => {
-  assert.equal(manifest.calculation_cases.length, 15);
-  assert.equal(manifest.identity_cases.length, 10);
-  assert.equal(manifest.extraction_cases.length, 10);
+  assert.equal(manifest.calculation_cases.length, 26);
+  assert.equal(manifest.identity_cases.length, 20);
+  assert.equal(manifest.extraction_cases.length, 20);
   assert.equal(manifest.thresholds.calculation_maximum_difference_percent, 5);
 });

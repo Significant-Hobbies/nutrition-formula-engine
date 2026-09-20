@@ -2,14 +2,14 @@
   "schema_version": 1,
   "as_of": "2026-09-21",
   "marketed_medicine_summary": {
-    "case_count": 5,
-    "mean_absolute_percentage_difference": "0.244",
-    "maximum_absolute_percentage_difference": "0.604"
+    "case_count": 15,
+    "mean_absolute_percentage_difference": "0.226",
+    "maximum_absolute_percentage_difference": "0.976"
   },
   "overall_summary": {
-    "case_count": 15,
-    "mean_absolute_percentage_difference": "0.570",
-    "median_absolute_percentage_difference": "0.108",
+    "case_count": 26,
+    "mean_absolute_percentage_difference": "0.524",
+    "median_absolute_percentage_difference": "0.123",
     "maximum_absolute_percentage_difference": "4.643",
     "maximum_case": "WHO F-75 no-cereal recipe energy using USDA reference ingredients"
   },
@@ -109,7 +109,7 @@
       "component": "Elemental magnesium",
       "declared": "241.3 mg/tablet",
       "predicted": "241.2168 mg/tablet",
-      "difference_percent": "0.035",
+      "difference_percent": "0.034",
       "source": "DailyMed",
       "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=31f417f0-1637-eefa-e063-6294a90a121b"
     },
@@ -148,6 +148,106 @@
       "difference_percent": "0.604",
       "source": "DailyMed",
       "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b19a3fbf-cdbb-4f86-ac61-5dfb07e0a51a"
+    },
+    {
+      "product": "Magnesium Sulfate Injection 500 mg/mL",
+      "component": "Magnesium",
+      "declared": "4.06 mEq/mL",
+      "predicted": "4.0571 mEq/mL",
+      "difference_percent": "0.071",
+      "source": "DailyMed",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5a0f9db9-b8be-c923-e063-6394a90a7dd7"
+    },
+    {
+      "product": "Calcium Chloride Injection 100 mg/mL",
+      "component": "Elemental calcium",
+      "declared": "27 mg/mL",
+      "predicted": "27.2635 mg/mL",
+      "difference_percent": "0.976",
+      "source": "DailyMed",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3089499b-142d-482e-889d-1db4da7b1152"
+    },
+    {
+      "product": "Calcium Gluconate Injection 100 mg/mL",
+      "component": "Elemental calcium",
+      "declared": "9.3 mg/mL",
+      "predicted": "9.3173 mg/mL",
+      "difference_percent": "0.186",
+      "source": "DailyMed",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=16307c00-d0d5-4e05-821f-17b0c1a29fc9"
+    },
+    {
+      "product": "Zinc Chloride Injection 2.09 mg/mL",
+      "component": "Elemental zinc",
+      "declared": "1 mg/mL",
+      "predicted": "1.0025 mg/mL",
+      "difference_percent": "0.253",
+      "source": "DailyMed",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2bd646d2-2a2a-4376-8da0-c7f08b0511ac"
+    },
+    {
+      "product": "Cupric Chloride Injection 1.07 mg/mL",
+      "component": "Elemental copper",
+      "declared": "0.4 mg/mL",
+      "predicted": "0.3988 mg/mL",
+      "difference_percent": "0.290",
+      "source": "DailyMed",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=361d30f2-3c97-4a6c-b252-7fa864d0a625"
+    },
+    {
+      "product": "Selenious Acid Injection 65.4 mcg/mL",
+      "component": "Elemental selenium",
+      "declared": "40 mcg/mL",
+      "predicted": "40.0492 mcg/mL",
+      "difference_percent": "0.123",
+      "source": "DailyMed",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4adcba5d-74c7-4353-b54d-539ef89754d6"
+    },
+    {
+      "product": "Potassium Phosphates Injection",
+      "component": "Elemental potassium",
+      "declared": "170 mg/mL",
+      "predicted": "170.3091 mg/mL",
+      "difference_percent": "0.182",
+      "source": "DailyMed",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=52f07402-1869-4a97-9c92-9729dc611f85"
+    },
+    {
+      "product": "Sodium Phosphates Injection",
+      "component": "Sodium",
+      "declared": "4 mEq/mL",
+      "predicted": "4.0007 mEq/mL",
+      "difference_percent": "0.018",
+      "source": "DailyMed",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e6169d3b-39d2-47f9-8d5b-b53ec069a722"
+    },
+    {
+      "product": "Manganese Chloride Injection 0.36 mg/mL",
+      "component": "Elemental manganese",
+      "declared": "0.1 mg/mL",
+      "predicted": "0.09994 mg/mL",
+      "difference_percent": "0.062",
+      "source": "DailyMed",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6e979070-5035-4076-e09c-b52466be3c68"
+    },
+    {
+      "product": "Chromic Chloride Injection 20.5 mcg/mL",
+      "component": "Elemental chromium",
+      "declared": "4 mcg/mL",
+      "predicted": "4.0006 mcg/mL",
+      "difference_percent": "0.015",
+      "source": "DailyMed",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=da207ca8-7836-4c66-92fe-36cc89baf773"
+    },
+    {
+      "product": "USDA MyPlate Yogurt Smoothie in a Bag",
+      "component": "Energy",
+      "declared": "77 kcal/recipe",
+      "predicted": "74.7608 kcal/recipe",
+      "difference_percent": "2.908",
+      "source": "USDA MyPlate",
+      "source_url": "https://www.myplate.gov/recipes/yogurt-smoothie-bag",
+      "assumption": "The optional yogurt wording was modeled as USDA FDC 172219 low-fat vanilla yogurt; official FDC portion weights were used for all three ingredients."
     }
   ]
 }

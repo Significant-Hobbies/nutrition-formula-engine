@@ -91,3 +91,22 @@ test("fails visibly when no formula can be recovered", () => {
 test("fails visibly for malformed JSON", () => {
   assert.throws(() => normalizeText('{"batch":'), /JSON input is not valid/);
 });
+
+test("normalizes 48 deterministic unit and finished-batch alias combinations", () => {
+  const batchAliases = ["FINISHED BATCH", "Final batch", "Batch size", "Final yield"];
+  const units = [
+    ["kilograms", "kg"], ["grams", "g"], ["milligrams", "mg"],
+    ["micrograms", "ug"], ["µg", "ug"], ["μg", "ug"],
+    ["litres", "L"], ["liters", "L"], ["millilitres", "mL"],
+    ["milliliters", "mL"], ["mcg", "ug"], ["gms", "g"],
+  ];
+  for (const batchAlias of batchAliases) {
+    for (const [unit, expectedUnit] of units) {
+      const result = normalizeText(
+        `Item\tQuantity\tUnit\n${batchAlias}\t1000\tL\nTest ingredient\t1.25\t${unit}`,
+      );
+      assert.equal(result.rows[0].item, "FINISHED BATCH", batchAlias);
+      assert.equal(result.rows[1].unit, expectedUnit, `${batchAlias} / ${unit}`);
+    }
+  }
+});

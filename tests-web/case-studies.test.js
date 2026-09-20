@@ -6,14 +6,14 @@ const data = JSON.parse(
   await readFile(new URL("../public/case-studies.json", import.meta.url), "utf8"),
 );
 
-test("publishes all fifteen public validation cases", () => {
-  assert.equal(data.cases.length, 15);
+test("publishes all twenty-six public validation cases", () => {
+  assert.equal(data.cases.length, 26);
   assert.equal(data.cases.filter((study) => study.source === "WHO").length, 3);
   assert.equal(
     data.cases.filter((study) =>
       new URL(study.source_url).hostname.endsWith("dailymed.nlm.nih.gov"),
     ).length,
-    12,
+    22,
   );
 });
 
@@ -24,12 +24,22 @@ test("marketed medicine summary matches the displayed case differences", () => {
     "Zinc Sulfate Injection",
     "Calcium Carbonate 1250 mg tablet",
     "Potassium Chloride 750 mg tablet",
+    "Magnesium Sulfate Injection 500 mg/mL",
+    "Calcium Chloride Injection 100 mg/mL",
+    "Calcium Gluconate Injection 100 mg/mL",
+    "Zinc Chloride Injection 2.09 mg/mL",
+    "Cupric Chloride Injection 1.07 mg/mL",
+    "Selenious Acid Injection 65.4 mcg/mL",
+    "Potassium Phosphates Injection",
+    "Sodium Phosphates Injection",
+    "Manganese Chloride Injection 0.36 mg/mL",
+    "Chromic Chloride Injection 20.5 mcg/mL",
   ]);
   const differences = data.cases
     .filter((study) => medicineNames.has(study.product))
     .map((study) => Number(study.difference_percent));
   const mean = differences.reduce((sum, value) => sum + value, 0) / differences.length;
-  assert.equal(differences.length, 5);
+  assert.equal(differences.length, 15);
   assert.equal(mean.toFixed(3), data.marketed_medicine_summary.mean_absolute_percentage_difference);
   assert.equal(
     Math.max(...differences).toFixed(3),
@@ -56,6 +66,10 @@ test("overall summary exposes the food-reference variation instead of hiding it"
 test("case-study links use the named authoritative domains", () => {
   for (const study of data.cases) {
     const host = new URL(study.source_url).hostname;
-    assert.ok(host.endsWith("who.int") || host.endsWith("dailymed.nlm.nih.gov"));
+    assert.ok(
+      host.endsWith("who.int")
+      || host.endsWith("dailymed.nlm.nih.gov")
+      || host.endsWith("myplate.gov"),
+    );
   }
 });

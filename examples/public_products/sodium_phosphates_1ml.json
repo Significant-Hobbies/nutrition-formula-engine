@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "batch": {"name": "DailyMed: Sodium phosphates injection 1 mL", "final_quantity": {"value": "1", "unit": "mL"}},
+  "ingredients": [
+    {"material_id": "sodium_phosphate_monobasic_monohydrate_usp", "quantity": {"value": "276", "unit": "mg"}},
+    {"material_id": "sodium_phosphate_dibasic_anhydrous_usp", "quantity": {"value": "142", "unit": "mg"}}
+  ]
+}

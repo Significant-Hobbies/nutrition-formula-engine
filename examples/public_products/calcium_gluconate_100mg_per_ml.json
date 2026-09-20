@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "batch": {
+    "name": "DailyMed: Calcium gluconate injection 100 mg/mL",
+    "final_quantity": {"value": "1", "unit": "mL"}
+  },
+  "ingredients": [
+    {"material_id": "calcium_gluconate_anhydrous_usp", "quantity": {"value": "94", "unit": "mg"}},
+    {"material_id": "calcium_saccharate_tetrahydrate_usp", "quantity": {"value": "4.5", "unit": "mg"}}
+  ]
+}

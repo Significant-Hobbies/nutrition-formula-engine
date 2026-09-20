@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "batch": {"name": "DailyMed: Chromic chloride hexahydrate 20.5 micrograms/mL", "final_quantity": {"value": "1", "unit": "mL"}},
+  "ingredients": [
+    {"material_id": "chromic_chloride_hexahydrate_usp", "quantity": {"value": "20.5", "unit": "ug"}}
+  ]
+}

@@ -165,22 +165,23 @@ uvx ruff check src tests
 ```
 
 The public-product suite includes WHO ORS, WHO F-75 and F-100 therapeutic-milk
-recipes, five marketed electrolyte solutions, two dextrose strengths, and five
+recipes, a USDA MyPlate smoothie, five marketed electrolyte solutions, two
+dextrose strengths, and fifteen
 marketed-medicine active-moiety checks. It now exercises simple and compound
 foods, energy and protein, single- and multi-salt solutions, six-ion balancing,
 and salt-to-active conversions. The medicine cases calculate elemental
-magnesium, iron, zinc, calcium, or potassium from the declared salt and compare
-the prediction with the corresponding DailyMed label. The five medicine checks
-currently show 0.244% mean absolute percentage difference and 0.604% maximum
+magnesium, iron, zinc, calcium, potassium, copper, or selenium from the declared
+salt and compare the prediction with the corresponding DailyMed label. The
+fifteen medicine checks currently show 0.226% mean absolute percentage difference and 0.976% maximum
 observed difference.
 These cases verify arithmetic against independently published label values;
 they are not laboratory validation, government acceptance, or proof that an
 unknown supplier lot matches a reference profile. See `DATA_SOURCES.md` for
 label set IDs and exact basis assumptions.
 
-The frozen pilot benchmark contains 35 stage-specific cases: 10 extraction
-cases, 10 identity-ranking cases, and the 15 public calculation cases. The
-current local suite contains 51 Python engine/API tests and 28 browser/data
+The frozen pilot benchmark contains 66 stage-specific cases: 20 extraction
+cases, 20 identity-ranking cases, and the 26 public calculation cases. The
+current local suite contains 76 Python engine/API tests and 29 browser/data
 tests. Thresholds and fixtures are recorded in `benchmarks/manifest.json`.
 
 ## Versioned workspace status

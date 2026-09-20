@@ -2,7 +2,7 @@ const UNIT_ALIASES = new Map([
   ["kg", "kg"], ["kgs", "kg"], ["kilogram", "kg"], ["kilograms", "kg"],
   ["g", "g"], ["gm", "g"], ["gms", "g"], ["gram", "g"], ["grams", "g"],
   ["mg", "mg"], ["milligram", "mg"], ["milligrams", "mg"],
-  ["ug", "ug"], ["mcg", "ug"], ["µg", "ug"], ["microgram", "ug"],
+  ["ug", "ug"], ["mcg", "ug"], ["µg", "ug"], ["μg", "ug"], ["microgram", "ug"],
   ["micrograms", "ug"], ["l", "L"], ["lt", "L"], ["ltr", "L"],
   ["litre", "L"], ["litres", "L"], ["liter", "L"], ["liters", "L"],
   ["ml", "mL"], ["millilitre", "mL"], ["millilitres", "mL"],
@@ -54,7 +54,7 @@ function canonicalRow(item, quantity, unit, sourceLine) {
 
 function parseQuantityAndUnit(value) {
   const match = cleanCell(value).match(
-    /^([+-]?(?:\d[\d,.]*|\.\d+))\s*(kg|kgs?|kilograms?|g|gms?|grams?|mg|milligrams?|ug|mcg|µg|micrograms?|l|lt|ltr|lit(?:er|re)s?|ml|millilit(?:er|re)s?)\.?$/i,
+    /^([+-]?(?:\d[\d,.]*|\.\d+))\s*(kg|kgs?|kilograms?|g|gms?|grams?|mg|milligrams?|ug|mcg|[µμ]g|micrograms?|l|lt|ltr|lit(?:er|re)s?|ml|millilit(?:er|re)s?)\.?$/i,
   );
   if (!match) return null;
   return { quantity: match[1], unit: match[2] };
@@ -67,7 +67,7 @@ function parseLine(value, sourceLine) {
     return canonicalRow("FINISHED BATCH", quantityOnly.quantity, quantityOnly.unit, sourceLine);
   }
   const match = line.match(
-    /^(.+?)\s+([+-]?(?:\d[\d,.]*|\.\d+))\s*(kg|kgs?|kilograms?|g|gms?|grams?|mg|milligrams?|ug|mcg|µg|micrograms?|l|lt|ltr|lit(?:er|re)s?|ml|millilit(?:er|re)s?)\.?$/i,
+    /^(.+?)\s+([+-]?(?:\d[\d,.]*|\.\d+))\s*(kg|kgs?|kilograms?|g|gms?|grams?|mg|milligrams?|ug|mcg|[µμ]g|micrograms?|l|lt|ltr|lit(?:er|re)s?|ml|millilit(?:er|re)s?)\.?$/i,
   );
   if (!match) return null;
   return canonicalRow(match[1], match[2], match[3], sourceLine);

@@ -7,7 +7,7 @@ quality behavior; it is not intended to be a comprehensive ingredient database.
 
 `benchmarks/manifest.json` separates quality evidence by failure stage instead
 of blending OCR, identity, and arithmetic into one accuracy number. It contains
-10 deterministic extraction cases, 10 local identity-ranking cases, and 15
+20 deterministic extraction cases, 20 local identity-ranking cases, and 26
 independently published calculation cases. The recorded thresholds are 100%
 exact extraction for the frozen fixtures, 100% expected top candidate for the
 identity fixtures, and no more than 5% difference for each published
@@ -139,6 +139,100 @@ The predictions use formula masses calculated from standard atomic weights.
 They test label-basis interpretation and salt-to-active-moiety conversion, not
 tablet weight, excipient composition, assay variability, dissolution,
 bioavailability, sterility, or manufacturing release.
+
+### Additional trace-element injection checks
+
+Accessed 2026-09-21 through the official DailyMed v2 SPL API and PubChem PUG
+REST. These six cases independently convert the label's stated salt quantity
+to the declared ion or elemental amount:
+
+- Magnesium sulfate heptahydrate, set ID
+  `5a0f9db9-b8be-c923-e063-6394a90a7dd7`: 500 mg/mL and 4.06 mEq/mL
+  magnesium.
+- Calcium chloride dihydrate, set ID
+  `3089499b-142d-482e-889d-1db4da7b1152`: 100 mg/mL and 27 mg/mL elemental
+  calcium.
+- Calcium gluconate, set ID
+  `16307c00-d0d5-4e05-821f-17b0c1a29fc9`: 94 mg anhydrous calcium gluconate
+  plus 4.5 mg calcium saccharate tetrahydrate per mL, declared as 9.3 mg/mL
+  elemental calcium.
+- Zinc chloride, set ID `2bd646d2-2a2a-4376-8da0-c7f08b0511ac`: 2.09 mg/mL
+  and 1 mg/mL elemental zinc.
+- Cupric chloride dihydrate, set ID
+  `361d30f2-3c97-4a6c-b252-7fa864d0a625`: 1.07 mg/mL and 0.4 mg/mL elemental
+  copper.
+- Selenious acid, set ID `4adcba5d-74c7-4353-b54d-539ef89754d6`:
+  65.4 micrograms/mL and 40 micrograms/mL elemental selenium.
+
+DailyMed search reconciliation: the exact drug-name searches reported 211
+magnesium-sulfate records over 22 pages, 3 calcium-chloride-injection records
+on one page, 53 calcium-gluconate records over 6 pages, 98 zinc-chloride
+records over 10 pages, 13 cupric-chloride records over 2 pages, and 3
+selenious-acid records on one page. All records were retrieved for the two
+three-result searches. The other searches were targeted label lookups, so the
+named set ID was selected without claiming an exhaustive product census.
+
+PubChem identity and formula-mass records used by these conversions were CID
+24843 (magnesium sulfate heptahydrate, 246.48 g/mol), CID 6093260 (calcium
+chloride dihydrate, 147.01 g/mol), CID 9290 (anhydrous calcium gluconate,
+430.37 g/mol), CID 11954337 (calcium D-saccharate tetrahydrate, 320.26 g/mol),
+CID 5727 (zinc chloride, 136.3 g/mol), CID 61482 (cupric chloride dihydrate,
+170.48 g/mol), and CID 1091 (selenious acid, 128.99 g/mol). Each targeted
+name lookup returned one property record; no returned property record was
+dropped by local filtering.
+
+### Phosphate and trace-element injection checks
+
+Accessed 2026-09-21. Four additional targeted DailyMed labels were reproduced:
+
+- Potassium phosphates injection, set ID
+  `52f07402-1869-4a97-9c92-9729dc611f85`: 224 mg monobasic potassium phosphate
+  plus 236 mg dibasic potassium phosphate per mL, declared as 3 mmol phosphorus
+  and 170 mg elemental potassium.
+- Sodium phosphates injection, set ID
+  `e6169d3b-39d2-47f9-8d5b-b53ec069a722`: 276 mg monobasic sodium phosphate
+  monohydrate plus 142 mg dibasic sodium phosphate anhydrous per mL, declared
+  as 3 mmol phosphorus and 4 mEq sodium.
+- Manganese chloride injection, set ID
+  `6e979070-5035-4076-e09c-b52466be3c68`: 0.36 mg manganese chloride
+  tetrahydrate per mL, declared as 0.1 mg elemental manganese.
+- Chromic chloride injection, set ID
+  `da207ca8-7836-4c66-92fe-36cc89baf773`: 20.5 micrograms chromic chloride
+  hexahydrate per mL, declared as 4 micrograms elemental chromium.
+
+The DailyMed name searches reported respectively 12, 8, 7, and 5 records.
+These were targeted set-ID checks; one result page was retrieved for each and
+no exhaustive product census was attempted. PubChem returned one property
+record for CID 516951, 24450, 516949, 24203, 643989, and 104957. The first
+exact `chromium chloride hexahydrate` name lookup returned no record; the
+structure-preserving name `chromium(III) chloride hexahydrate` resolved to CID
+104957. No successful property record was removed locally.
+
+### USDA MyPlate food-recipe check
+
+Accessed 2026-09-21. The USDA MyPlate `Yogurt Smoothie in a Bag` recipe lists
+one-quarter cup vanilla yogurt, one tablespoon skim milk, and two teaspoons
+orange juice concentrate, with a published one-recipe result of 77 kcal,
+4 g protein, 14 g carbohydrate, 127 mg calcium, 237 mg potassium, and 17 mg
+vitamin C.
+
+The calculation uses official FoodData Central portion weights and profiles:
+
+- Low-fat vanilla yogurt fortified with vitamin D: SR Legacy FDC 172219;
+  245 g per cup.
+- Fat-free milk: FNDDS FDC 2705388; 244 g per cup.
+- Frozen unreconstituted orange juice: FNDDS FDC 2709191; 284 g per cup.
+
+The FNDDS October 2024 JSON archive and SR Legacy April 2018 JSON archive were
+downloaded from the official FoodData Central bulk-download page after the
+public `DEMO_KEY` API returned HTTP 429. Local selection used exact FDC IDs;
+three records were selected and none were dropped. The recipe permits nonfat
+or plain yogurt, while its displayed nutrition is reproduced more closely by
+the low-fat vanilla reference profile. That assumption is preserved in the
+case data. The resulting differences are 2.908% energy, 4.333% protein, 4.513%
+carbohydrate, 1.862% calcium, 1.250% potassium, and 0.931% vitamin C. This case
+demonstrates that food-profile selection contributes more uncertainty than the
+decimal arithmetic.
 
 These are composition-calculation tests only and do not model sterility,
 osmolarity, pH adjustment, packaging, clinical use, or manufacturing release.
