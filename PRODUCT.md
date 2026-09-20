@@ -50,6 +50,9 @@ concise report.
 - Show each proposed ingredient identity and its confidence. Let the user
   confirm it, reject and replace it, remove the row, or add another ingredient;
   recalculate immediately after a formula change.
+- Let the operator save a confirmed ingredient interpretation once and
+  automatically reuse that alias in later formulas. Label browser-only storage
+  honestly until authenticated shared persistence is configured.
 - Let the user inspect how each result was calculated, including every
   contributing formula line, material path, profile value, retention factor,
   source, and normalized amount.
@@ -67,13 +70,14 @@ concise report.
 
 ## Evidence on Hand
 
-- A Decimal-based formulation engine with 51 passing Python engine/API tests
-  and 28 passing browser/data tests.
-- Fifteen public-product checks against WHO and DailyMed compositions.
-- A frozen 35-case benchmark split across extraction, identity ranking, and
+- A Decimal-based formulation engine with 81 passing Python engine/API tests
+  and 31 passing browser/data tests.
+- Twenty-six public-product checks against WHO, USDA MyPlate, and DailyMed
+  compositions.
+- A frozen 66-case benchmark split across extraction, identity ranking, and
   independently published calculation targets.
-- Five marketed-medicine salt-to-active-moiety comparisons with 0.244% mean
-  absolute percentage error and 0.604% maximum observed error.
+- Fifteen marketed-medicine salt-to-active-moiety comparisons with 0.226% mean
+  absolute percentage difference and 0.976% maximum observed difference.
 - A worked 1,000 L formulation with a present-components report backed by a
   30-field calculation, ranges, confidence signals, and ranked identity candidates.
 

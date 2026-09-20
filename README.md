@@ -23,6 +23,10 @@ review the recovered `Item`, `Quantity`, and `Unit` rows. The first reviewed row
 must be `FINISHED BATCH`; every later row is an ingredient. Only the reviewed,
 canonical TSV is sent to the calculation endpoint. Users can then confirm,
 replace, remove, or add ingredient identities and recalculate immediately.
+An identified ingredient can be saved once and reused automatically when the
+same submitted name appears in later formulas. The current public deployment
+stores this reusable library in browser IndexedDB, so it is global to formulas
+in that browser and is explicitly labelled as browser-only.
 Every recalculation creates an immutable in-session report version. The history
 shows component deltas and can restore an earlier result as a new version.
 Use `public/sample-tonic.tsv` as the reference input. The web report shows only
@@ -181,18 +185,18 @@ label set IDs and exact basis assumptions.
 
 The frozen pilot benchmark contains 66 stage-specific cases: 20 extraction
 cases, 20 identity-ranking cases, and the 26 public calculation cases. The
-current local suite contains 76 Python engine/API tests and 29 browser/data
+current local suite contains 81 Python engine/API tests and 31 browser/data
 tests. Thresholds and fixtures are recorded in `benchmarks/manifest.json`.
 
 ## Versioned workspace status
 
-The repository includes a D1 migration and Worker endpoints for creating,
-reading, appending, and restoring immutable formula versions. Access is by a
-random bearer token stored only as a hash. The D1 contract is exercised against
-a local SQLite-compatible test binding, but `FORMULA_DB` is deliberately not
-configured in `wrangler.jsonc` and no production D1 resource was created in
-this increment. The UI therefore falls back explicitly to browser-only
-IndexedDB persistence.
+The repository includes D1 migrations and Worker endpoints for immutable
+formula versions and a shared reusable-ingredient library. Formula access uses
+a random bearer token stored only as a hash; shared-library writes additionally
+require an `INGREDIENT_ADMIN_TOKEN`. Both D1 contracts are exercised against a
+local SQLite-compatible test binding. `FORMULA_DB` and the owner secret remain
+deliberately unconfigured in the public Worker, so formula history and accepted
+ingredient aliases fall back explicitly to browser-only IndexedDB persistence.
 
 `GET /api/ingredients/search` currently searches the versioned local food and
 chemical catalogs and returns candidates without applying them. FoodData

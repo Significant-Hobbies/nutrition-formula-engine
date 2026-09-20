@@ -4,6 +4,12 @@ import sqlite3
 import unittest
 from pathlib import Path
 
+from nutrition_formula.material_profiles import (
+    D1MaterialProfileRepository,
+    material_profile_record,
+    merge_material_profiles,
+    search_saved_profiles,
+)
 from nutrition_formula.versioning import (
     D1FormulaRepository,
     FormulaAccessError,
@@ -43,6 +49,11 @@ class FakeD1:
         self.connection.row_factory = sqlite3.Row
         self.connection.executescript(
             (ROOT / "migrations/0001_formula_history.sql").read_text(encoding="utf-8")
+        )
+        self.connection.executescript(
+            (ROOT / "migrations/0002_shared_ingredient_library.sql").read_text(
+                encoding="utf-8"
+            )
         )
 
     def prepare(self, sql: str) -> FakeD1Statement:
@@ -210,6 +221,74 @@ class VersioningTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(history["current_version"], 2)
         self.assertEqual([item["version"] for item in history["versions"]], [2, 1])
         self.assertEqual(restored["report"], created["report"])
+
+
+class MaterialProfileTests(unittest.IsolatedAsyncioTestCase):
+    def material(self) -> dict:
+        return {
+            "name": "Vitamin C specification",
+            "aliases": ["Ascorbic acid"],
+            "basis": {"value": "100", "unit": "g"},
+            "nutrients": {"vitamin_c": {"value": "100000", "unit": "mg"}},
+            "unlisted_nutrients_are_zero": True,
+            "source": {"kind": "supplier_specification", "reference": "Supplier A v1"},
+        }
+
+    def test_profile_snapshot_is_deterministic_and_searchable(self) -> None:
+        first = material_profile_record(
+            material_id="vitamin_c_supplier_a",
+            material=self.material(),
+            submitted_alias="Trade C",
+            accepted_at="2026-09-21T10:00:00Z",
+        )
+        second = material_profile_record(
+            material_id="vitamin_c_supplier_a",
+            material=self.material(),
+            submitted_alias="Trade C",
+            accepted_at="2026-09-22T10:00:00Z",
+        )
+        self.assertEqual(first["version"], second["version"])
+        self.assertEqual(
+            search_saved_profiles([first], "Trade C")[0]["profile_version"], first["version"]
+        )
+
+        catalog, aliases = merge_material_profiles({"materials": {}}, [first])
+        self.assertIn("vitamin_c_supplier_a", catalog["materials"])
+        self.assertEqual(aliases["trade c"], "vitamin_c_supplier_a")
+
+    async def test_d1_profile_versions_supersede_without_overwriting_history(self) -> None:
+        times = iter(["2026-09-21T10:00:00Z", "2026-09-21T10:01:00Z"])
+        database = FakeD1()
+        self.addCleanup(database.connection.close)
+        repository = D1MaterialProfileRepository(database, clock=lambda: next(times))
+        first = await repository.save(
+            material_id="vitamin_c_supplier_a",
+            material=self.material(),
+            submitted_alias="Trade C",
+        )
+        revised_material = self.material()
+        revised_material["nutrients"]["vitamin_c"]["value"] = "99000"
+        second = await repository.save(
+            material_id="vitamin_c_supplier_a",
+            material=revised_material,
+            submitted_alias="Trade C Plus",
+        )
+
+        self.assertNotEqual(first["version"], second["version"])
+        self.assertEqual(second["supersedes_version"], first["version"])
+        active = await repository.list_active()
+        self.assertEqual([item["version"] for item in active], [second["version"]])
+        statuses = database.connection.execute(
+            "SELECT version, status FROM material_profiles ORDER BY accepted_at"
+        ).fetchall()
+        self.assertEqual(
+            [tuple(row) for row in statuses],
+            [(first["version"], "superseded"), (second["version"], "active")],
+        )
+
+        self.assertTrue(await repository.deactivate(second["id"], second["version"]))
+        self.assertFalse(await repository.deactivate(second["id"], second["version"]))
+        self.assertEqual(await repository.list_active(), [])
 
 
 if __name__ == "__main__":

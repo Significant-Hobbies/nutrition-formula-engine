@@ -735,6 +735,109 @@ h1 {
   align-self: center;
 }
 
+.ingredient-library {
+  margin: 18px 30px 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.ingredient-library > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 15px 16px;
+  cursor: pointer;
+}
+
+.ingredient-library > summary span:first-child {
+  display: grid;
+  gap: 3px;
+}
+
+.ingredient-library > .quiet,
+.ingredient-library-list,
+.ingredient-owner-form {
+  margin-right: 16px;
+  margin-left: 16px;
+}
+
+.ingredient-library-list {
+  display: grid;
+  padding-bottom: 12px;
+  gap: 8px;
+}
+
+.ingredient-library-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 3px 14px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+
+.ingredient-library-item span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.ingredient-library-item button,
+.ingredient-save-button {
+  min-height: 30px;
+  padding: 0 9px;
+  cursor: pointer;
+  border: 1px solid #b2ccff;
+  border-radius: 7px;
+  background: #eff4ff;
+  color: var(--blue-dark);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.ingredient-library-item button {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+.ingredient-save-button {
+  display: block;
+  margin-top: 7px;
+}
+
+.ingredient-save-button:disabled {
+  cursor: default;
+  border-color: #abefc6;
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.ingredient-owner-form {
+  display: flex;
+  align-items: flex-end;
+  padding: 12px 0 16px;
+  border-top: 1px solid var(--line);
+  gap: 10px;
+}
+
+.ingredient-owner-form label {
+  display: grid;
+  flex: 1;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.ingredient-owner-form input {
+  min-height: 40px;
+  padding: 0 10px;
+  border: 1px solid #98a2b3;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
 .summary-grid {
   display: grid;
   grid-template-columns: 1.4fr 1fr;
@@ -1199,6 +1302,16 @@ td[data-label="Equivalent"] {
   .identity-review {
     padding-right: 20px;
     padding-left: 20px;
+  }
+
+  .ingredient-library {
+    margin-right: 20px;
+    margin-left: 20px;
+  }
+
+  .ingredient-owner-form {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .result-actions {

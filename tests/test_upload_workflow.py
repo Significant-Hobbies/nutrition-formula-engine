@@ -3,7 +3,14 @@ from __future__ import annotations
 import unittest
 from pathlib import Path
 
-from nutrition_formula.http_api import bearer_token, validate_analysis_body, validate_version_body
+from nutrition_formula.http_api import (
+    bearer_token,
+    owner_token_matches,
+    validate_accepted_aliases,
+    validate_analysis_body,
+    validate_material_save_body,
+    validate_version_body,
+)
 from nutrition_formula.tsv import FormulaUploadError, parse_formula_tsv
 from nutrition_formula.upload_analysis import analyze_formula_upload
 
@@ -47,6 +54,37 @@ class UploadWorkflowTests(unittest.TestCase):
             )
         with self.assertRaisesRegex(FormulaUploadError, "access token"):
             bearer_token(None)
+
+    def test_owner_token_comparison_handles_exact_unicode_values(self) -> None:
+        self.assertTrue(owner_token_matches("owner-雪", "owner-雪"))
+        self.assertFalse(owner_token_matches("owner-雪", "owner-snow"))
+
+    def test_saved_alias_and_material_profile_requests_are_bounded(self) -> None:
+        self.assertEqual(
+            validate_accepted_aliases(
+                {"accepted_aliases": [{"alias": "Supplier C", "material_id": "ascorbic_acid"}]}
+            ),
+            {"Supplier C": "ascorbic_acid"},
+        )
+        self.assertEqual(
+            validate_material_save_body(
+                {
+                    "material_id": "ascorbic_acid",
+                    "submitted_alias": "Supplier C",
+                    "kind": "food",
+                }
+            ),
+            ("ascorbic_acid", "Supplier C", "food"),
+        )
+        with self.assertRaisesRegex(FormulaUploadError, "at most 100"):
+            validate_accepted_aliases(
+                {
+                    "accepted_aliases": [
+                        {"alias": f"Alias {index}", "material_id": "ascorbic_acid"}
+                        for index in range(101)
+                    ]
+                }
+            )
 
     def test_sample_tonic_upload_returns_present_components_and_visible_assumptions(self) -> None:
         text = (ROOT / "public" / "sample-tonic.tsv").read_text(encoding="utf-8")
@@ -95,6 +133,22 @@ class UploadWorkflowTests(unittest.TestCase):
         self.assertEqual(result["product_inference"]["name"], "Food or beverage formulation")
         self.assertEqual(present["protein"]["value"], "9.8")
         self.assertEqual(present["carbohydrate"]["value"], "78.94")
+
+    def test_saved_alias_reuses_a_profile_without_identity_review(self) -> None:
+        text = (
+            "Item\tQuantity\tUnit\n"
+            "FINISHED BATCH\t100\tkg\n"
+            "Supplier B6\t100\tg\n"
+        )
+        result = analyze_formula_upload(
+            text,
+            "saved-alias.tsv",
+            accepted_aliases={"Supplier B6": "pyridoxine_hydrochloride"},
+        )
+        row = result["formula_rows"][1]
+        self.assertEqual(row["material_id"], "pyridoxine_hydrochloride")
+        self.assertEqual(row["confidence"], "exact")
+        self.assertFalse(row["needs_review"])
 
     def test_parser_accepts_common_manufacturing_unit_aliases(self) -> None:
         parsed = parse_formula_tsv(

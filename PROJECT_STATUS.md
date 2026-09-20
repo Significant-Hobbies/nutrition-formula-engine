@@ -28,6 +28,10 @@ perform FSSAI classification, label formatting, or regulatory approval.
 - Calculation receipts with engine version and catalog fingerprints
 - Immutable session report versions with component deltas and restore-as-new-version
 - Explicit browser IndexedDB save/resume fallback with the latest ten versions
+- Browser-wide reusable ingredient aliases that apply automatically to later
+  formulas, with confirm-before-save and explicit remove controls
+- Immutable, source-retaining D1 ingredient-profile versions and owner-protected
+  save/deactivate endpoints, ready for a future shared binding
 - D1 schema and authenticated Worker repository endpoints, verified through a
   local D1-compatible SQLite harness but not bound to a deployed database
 - Local catalog candidate search across food and chemical profiles
@@ -48,7 +52,7 @@ perform FSSAI classification, label formatting, or regulatory approval.
   marketed-medicine salt-to-active-moiety comparisons
 - Three 1,000 L manufacturing-style reference formulations and regression tests
 - A frozen 66-case benchmark: 20 extraction, 20 identity, and 26 calculation cases
-- 76 Python engine/API tests and 29 browser/data tests, plus 220 deterministic
+- 81 Python engine/API tests and 31 browser/data tests, plus 220 deterministic
   generated arithmetic trials and 48 parser-alias combinations
 
 ## Public release
@@ -58,16 +62,18 @@ perform FSSAI classification, label formatting, or regulatory approval.
 - Source state: committed and pushed to `origin/main`; the active Worker version
   is tagged with the same full Git SHA
 - Validation-suite state: the deployed release contains the frozen 66-case
-  benchmark and 105 automated tests
+  benchmark and 112 automated tests
 - Production smoke state: root and health routes, valid sample calculation,
   malformed JSON, local candidate search, browser calculation, browser-only
-  save, reload, and resume were verified against the public domain
+  save, reload, resume, and reusable-ingredient flow were verified against the
+  public domain
 - Persistence state: `FORMULA_DB` is intentionally unconfigured; the public UI
   labels and uses its browser IndexedDB fallback
 
 ## Not yet configured or implemented
 
-- A provisioned and migrated Cloudflare D1 database with a `FORMULA_DB` binding
+- A migrated Cloudflare D1 database with a `FORMULA_DB` binding and an
+  `INGREDIENT_ADMIN_TOKEN` owner secret
 - Live PubChem and FoodData Central candidate adapters and accepted-profile cache
 - Line-level reject/search decision persistence against the server repository
 - Additional OCR languages, handwriting support, and proprietary document formats

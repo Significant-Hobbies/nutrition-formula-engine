@@ -16,6 +16,13 @@ def _load(name: str) -> dict[str, Any]:
         return json.load(handle)
 
 
+def local_material(material_id: str, kind: str = "food") -> dict[str, Any] | None:
+    if kind not in {"food", "chemical"}:
+        raise ValueError("kind must be food or chemical")
+    file_name = "catalog.json" if kind == "food" else "chemical_catalog.json"
+    return _load(file_name).get("materials", {}).get(material_id)
+
+
 def search_local_ingredients(query: str, kind: str = "all", limit: int = 8) -> dict[str, Any]:
     if not query.strip():
         raise ValueError("Search query is required")

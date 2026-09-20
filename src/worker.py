@@ -10,8 +10,20 @@ from urllib.parse import parse_qs, urlparse
 from js import console
 from workers import Response, WorkerEntrypoint
 
-from nutrition_formula.http_api import bearer_token, validate_analysis_body, validate_version_body
-from nutrition_formula.ingredient_search import search_local_ingredients
+from nutrition_formula.http_api import (
+    bearer_token,
+    owner_token_matches,
+    validate_accepted_aliases,
+    validate_analysis_body,
+    validate_material_save_body,
+    validate_version_body,
+)
+from nutrition_formula.ingredient_search import local_material, search_local_ingredients
+from nutrition_formula.material_profiles import (
+    D1MaterialProfileRepository,
+    MaterialProfileError,
+    search_saved_profiles,
+)
 from nutrition_formula.tsv import MAX_UPLOAD_BYTES, FormulaUploadError
 from nutrition_formula.upload_analysis import analyze_formula_upload
 from nutrition_formula.versioning import (
@@ -35,6 +47,17 @@ def _log(event, request_id, **details):
     console.log(json.dumps({"event": event, "request_id": request_id, **details}))
 
 
+def _owner_write_status(request, env):
+    if not hasattr(env, "INGREDIENT_ADMIN_TOKEN"):
+        return "unconfigured"
+    try:
+        supplied = bearer_token(request.headers.get("authorization"))
+    except FormulaUploadError:
+        return "denied"
+    expected = str(env.INGREDIENT_ADMIN_TOKEN)
+    return "authorized" if owner_token_matches(supplied, expected) else "denied"
+
+
 class Default(WorkerEntrypoint):
     async def fetch(self, request):
         parsed_url = urlparse(request.url)
@@ -55,9 +78,114 @@ class Default(WorkerEntrypoint):
                 result = search_local_ingredients(
                     params.get("q", [""])[0], params.get("kind", ["all"])[0]
                 )
+                if hasattr(self.env, "FORMULA_DB"):
+                    profiles = await D1MaterialProfileRepository(
+                        self.env.FORMULA_DB
+                    ).list_active()
+                    saved = search_saved_profiles(
+                        profiles,
+                        params.get("q", [""])[0],
+                        params.get("kind", ["all"])[0],
+                    )
+                    result["candidates"] = [
+                        *saved,
+                        *[
+                            candidate
+                            for candidate in result["candidates"]
+                            if candidate["material_id"]
+                            not in {item["material_id"] for item in saved}
+                        ],
+                    ][:8]
+                    result["saved_profile_count"] = len(profiles)
                 return _json(result)
             except ValueError as exc:
                 return _json({"error": str(exc)}, status=400)
+
+        if path == "/api/ingredients" or path.startswith("/api/ingredients/"):
+            request_id = str(uuid.uuid4())
+            if not hasattr(self.env, "FORMULA_DB"):
+                return _json(
+                    {
+                        "error": "The shared ingredient library is not configured",
+                        "code": "persistence_unavailable",
+                    },
+                    status=503,
+                    request_id=request_id,
+                )
+            repository = D1MaterialProfileRepository(self.env.FORMULA_DB)
+            try:
+                if path == "/api/ingredients" and method == "GET":
+                    profiles = await repository.list_active()
+                    return _json({"profiles": profiles}, request_id=request_id)
+                write_status = _owner_write_status(request, self.env)
+                if write_status == "unconfigured":
+                    return _json(
+                        {
+                            "error": "Owner writes are not configured",
+                            "code": "owner_write_unconfigured",
+                        },
+                        status=503,
+                        request_id=request_id,
+                    )
+                if write_status != "authorized":
+                    return _json(
+                        {"error": "Owner authorization is required"},
+                        status=403,
+                        request_id=request_id,
+                    )
+                if path == "/api/ingredients" and method == "POST":
+                    body = await request.json()
+                    material_id, submitted_alias, kind = validate_material_save_body(body)
+                    material = local_material(material_id, kind)
+                    if material is None:
+                        existing = [
+                            item
+                            for item in await repository.list_active()
+                            if item["id"] == material_id
+                        ]
+                        material = existing[0]["profile"] if existing else None
+                    if material is None:
+                        raise MaterialProfileError("The selected material profile was not found")
+                    profile = await repository.save(
+                        material_id=material_id,
+                        material=material,
+                        submitted_alias=submitted_alias,
+                        kind=kind,
+                    )
+                    _log("ingredient_profile_saved", request_id, status=201)
+                    return _json({"profile": profile}, status=201, request_id=request_id)
+                deactivate_match = re.fullmatch(r"/api/ingredients/([^/]+)/([^/]+)", path)
+                if deactivate_match and method == "DELETE":
+                    changed = await repository.deactivate(
+                        deactivate_match.group(1), deactivate_match.group(2)
+                    )
+                    if not changed:
+                        return _json(
+                            {"error": "Active ingredient profile not found"},
+                            status=404,
+                            request_id=request_id,
+                        )
+                    _log("ingredient_profile_deactivated", request_id, status=200)
+                    return _json({"deactivated": True}, request_id=request_id)
+                return _json({"error": "Ingredient library route not found"}, status=404)
+            except (FormulaUploadError, MaterialProfileError, ValueError) as exc:
+                return _json({"error": str(exc)}, status=400, request_id=request_id)
+            except Exception as exc:  # noqa: BLE001 - runtime JSON and D1 errors vary
+                console.error(
+                    json.dumps(
+                        {
+                            "event": "ingredient_library_server_error",
+                            "request_id": request_id,
+                            "error_type": type(exc).__name__,
+                            "status": 500,
+                        }
+                    )
+                )
+                return _json(
+                    {"error": "The ingredient library could not be updated"},
+                    status=500,
+                    request_id=request_id,
+                )
 
         if path.startswith("/api/formulas"):
             request_id = str(uuid.uuid4())
@@ -72,10 +200,16 @@ class Default(WorkerEntrypoint):
                 )
             repository = D1FormulaRepository(self.env.FORMULA_DB)
             try:
+                profiles = await D1MaterialProfileRepository(self.env.FORMULA_DB).list_active()
                 if path == "/api/formulas" and method == "POST":
                     body = await request.json()
                     file_name, contents = validate_analysis_body(body)
-                    report = analyze_formula_upload(contents, file_name)
+                    report = analyze_formula_upload(
+                        contents,
+                        file_name,
+                        accepted_profiles=profiles,
+                        accepted_aliases=validate_accepted_aliases(body),
+                    )
                     record = await repository.create(
                         file_name=file_name,
                         contents=contents,
@@ -112,7 +246,12 @@ class Default(WorkerEntrypoint):
                 if append_match and method == "POST":
                     body = await request.json()
                     file_name, contents, expected, cause, decisions = validate_version_body(body)
-                    report = analyze_formula_upload(contents, file_name)
+                    report = analyze_formula_upload(
+                        contents,
+                        file_name,
+                        accepted_profiles=profiles,
+                        accepted_aliases=validate_accepted_aliases(body),
+                    )
                     version = await repository.append(
                         formula_id=append_match.group(1),
                         access_token=token,
@@ -209,7 +348,17 @@ class Default(WorkerEntrypoint):
                         request_id=request_id,
                     )
                 file_name, contents = validate_analysis_body(body)
-                result = analyze_formula_upload(contents, file_name)
+                profiles = (
+                    await D1MaterialProfileRepository(self.env.FORMULA_DB).list_active()
+                    if hasattr(self.env, "FORMULA_DB")
+                    else []
+                )
+                result = analyze_formula_upload(
+                    contents,
+                    file_name,
+                    accepted_profiles=profiles,
+                    accepted_aliases=validate_accepted_aliases(body),
+                )
                 _log(
                     "formula_analysis_completed",
                     request_id,

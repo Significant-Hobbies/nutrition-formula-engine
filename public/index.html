@@ -119,7 +119,7 @@
           <dl>
             <div><dt>26</dt><dd>public cases</dd></div>
             <div><dt>66</dt><dd>stage benchmarks</dd></div>
-            <div><dt>76</dt><dd>engine/API tests</dd></div>
+            <div><dt>81</dt><dd>engine/API tests</dd></div>
           </dl>
         </div>
         <details class="case-studies">
@@ -220,6 +220,27 @@
           </div>
           <div id="identity-review-list" class="identity-review-list"></div>
         </section>
+
+        <details id="ingredient-library" class="ingredient-library">
+          <summary>
+            <span>
+              <span class="card-label">Reusable profiles</span>
+              <strong>Saved ingredient library</strong>
+            </span>
+            <span id="ingredient-library-count">0 saved</span>
+          </summary>
+          <p id="ingredient-library-status" class="quiet">
+            Confirm an interpretation, then save it once for faster reuse in later formulas.
+          </p>
+          <div id="ingredient-library-list" class="ingredient-library-list"></div>
+          <form id="ingredient-owner-form" class="ingredient-owner-form" hidden>
+            <label>
+              Owner key
+              <input id="ingredient-owner-key" type="password" autocomplete="current-password" />
+            </label>
+            <button class="secondary-button" type="submit">Use owner key for shared saves</button>
+          </form>
+        </details>
 
         <section class="report-section" aria-labelledby="formula-title">
           <div class="section-heading">

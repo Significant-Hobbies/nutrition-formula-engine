@@ -4,9 +4,10 @@
 
 Use a Cloudflare Python Worker so the web service reuses the tested `Decimal`
 calculation engine rather than creating a second implementation. The repository
-now contains an immutable formula-version repository and D1 migration alongside
-the request-scoped analysis endpoint. No D1 resource or `FORMULA_DB` binding has
-been configured, so the current UI labels and uses its IndexedDB fallback.
+now contains immutable formula-version and reusable-ingredient repositories and
+D1 migrations alongside the request-scoped analysis endpoint. No `FORMULA_DB`
+binding or ingredient-owner secret has been configured, so the current UI
+labels and uses its IndexedDB fallback.
 
 The interface accepts pasted text, TSV, CSV, TXT, JSON, XLSX, images, and PDFs
 through one input surface. Deterministic browser normalizers convert text and
@@ -32,6 +33,11 @@ session versions. An explicit save stores the latest ten versions in browser
 IndexedDB when D1 is unavailable; the original upload is not retained. Server
 durability becomes active only after a D1 database is created, migrated, and
 bound.
+
+Confirmed ingredient interpretations can also be saved for reuse. In the
+current public deployment they apply automatically to every later formula in
+the same browser. The stored record retains the submitted alias, selected
+material ID, canonical name, profile version, source, and acceptance time.
 
 ### OCR/model decision
 
@@ -110,12 +116,25 @@ All reads and mutations require the bearer access token. Only its SHA-256 hash
 is stored. When `FORMULA_DB` is absent, these endpoints return a visible 503
 `persistence_unavailable` response rather than pretending a server save worked.
 
-### Implemented candidate-search endpoint
+### Implemented ingredient-library endpoints
 
 `GET /api/ingredients/search?q=...&kind=food|chemical|all` searches the local
 food and chemical catalogs. Results include their source, profile status, and a
 mandatory-confirmation flag. Results are candidates only and never mutate a
 formula. Live external search is reported as unavailable in this increment.
+
+- `GET /api/ingredients` lists active immutable accepted profiles when D1 is
+  bound.
+- `POST /api/ingredients` accepts a confirmed catalog identity and submitted
+  alias, snapshots its composition and provenance, and supersedes an older
+  active version without deleting history.
+- `DELETE /api/ingredients/{material_id}/{version}` deactivates one active
+  profile version.
+
+Shared writes require `Authorization: Bearer <INGREDIENT_ADMIN_TOKEN>` and fail
+closed when the owner secret is absent. When D1 is absent, all three shared
+library routes report `persistence_unavailable`; the UI stores and reapplies
+the alias locally instead of claiming a shared save.
 
 ### Planned line-level correction endpoint
 
@@ -145,9 +164,12 @@ the numerical changes from the previous report.
 - `formula_versions`: immutable normalized input snapshots
 - `identity_decisions`: confirm, reject, and undo events with timestamps
 - `material_profiles`: normalized nutrient or chemical profiles and provenance
+- `material_profile_aliases`: version-pinned accepted aliases for reusable profiles
 - `reports`: immutable calculated result snapshots
 
-`migrations/0001_formula_history.sql` defines the tables and indexes. Normalized
+`migrations/0001_formula_history.sql` defines the base tables and indexes;
+`migrations/0002_shared_ingredient_library.sql` adds immutable profile status,
+kind, supersession, and alias lookup. Normalized
 formula lines live inside the immutable formula-version JSON snapshot rather
 than a mutable `formula_lines` table. Uploaded source files do not need durable
 object storage, so R2 remains unnecessary. The migration and repository are

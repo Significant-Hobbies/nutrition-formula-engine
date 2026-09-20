@@ -8,9 +8,13 @@ import {
   restoreSessionVersion,
 } from "./version-history.js";
 import {
+  browserIngredientRecord,
   browserWorkspaceRecord,
   clearBrowserWorkspace,
+  deleteBrowserIngredient,
+  loadBrowserIngredients,
   loadBrowserWorkspace,
+  saveBrowserIngredient,
   saveBrowserWorkspace,
 } from "./workspace-store.js";
 
@@ -41,6 +45,9 @@ let draftRows = [];
 let latestContents = "";
 let sessionHistory = [];
 let workspace = null;
+let savedIngredients = [];
+let sharedIngredientProfiles = [];
+let sharedIngredientLibraryAvailable = false;
 const confirmedIdentities = new Set();
 const auditLog = createAuditLog();
 
@@ -105,6 +112,154 @@ function setStatus(message, isError = false) {
 
 function setReviewStatus(message, isError = false) {
   updateStatus(reviewStatus, message, isError);
+}
+
+function aliasKey(value) {
+  return String(value || "").toLocaleLowerCase("en").replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function ingredientIsSaved(row) {
+  const key = aliasKey(row.item);
+  return savedIngredients.some((item) => item.alias_key === key && item.material_id === row.material_id)
+    || sharedIngredientProfiles.some((profile) => profile.id === row.material_id
+      && [profile.name, ...(profile.aliases || [])].some((alias) => aliasKey(alias) === key));
+}
+
+function acceptedAliasPayload() {
+  return savedIngredients.map((item) => ({
+    alias: item.alias,
+    material_id: item.material_id,
+  }));
+}
+
+function setIngredientLibraryStatus(message, isError = false) {
+  updateStatus(document.querySelector("#ingredient-library-status"), message, isError);
+}
+
+function renderIngredientLibrary() {
+  const list = document.querySelector("#ingredient-library-list");
+  const entries = [
+    ...sharedIngredientProfiles.map((profile) => ({
+      storage: "shared",
+      key: `${profile.id}:${profile.version}`,
+      material_id: profile.id,
+      version: profile.version,
+      name: profile.name,
+      detail: `${profile.aliases.length} aliases · shared profile ${profile.version}`,
+    })),
+    ...savedIngredients.map((profile) => ({
+      storage: "browser",
+      key: profile.alias_key,
+      material_id: profile.material_id,
+      name: profile.alias,
+      detail: `${profile.canonical_name} · saved in this browser`,
+    })),
+  ];
+  document.querySelector("#ingredient-library-count").textContent = `${entries.length} saved`;
+  document.querySelector("#ingredient-owner-form").hidden = !sharedIngredientLibraryAvailable;
+  list.replaceChildren();
+  for (const entry of entries) {
+    const item = document.createElement("div");
+    item.className = "ingredient-library-item";
+    const name = document.createElement("strong");
+    name.textContent = entry.name;
+    const detail = document.createElement("span");
+    detail.textContent = entry.detail;
+    const remove = reviewButton("Remove", async () => {
+      if (entry.storage === "shared") {
+        const ownerKey = sessionStorage.getItem("ingredient-owner-key") || "";
+        if (!ownerKey) {
+          document.querySelector("#ingredient-library").open = true;
+          document.querySelector("#ingredient-owner-key").focus();
+          setIngredientLibraryStatus("Enter the owner key before changing the shared library.", true);
+          return;
+        }
+        const response = await fetch(`/api/ingredients/${encodeURIComponent(entry.material_id)}/${encodeURIComponent(entry.version)}`, {
+          method: "DELETE",
+          headers: { "Authorization": `Bearer ${ownerKey}` },
+        });
+        const payload = await response.json();
+        if (!response.ok) {
+          setIngredientLibraryStatus(payload.error || "The shared ingredient could not be removed.", true);
+          return;
+        }
+      } else {
+        await deleteBrowserIngredient(entry.key);
+      }
+      await refreshIngredientLibrary();
+      if (latestResult) renderFormula(currentRows);
+      recordAudit("ingredient_profile_deactivated", { storage: entry.storage });
+    });
+    remove.setAttribute("aria-label", `Remove ${entry.name} from the saved ingredient library`);
+    item.append(name, detail, remove);
+    list.append(item);
+  }
+}
+
+async function refreshIngredientLibrary() {
+  try {
+    savedIngredients = await loadBrowserIngredients();
+  } catch {
+    savedIngredients = [];
+  }
+  try {
+    const response = await fetch("/api/ingredients");
+    if (response.ok) {
+      const payload = await response.json();
+      sharedIngredientProfiles = payload.profiles || [];
+      sharedIngredientLibraryAvailable = true;
+    } else {
+      sharedIngredientProfiles = [];
+      sharedIngredientLibraryAvailable = false;
+    }
+  } catch {
+    sharedIngredientProfiles = [];
+    sharedIngredientLibraryAvailable = false;
+  }
+  renderIngredientLibrary();
+}
+
+async function saveIngredientForReuse(row) {
+  if (!row.material_id || !row.reusable_profile) {
+    setIngredientLibraryStatus("This ingredient does not yet have a reusable composition profile.", true);
+    return;
+  }
+  const ownerKey = sessionStorage.getItem("ingredient-owner-key") || "";
+  if (sharedIngredientLibraryAvailable && ownerKey) {
+    const response = await fetch("/api/ingredients", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${ownerKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        material_id: row.material_id,
+        submitted_alias: row.item,
+        kind: "food",
+      }),
+    });
+    const payload = await response.json();
+    if (response.ok) {
+      await refreshIngredientLibrary();
+      renderFormula(currentRows);
+      setIngredientLibraryStatus(`${row.item} is saved in the shared ingredient library.`);
+      recordAudit("ingredient_profile_saved", { storage: "shared" });
+      return;
+    }
+    if (response.status !== 503) {
+      setIngredientLibraryStatus(payload.error || "The ingredient could not be saved.", true);
+      return;
+    }
+  }
+  const record = browserIngredientRecord(row);
+  await saveBrowserIngredient(record);
+  await refreshIngredientLibrary();
+  renderFormula(currentRows);
+  document.querySelector("#ingredient-library").open = true;
+  setIngredientLibraryStatus(
+    `${row.item} is saved for every formula in this browser. Shared sync is not configured yet.`,
+  );
+  recordAudit("ingredient_profile_saved", { storage: "browser" });
 }
 
 function selectFile(file) {
@@ -328,7 +483,7 @@ function validateDraftRows() {
 function renderFormula(rows) {
   const body = document.querySelector("#formula-body");
   body.replaceChildren();
-  for (const row of rows) {
+  for (const [index, row] of rows.entries()) {
     const tr = document.createElement("tr");
     tr.append(
       cell("Item", row.item),
@@ -341,6 +496,20 @@ function renderFormula(rows) {
     name.textContent = row.interpretation;
     interpretation.append(name);
     if (row.confidence && row.confidence !== "exact") interpretation.append(confidenceBadge(row.confidence));
+    if (index > 0 && row.material_id && row.reusable_profile) {
+      const save = reviewButton("Save for reuse", () => saveIngredientForReuse(row));
+      save.className = "ingredient-save-button";
+      save.setAttribute("aria-label", `Save ${row.item} for reuse`);
+      const confirmed = !row.needs_review || confirmedIdentities.has(row.item.toLowerCase());
+      if (!confirmed) {
+        save.textContent = "Confirm before saving";
+        save.disabled = true;
+      } else if (ingredientIsSaved(row)) {
+        save.textContent = "Saved for reuse";
+        save.disabled = true;
+      }
+      interpretation.append(save);
+    }
     tr.append(interpretation);
     body.append(tr);
   }
@@ -403,6 +572,7 @@ function renderIdentityReview(rows) {
           confirmedIdentities.add(key);
           recordAudit("identity_confirmed", { row_index: index + 1 });
           renderIdentityReview(currentRows);
+          renderFormula(currentRows);
           if (workspace) {
             await reanalyzeCurrentRows("identity_confirmed", [
               { action: "confirm", line_index: index, candidate_id: row.material_id },
@@ -652,6 +822,7 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
     const requestBody = {
       file_name: uploadedName.endsWith(".tsv") ? uploadedName : `${uploadedName}.tsv`,
       contents,
+      accepted_aliases: acceptedAliasPayload(),
     };
     if (workspace?.mode === "server") {
       requestBody.expected_version = workspace.currentVersion;
@@ -727,7 +898,11 @@ document.querySelector("#save-workspace").addEventListener("click", async () => 
     const response = await fetch("/api/formulas", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ file_name: latestFileName, contents: latestContents }),
+      body: JSON.stringify({
+        file_name: latestFileName,
+        contents: latestContents,
+        accepted_aliases: acceptedAliasPayload(),
+      }),
     });
     const payload = await response.json();
     if (!response.ok && payload.code !== "persistence_unavailable") {
@@ -884,6 +1059,21 @@ addIngredientForm.addEventListener("submit", async (event) => {
   }
 });
 
+document.querySelector("#ingredient-owner-form").addEventListener("submit", (event) => {
+  event.preventDefault();
+  const input = document.querySelector("#ingredient-owner-key");
+  const ownerKey = input.value.trim();
+  if (!ownerKey) {
+    setIngredientLibraryStatus("Enter the owner key to enable shared saves.", true);
+    input.focus();
+    return;
+  }
+  sessionStorage.setItem("ingredient-owner-key", ownerKey);
+  input.value = "";
+  setIngredientLibraryStatus("Owner key is active for this browser session. Save an ingredient to verify it.");
+  recordAudit("ingredient_owner_key_set");
+});
+
 function renderCaseStudies(data) {
   const body = document.querySelector("#case-study-body");
   body.replaceChildren();
@@ -915,6 +1105,7 @@ function renderCaseStudies(data) {
 
 renderCaseStudies(caseStudiesData);
 refreshSavedWorkspaceOffer();
+refreshIngredientLibrary();
 
 if (new URLSearchParams(window.location.search).get("sample") === "1") {
   fetch(sampleTsvUrl)

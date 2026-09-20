@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { browserWorkspaceRecord } from "../public/workspace-store.js";
+import { browserIngredientRecord, browserWorkspaceRecord } from "../public/workspace-store.js";
 
 test("browser workspace records are bounded and detached from live history", () => {
   const history = Array.from({ length: 12 }, (_, index) => ({
@@ -26,4 +26,25 @@ test("browser workspace requires a calculated version", () => {
     () => browserWorkspaceRecord({ history: [] }),
     /calculated report/,
   );
+});
+
+test("browser ingredient records preserve alias, identity, source, and version", () => {
+  const record = browserIngredientRecord({
+    item: "Supplier B6™",
+    material_id: "pyridoxine_hydrochloride",
+    interpretation: "Pyridoxine hydrochloride",
+    source: "Supplier CoA 2026-09",
+    profile_version: "profile-v2",
+    reusable_profile: true,
+  });
+
+  assert.equal(record.alias_key, "supplier b6");
+  assert.equal(record.material_id, "pyridoxine_hydrochloride");
+  assert.equal(record.canonical_name, "Pyridoxine hydrochloride");
+  assert.equal(record.source, "Supplier CoA 2026-09");
+  assert.equal(record.profile_version, "profile-v2");
+});
+
+test("browser ingredient records reject unresolved materials", () => {
+  assert.throws(() => browserIngredientRecord({ item: "Unknown" }), /reusable profile/);
 });

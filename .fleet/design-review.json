@@ -2,7 +2,7 @@
   "$schema": "fleet.design-review.v1",
   "version": 1,
   "project": "nutrition-formula-engine",
-  "target": "versioned formula analysis workspace with calculation traceability",
+  "target": "versioned formula analysis workspace with reusable ingredient profiles",
   "surfaceMode": "operate",
   "mode": "preserve",
   "register": "product",
@@ -85,6 +85,7 @@
       "findings": [
         "The selected-direction composite is retained as the visual baseline because no dedicated pre-increment screenshot existed.",
         "Responsive browser checks confirmed no horizontal overflow at 390, 768, or 1440 pixels after correcting hidden-review and mobile-action layout defects.",
+        "The saved ingredient library stays inside the established review surface and uses the same compact disclosure, status, and secondary-action patterns.",
         "The 517.57 kB lazy ingestion chunk remains a build warning; PDF, spreadsheet, and OCR code is loaded only when needed."
       ]
     },
@@ -113,6 +114,6 @@
   },
   "ownerFeedback": {
     "decision": "keep",
-    "note": "The version-history and contribution-ledger increment preserves the previously selected Clear Compliance Desk direction and single-input workflow."
+    "note": "The reusable-ingredient increment preserves the selected Clear Compliance Desk direction and single-input workflow."
   }
 }

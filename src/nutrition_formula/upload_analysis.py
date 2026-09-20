@@ -10,6 +10,7 @@ from typing import Any
 
 from .confidence import evidence_confidence
 from .engine import CalculationError, calculate, decimal_string
+from .material_profiles import merge_material_profiles
 from .product_report import build_product_report
 from .resolver import normalize_name
 from .tsv import FormulaUploadError, parse_formula_tsv
@@ -78,6 +79,8 @@ def _apply_visible_assumptions(formula: dict[str, Any]) -> tuple[dict[str, Any],
     calculated_formula = deepcopy(formula)
     assumptions: list[dict[str, Any]] = []
     for line_index, line in enumerate(calculated_formula["ingredients"]):
+        if line.get("material_id"):
+            continue
         query = line.get("ingredient")
         if not query:
             continue
@@ -100,6 +103,22 @@ def _apply_visible_assumptions(formula: dict[str, Any]) -> tuple[dict[str, Any],
             }
         )
     return calculated_formula, assumptions
+
+
+def _apply_accepted_aliases(
+    formula: dict[str, Any], catalog: dict[str, Any], accepted_aliases: dict[str, str]
+) -> dict[str, Any]:
+    resolved = deepcopy(formula)
+    for line in resolved["ingredients"]:
+        query = line.get("ingredient")
+        if not query:
+            continue
+        material_id = accepted_aliases.get(normalize_name(query))
+        if material_id not in catalog["materials"]:
+            continue
+        line.pop("ingredient")
+        line["material_id"] = material_id
+    return resolved
 
 
 def _overall_confidence(assumptions: list[dict[str, Any]]) -> dict[str, Any]:
@@ -279,6 +298,7 @@ def _interpretations(
             assumption["selected_material_id"] if assumption else None
         )
         material = catalog["materials"].get(material_id, {})
+        source = material.get("source", {})
         result.append(
             {
                 **row,
@@ -287,7 +307,9 @@ def _interpretations(
                 else material.get("name", row["item"]),
                 "material_id": material_id,
                 "confidence": assumption["confidence"] if assumption else "exact",
-                "source": material.get("source", {}).get("reference", "Local accepted profile"),
+                "source": source.get("reference", "Local accepted profile"),
+                "profile_version": source.get("accepted_profile_version"),
+                "reusable_profile": bool(material.get("nutrients") or material.get("components")),
                 "needs_review": bool(assumption and assumption["confidence"] != "exact"),
                 "alternatives": alternative_names(assumption),
             }
@@ -414,14 +436,33 @@ def _markdown(result: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
-def analyze_formula_upload(text: str, file_name: str) -> dict[str, Any]:
+def analyze_formula_upload(
+    text: str,
+    file_name: str,
+    *,
+    accepted_profiles: list[dict[str, Any]] | None = None,
+    accepted_aliases: dict[str, str] | None = None,
+) -> dict[str, Any]:
     """Parse one TSV upload and return a concise, auditable composition report."""
 
     parsed = parse_formula_tsv(text, file_name)
     submitted_formula = parsed["formula"]
-    formula, visible_assumptions = _apply_visible_assumptions(submitted_formula)
     nutrition_catalog = _load_json(NUTRITION_CATALOG_PATH)
     chemical_catalog = _load_json(CHEMICAL_CATALOG_PATH)
+    nutrition_catalog, profile_aliases = merge_material_profiles(
+        nutrition_catalog, accepted_profiles or []
+    )
+    requested_aliases = {
+        normalize_name(alias): material_id
+        for alias, material_id in (accepted_aliases or {}).items()
+        if material_id in nutrition_catalog["materials"]
+    }
+    formula_with_aliases = _apply_accepted_aliases(
+        submitted_formula,
+        nutrition_catalog,
+        {**requested_aliases, **profile_aliases},
+    )
+    formula, visible_assumptions = _apply_visible_assumptions(formula_with_aliases)
 
     try:
         nutrition = calculate(nutrition_catalog, formula)
@@ -478,6 +519,7 @@ def analyze_formula_upload(text: str, file_name: str) -> dict[str, Any]:
             "engine_version": ENGINE_VERSION,
             "nutrition_catalog_fingerprint": fingerprint(nutrition_catalog),
             "chemical_catalog_fingerprint": fingerprint(chemical_catalog),
+            "accepted_profile_count": len(accepted_profiles or []),
             "arithmetic": "Python Decimal",
         },
         "product_name": submitted_formula["batch"]["name"],
