@@ -1,0 +1,16 @@
+[project]
+name = "nutrition-formula-engine"
+version = "0.1.0"
+description = "Local, traceable macro and micronutrient calculations for manufacturing formulas"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.ruff]
+line-length = 100
+
+[dependency-groups]
+dev = [
+    "workers-py>=1.17.3",
+    "workers-runtime-sdk>=1.9.0",
+]
+

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "batch": {
+    "name": "Market label: Ferrous Sulfate 325 mg tablet",
+    "final_quantity": {"value": "325", "unit": "mg"}
+  },
+  "ingredients": [
+    {
+      "material_id": "ferrous_sulfate_heptahydrate_usp",
+      "quantity": {"value": "325", "unit": "mg"}
+    }
+  ]
+}

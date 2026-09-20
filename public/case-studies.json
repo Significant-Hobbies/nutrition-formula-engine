@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-09-21",
+  "marketed_medicine_summary": {
+    "case_count": 5,
+    "mean_absolute_percentage_difference": "0.244",
+    "maximum_absolute_percentage_difference": "0.604"
+  },
+  "overall_summary": {
+    "case_count": 15,
+    "mean_absolute_percentage_difference": "0.570",
+    "median_absolute_percentage_difference": "0.108",
+    "maximum_absolute_percentage_difference": "4.643",
+    "maximum_case": "WHO F-75 no-cereal recipe energy using USDA reference ingredients"
+  },
+  "cases": [
+    {
+      "product": "WHO reduced-osmolarity ORS",
+      "component": "Sodium",
+      "declared": "75 mEq/L",
+      "predicted": "74.0719 mEq/L",
+      "difference_percent": "1.238",
+      "source": "WHO",
+      "source_url": "https://pmnch.who.int/resources/publications/i/item/the-treatment-of-diarrhoea"
+    },
+    {
+      "product": "0.9% Sodium Chloride Injection",
+      "component": "Sodium",
+      "declared": "154 mEq/L",
+      "predicted": "154.0041 mEq/L",
+      "difference_percent": "0.003",
+      "source": "DailyMed",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=a4edf2d5-a9ff-30d4-e053-2995a90a5650&type=display"
+    },
+    {
+      "product": "Lactated Ringer's Injection",
+      "component": "Sodium",
+      "declared": "130 mEq/L",
+      "predicted": "130.3332 mEq/L",
+      "difference_percent": "0.256",
+      "source": "DailyMed",
+      "source_url": "https://www.dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d3d29c8f-c326-4097-814a-7f4e08c67068"
+    },
+    {
+      "product": "Ringer's Injection",
+      "component": "Sodium",
+      "declared": "147 mEq/L",
+      "predicted": "147.1595 mEq/L",
+      "difference_percent": "0.108",
+      "source": "DailyMed label",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/"
+    },
+    {
+      "product": "5% Dextrose Injection",
+      "component": "Dextrose",
+      "declared": "5 g/100 mL",
+      "predicted": "5 g/100 mL",
+      "difference_percent": "0.000",
+      "source": "DailyMed label",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/"
+    },
+    {
+      "product": "10% Dextrose Injection",
+      "component": "Dextrose",
+      "declared": "10 g/100 mL",
+      "predicted": "10 g/100 mL",
+      "difference_percent": "0.000",
+      "source": "DailyMed label",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/"
+    },
+    {
+      "product": "Plasma-Lyte A",
+      "component": "Sodium",
+      "declared": "140 mEq/L",
+      "predicted": "140.0625 mEq/L",
+      "difference_percent": "0.045",
+      "source": "DailyMed",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6ec9e61c-2c26-402f-8604-f446b2e34058"
+    },
+    {
+      "product": "Sodium Bicarbonate Injection 8.4%",
+      "component": "Sodium",
+      "declared": "1 mEq/mL",
+      "predicted": "0.9999 mEq/mL",
+      "difference_percent": "0.008",
+      "source": "DailyMed",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9545d58c-1c49-79b3-e053-2995a90a9d40"
+    },
+    {
+      "product": "WHO F-75 no-cereal recipe",
+      "component": "Energy",
+      "declared": "75 kcal/100 mL",
+      "predicted": "71.518 kcal/100 mL",
+      "difference_percent": "4.643",
+      "source": "WHO",
+      "source_url": "https://iris.who.int/bitstream/handle/10665/41999/9241545312.pdf?sequence=1"
+    },
+    {
+      "product": "WHO F-100 recipe",
+      "component": "Energy",
+      "declared": "100 kcal/100 mL",
+      "predicted": "101.03 kcal/100 mL",
+      "difference_percent": "1.030",
+      "source": "WHO",
+      "source_url": "https://iris.who.int/bitstream/handle/10665/41999/9241545312.pdf?sequence=1"
+    },
+    {
+      "product": "Magnesium Oxide 400 mg tablet",
+      "component": "Elemental magnesium",
+      "declared": "241.3 mg/tablet",
+      "predicted": "241.2168 mg/tablet",
+      "difference_percent": "0.035",
+      "source": "DailyMed",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=31f417f0-1637-eefa-e063-6294a90a121b"
+    },
+    {
+      "product": "Ferrous Sulfate 325 mg tablet",
+      "component": "Elemental iron",
+      "declared": "65 mg/tablet",
+      "predicted": "65.2850 mg/tablet",
+      "difference_percent": "0.438",
+      "source": "DailyMed",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4e88a847-397b-4ddb-83d7-42c9b963a0b7"
+    },
+    {
+      "product": "Zinc Sulfate Injection",
+      "component": "Elemental zinc",
+      "declared": "3 mg/mL",
+      "predicted": "3.0010 mg/mL",
+      "difference_percent": "0.033",
+      "source": "DailyMed",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c9d45d0e-a165-4112-81f9-c0e455572ecf"
+    },
+    {
+      "product": "Calcium Carbonate 1250 mg tablet",
+      "component": "Elemental calcium",
+      "declared": "500 mg/tablet",
+      "predicted": "500.5445 mg/tablet",
+      "difference_percent": "0.109",
+      "source": "DailyMed",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=766b3f3f-8bd1-281c-e053-2991aa0af54b"
+    },
+    {
+      "product": "Potassium Chloride 750 mg tablet",
+      "component": "Potassium",
+      "declared": "10 mEq/tablet",
+      "predicted": "10.0604 mEq/tablet",
+      "difference_percent": "0.604",
+      "source": "DailyMed",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b19a3fbf-cdbb-4f86-ac61-5dfb07e0a51a"
+    }
+  ]
+}

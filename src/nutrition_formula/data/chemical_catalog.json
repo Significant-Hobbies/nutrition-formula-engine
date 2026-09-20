@@ -1,0 +1,219 @@
+{
+  "schema_version": 1,
+  "report_type": "chemical",
+  "item_label": "Chemical/component",
+  "calculation_type": "theoretical_chemical_composition_from_identity_assumptions",
+  "nutrients": {
+    "ferric_ammonium_citrate": {"name": "Ferric ammonium citrate", "class": "weighed material", "unit": "mg", "formula": "Undetermined complex", "identifier": "JECFA INS 381"},
+    "iron": {"name": "Iron", "class": "element/active moiety", "unit": "mg", "formula": "Fe"},
+    "cyanocobalamin": {"name": "Cyanocobalamin", "class": "active ingredient", "unit": "mg", "formula": "C63H88CoN14O14P", "identifier": "PubChem CID 166596686"},
+    "cobalt": {"name": "Cobalt contained in cyanocobalamin", "class": "contained element", "unit": "ug", "formula": "Co"},
+    "folic_acid": {"name": "Folic acid", "class": "active ingredient", "unit": "mg", "formula": "C19H19N7O6", "identifier": "PubChem CID 135398658"},
+    "zinc_sulfate_monohydrate": {"name": "Zinc sulphate monohydrate", "class": "weighed material", "unit": "mg", "formula": "ZnSO4·H2O", "identifier": "PubChem CID 62639"},
+    "zinc": {"name": "Zinc", "class": "element/active moiety", "unit": "mg", "formula": "Zn"},
+    "sulfate": {"name": "Sulphate in zinc sulphate", "class": "counterion", "unit": "mg", "formula": "SO4"},
+    "water_crystallization": {"name": "Water of crystallization", "class": "bound constituent", "unit": "mg", "formula": "H2O"},
+    "pyridoxine_hydrochloride": {"name": "Pyridoxine hydrochloride", "class": "weighed material", "unit": "mg", "formula": "C8H12ClNO3", "identifier": "PubChem CID 6019"},
+    "pyridoxine": {"name": "Pyridoxine", "class": "active moiety", "unit": "mg", "formula": "C8H11NO3", "identifier": "PubChem CID 1054"},
+    "chloride": {"name": "Chloride in pyridoxine hydrochloride", "class": "counterion", "unit": "mg", "formula": "Cl"},
+    "nepazene_unresolved": {"name": "Nepazene (likely Nipazine; unconfirmed)", "class": "unresolved trade-name material", "unit": "mg", "formula": "Unknown"},
+    "sodium_methylparaben": {"name": "Sodium methylparaben", "class": "preservative/weighed material", "unit": "mg", "formula": "C8H7NaO3", "identifier": "PubChem CID 23663626"},
+    "propylparaben": {"name": "Propylparaben (assumed Nepasol)", "class": "preservative", "unit": "mg", "formula": "C10H12O3", "identifier": "PubChem CID 7175"},
+    "bronopol": {"name": "Bronopol", "class": "preservative", "unit": "mg", "formula": "C3H6BrNO4", "identifier": "PubChem CID 2450"},
+    "sodium_benzoate": {"name": "Sodium benzoate", "class": "preservative/weighed material", "unit": "mg", "formula": "C7H5NaO2", "identifier": "PubChem CID 517055"},
+    "sodium": {"name": "Sodium", "class": "contained element", "unit": "mg", "formula": "Na"},
+    "benzoate": {"name": "Benzoate moiety", "class": "active moiety", "unit": "mg", "formula": "C7H5O2−", "identifier": "PubChem CID 242"},
+    "benzoic_acid": {"name": "Benzoic acid", "class": "preservative", "unit": "mg", "formula": "C7H6O2", "identifier": "PubChem CID 243"},
+    "sucrose": {"name": "Sucrose (assumed sugar identity)", "class": "vehicle/sweetener", "unit": "mg", "formula": "C12H22O11", "identifier": "PubChem CID 5988"},
+    "orange_flavour": {"name": "Orange flavour mixture", "class": "unresolved mixture", "unit": "mg", "formula": "Mixture"},
+    "xanthan_gum": {"name": "Xanthan gum", "class": "polymeric excipient", "unit": "mg", "formula": "Variable polymer"}
+  },
+  "materials": {
+    "ferric_ammonium_citrate_brown_mid": {
+      "name": "Ferric ammonium citrate, brown grade at 19.5% iron",
+      "aliases": ["ferric ammonium citrate", "ammonium ferric citrate"],
+      "identity_status": "assumed",
+      "identity_note": "Brown grade and midpoint assay assumed; exact structure is undetermined and supplier iron assay is required",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "ferric_ammonium_citrate": {"value": "100000", "unit": "mg"},
+        "iron": {"value": "19500", "minimum": "14500", "maximum": "22500", "unit": "mg"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "assumption", "reference": "JECFA brown-grade midpoint scenario"}
+    },
+    "cyanocobalamin_pure": {
+      "name": "Cyanocobalamin, pure",
+      "aliases": ["cyanocobalamin", "vitamin B12 cyanocobalamin"],
+      "identity_status": "assumed",
+      "identity_note": "Pure cyanocobalamin assumed rather than a dilution",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "cyanocobalamin": {"value": "100000", "unit": "mg"},
+        "cobalt": {"value": "4348029.659141213", "unit": "ug"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "stoichiometric", "reference": "PubChem molecular formula and molecular weight"}
+    },
+    "folic_acid_pure": {
+      "name": "Folic acid, pure",
+      "aliases": ["folic acid", "vitamin B9 folic acid"],
+      "identity_status": "assumed",
+      "identity_note": "Pure folic acid assumed rather than a dilution",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {"folic_acid": {"value": "100000", "unit": "mg"}},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "chemical_identity", "reference": "PubChem CID 135398658"}
+    },
+    "zinc_sulphate_monohydrate": {
+      "name": "Zinc sulphate monohydrate, pure stoichiometric scenario",
+      "aliases": ["zinc sulphate", "zinc sulfate", "ZnSO4"],
+      "identity_status": "assumed",
+      "identity_note": "Monohydrate assumed; supplier hydrate and assay are required",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "zinc_sulfate_monohydrate": {"value": "100000", "unit": "mg"},
+        "zinc": {"value": "36423.39832869081", "unit": "mg"},
+        "sulfate": {"value": "53515.87743732591", "unit": "mg"},
+        "water_crystallization": {"value": "10036.36768802228", "unit": "mg"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "stoichiometric", "reference": "PubChem CID 62639 molecular mass"}
+    },
+    "pyridoxine_hydrochloride": {
+      "name": "Pyridoxine hydrochloride, pure",
+      "aliases": ["pyridoxine HCl B6", "pyridoxine HCl", "vitamin B6 HCl"],
+      "identity_status": "assumed",
+      "identity_note": "Pure pyridoxine hydrochloride assumed rather than an assayed premix",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "pyridoxine_hydrochloride": {"value": "100000", "unit": "mg"},
+        "pyridoxine": {"value": "82269.98638397199", "unit": "mg"},
+        "chloride": {"value": "17238.86403423458", "unit": "mg"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "stoichiometric", "reference": "PubChem CID 6019 and CID 1054 molecular masses"}
+    },
+    "nepazene_unresolved": {
+      "name": "Nepazene (likely Nipazine), identity not confirmed",
+      "aliases": ["Nepazene", "Nipazine"],
+      "identity_status": "unresolved",
+      "identity_note": "Likely a spelling or transcription of Nipazine, a trade name used for sodium methylparaben, especially because it is paired with Nepasol/Nipasol; identity and salt form remain unconfirmed",
+      "identity_candidates": [
+        {
+          "rank": 1,
+          "identity": "Sodium methylparaben",
+          "trade_name": "Nipazine / Nipagin M Sodium",
+          "formula": "C8H7NaO3",
+          "identifier": "UNII CR6K9C2NHK",
+          "reason": "Closest contextual match and publicly listed as a pharmaceutical excipient paired with Nipasol",
+          "status": "leading_candidate"
+        },
+        {
+          "rank": 2,
+          "identity": "Methylparaben",
+          "trade_name": "Nipagin / Nipagin M",
+          "formula": "C8H8O3",
+          "identifier": "UNII A2I8C7HI9T",
+          "reason": "Established paraben trade name and plausible transcription, but it would be the neutral parent rather than the sodium salt",
+          "status": "alternative"
+        },
+        {
+          "rank": 3,
+          "identity": "Paraben preservative blend",
+          "trade_name": "Nipasept-type blend",
+          "formula": "Mixture",
+          "identifier": null,
+          "reason": "Similar preservative trade-name family; composition varies and requires the supplier product specification",
+          "status": "alternative"
+        }
+      ],
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {"nepazene_unresolved": {"value": "100000", "unit": "mg"}},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "candidate_identity", "reference": "Nipazine candidate; supplier confirmation required"}
+    },
+    "sodium_methylparaben_assumed": {
+      "name": "Sodium methylparaben, assumed from Nepazene",
+      "aliases": ["sodium methylparaben", "methylparaben sodium", "Nipazine", "Nipagin M Sodium"],
+      "identity_status": "assumed",
+      "identity_note": "Leading Nepazene candidate selected for the complete scenario; supplier label or CoA is still required",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "sodium_methylparaben": {"value": "100000", "unit": "mg"},
+        "sodium": {"value": "13202.6470338253029345891000976", "unit": "mg"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "stoichiometric_assumption", "reference": "PubChem CID 23663626 molecular formula and molecular weight; identity assumed"}
+    },
+    "propylparaben_assumed": {
+      "name": "Propylparaben, assumed from Nepasol",
+      "aliases": ["Nepasol", "Nipasol", "propylparaben"],
+      "identity_status": "assumed",
+      "identity_note": "Nepasol treated as likely Nipasol; public sources conflict between propylparaben and sodium propylparaben, so the sodium salt is not assumed",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {"propylparaben": {"value": "100000", "unit": "mg"}},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "assumption", "reference": "Likely propylparaben scenario"}
+    },
+    "bronopol": {
+      "name": "Bronopol",
+      "aliases": ["bronopal", "2 bromo 2 nitropropane 1 3 diol"],
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {"bronopol": {"value": "100000", "unit": "mg"}},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "chemical_identity", "reference": "PubChem CID 2450"}
+    },
+    "sodium_benzoate": {
+      "name": "Sodium benzoate",
+      "aliases": ["sod benz", "benzoate of soda"],
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "sodium_benzoate": {"value": "100000", "unit": "mg"},
+        "sodium": {"value": "15954.03836224844", "unit": "mg"},
+        "benzoate": {"value": "84045.96163775156", "unit": "mg"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "stoichiometric", "reference": "PubChem CID 517055 molecular mass"}
+    },
+    "benzoic_acid": {
+      "name": "Benzoic acid",
+      "aliases": ["benzoic acid food grade"],
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {"benzoic_acid": {"value": "100000", "unit": "mg"}},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "chemical_identity", "reference": "PubChem CID 243"}
+    },
+    "sucrose": {
+      "name": "Sucrose, assumed from sugar",
+      "aliases": ["sugar", "granulated sugar", "white sugar", "sucrose"],
+      "identity_status": "assumed",
+      "identity_note": "Sugar treated as pure sucrose pending its material specification",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {"sucrose": {"value": "100000", "unit": "mg"}},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "assumption", "reference": "PubChem CID 5988 identity scenario"}
+    },
+    "orange_flavour_assumed": {
+      "name": "Orange flavour mixture",
+      "aliases": ["orange", "orange flavour", "orange flavor"],
+      "identity_status": "unresolved_mixture",
+      "identity_note": "Composition and density unknown; 1.0 g/mL assumed only to report weighed-equivalent quantity",
+      "density_g_per_ml": "1.0",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {"orange_flavour": {"value": "100000", "unit": "mg"}},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "unresolved", "reference": "Supplier composition required"}
+    },
+    "xanthan_gum": {
+      "name": "Xanthan gum",
+      "aliases": ["xanthum gum", "xanthan gum"],
+      "identity_status": "polymer",
+      "identity_note": "Polymer composition varies with acetyl and pyruvyl substitution; reported as the weighed excipient",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {"xanthan_gum": {"value": "100000", "unit": "mg"}},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "polymer_identity", "reference": "Weighed xanthan gum; no fixed molecular formula"}
+    }
+  }
+}

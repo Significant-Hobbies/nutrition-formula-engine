@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "batch": {
+    "name": "WHO F-100 therapeutic milk recipe",
+    "final_quantity": {"value": "1", "unit": "L"}
+  },
+  "ingredients": [
+    {"material_id": "skim_milk_powder", "quantity": {"value": "80", "unit": "g"}},
+    {"material_id": "granulated_sugar", "quantity": {"value": "50", "unit": "g"}},
+    {"material_id": "canola_oil", "quantity": {"value": "60", "unit": "g"}},
+    {"material_id": "therapeutic_mineral_mix", "quantity": {"value": "20", "unit": "mL"}},
+    {"material_id": "therapeutic_vitamin_mix", "quantity": {"value": "140", "unit": "mg"}}
+  ]
+}

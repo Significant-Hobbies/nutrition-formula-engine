@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "batch": {
+    "name": "Electrolyte beverage — 1,000 L validation batch",
+    "final_quantity": {"value": "1000", "unit": "L"},
+    "final_density_g_per_ml": "1.000"
+  },
+  "serving": {"value": "250", "unit": "ml"},
+  "ingredients": [
+    {"material_id": "water", "quantity": {"value": "943.45", "unit": "kg"}},
+    {"material_id": "granulated_sugar", "quantity": {"value": "55", "unit": "kg"}},
+    {"material_id": "sodium_chloride_food_grade", "quantity": {"value": "500", "unit": "g"}},
+    {"material_id": "potassium_chloride_food_grade", "quantity": {"value": "250000", "unit": "mg"}},
+    {"material_id": "calcium_lactate_pentahydrate", "quantity": {"value": "0.5", "unit": "kg"}},
+    {"material_id": "magnesium_citrate", "quantity": {"value": "200", "unit": "g"}},
+    {"material_id": "ascorbic_acid", "quantity": {"value": "100000000", "unit": "ug"}}
+  ],
+  "nutrient_retention": {"vitamin_c": "0.90"}
+}
+

@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "batch": {"name": "WHO reduced-osmolarity ORS", "final_quantity": {"value": "1", "unit": "L"}},
+  "ingredients": [
+    {"material_id": "glucose_anhydrous", "quantity": {"value": "13.5", "unit": "g"}},
+    {"material_id": "sodium_chloride_usp", "quantity": {"value": "2.6", "unit": "g"}},
+    {"material_id": "potassium_chloride_usp", "quantity": {"value": "1.5", "unit": "g"}},
+    {"material_id": "trisodium_citrate_dihydrate", "quantity": {"value": "2.9", "unit": "g"}}
+  ]
+}

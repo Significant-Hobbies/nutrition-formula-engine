@@ -1,0 +1,118 @@
+{
+  "$schema": "fleet.design-review.v1",
+  "version": 1,
+  "project": "nutrition-formula-engine",
+  "target": "versioned formula analysis workspace with calculation traceability",
+  "surfaceMode": "operate",
+  "mode": "preserve",
+  "register": "product",
+  "context": {
+    "product": "PRODUCT.md",
+    "design": "DESIGN.md"
+  },
+  "direction": {
+    "references": [
+      "iridescent uncertainty bands",
+      "laboratory instrument bench",
+      "conventional compliance portal"
+    ],
+    "probes": [
+      "artifacts/design/direction-options.svg"
+    ],
+    "selected": "clear-compliance-desk",
+    "approval": "owner-selected-in-conversation",
+    "before": "artifacts/design/direction-options.svg.png",
+    "library": {
+      "strategy": "upstream-first",
+      "primary": "preline-free-fallback",
+      "sources": [
+        "https://preline.co/blocks/"
+      ],
+      "runtime": "none",
+      "customReplacement": {
+        "used": false,
+        "authorization": "not-required",
+        "reason": ""
+      }
+    },
+    "contract": {
+      "purpose": "Turn one submitted manufacturing formula into a traceable composition report with visible assumptions and corrections.",
+      "purposeSource": "PRODUCT.md and owner conversation",
+      "canonicalPurpose": "Formula Composition Engine helps food, nutraceutical, supplement, and medicinal-product formulation teams turn one mixed-format batch formula into a reviewable macro, micro, active, preservative, and uncertainty report by combining exact unit-safe calculation with ranked, correctable ingredient identities.",
+      "purposeAlignment": "match",
+      "driftNote": "",
+      "audience": "Formulators and product teams reviewing food, nutraceutical, supplement, or medicinal batch formulas.",
+      "job": "Submit one formula, correct only material ambiguities, and export a traceable composition report.",
+      "thesis": "The formula is the work surface; uncertainty belongs visibly at the edge of each result rather than in a separate compliance dashboard.",
+      "system": "Clear Compliance Desk: one restrained professional workspace with a single pasted-table input and inline corrections.",
+      "signature": "Every uncertain value carries a visible evidence band linked to the ingredient assumption that created it.",
+      "risk": "A visually expressive evidence system could distract from high-density review; the selected direction must preserve familiar table scanning and keyboard correction."
+    }
+  },
+  "evidence": {
+    "screenshots": [
+      {
+        "width": 390,
+        "path": "artifacts/design/after-390.png"
+      },
+      {
+        "width": 768,
+        "path": "artifacts/design/after-768.png"
+      },
+      {
+        "width": 1440,
+        "path": "artifacts/design/after-1440.png"
+      }
+    ],
+    "projectCheck": {
+      "command": "pnpm check && pnpm build",
+      "status": "pass"
+    },
+    "critique": {
+      "score": 36,
+      "maximum": 40
+    },
+    "audit": {
+      "score": 18,
+      "maximum": 20
+    },
+    "unresolved": {
+      "p0": 0,
+      "p1": 0
+    },
+    "detector": {
+      "posture": "advisory",
+      "findings": [
+        "The selected-direction composite is retained as the visual baseline because no dedicated pre-increment screenshot existed.",
+        "Responsive browser checks confirmed no horizontal overflow at 390, 768, or 1440 pixels after correcting hidden-review and mobile-action layout defects.",
+        "The 517.57 kB lazy ingestion chunk remains a build warning; PDF, spreadsheet, and OCR code is loaded only when needed."
+      ]
+    },
+    "comprehension": {
+      "status": "not-applicable",
+      "reviewer": "",
+      "answers": {
+        "product": "",
+        "audience": "",
+        "value": "",
+        "mechanism": "",
+        "proof": "",
+        "nextAction": ""
+      },
+      "purposeScore": {
+        "product": 0,
+        "audience": 0,
+        "value": 0,
+        "mechanism": 0,
+        "proof": 0,
+        "nextAction": 0,
+        "total": 0
+      },
+      "mismatches": []
+    }
+  },
+  "ownerFeedback": {
+    "decision": "keep",
+    "note": "The version-history and contribution-ledger increment preserves the previously selected Clear Compliance Desk direction and single-input workflow."
+  }
+}

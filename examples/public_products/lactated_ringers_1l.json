@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "batch": {"name": "Lactated Ringer's Injection USP", "final_quantity": {"value": "1", "unit": "L"}},
+  "ingredients": [
+    {"material_id": "sodium_chloride_usp", "quantity": {"value": "6", "unit": "g"}},
+    {"material_id": "sodium_lactate", "quantity": {"value": "3.1", "unit": "g"}},
+    {"material_id": "potassium_chloride_usp", "quantity": {"value": "0.3", "unit": "g"}},
+    {"material_id": "calcium_chloride_dihydrate_usp", "quantity": {"value": "0.2", "unit": "g"}}
+  ]
+}

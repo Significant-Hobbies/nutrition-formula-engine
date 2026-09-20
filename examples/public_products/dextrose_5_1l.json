@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "batch": {"name": "5% Dextrose Injection USP", "final_quantity": {"value": "1", "unit": "L"}},
+  "ingredients": [
+    {"material_id": "dextrose_hydrous_usp", "quantity": {"value": "50", "unit": "g"}}
+  ]
+}

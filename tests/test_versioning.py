@@ -1,0 +1,216 @@
+from __future__ import annotations
+
+import sqlite3
+import unittest
+from pathlib import Path
+
+from nutrition_formula.versioning import (
+    D1FormulaRepository,
+    FormulaAccessError,
+    InMemoryFormulaRepository,
+    VersionConflictError,
+    fingerprint,
+    profile_references,
+    report_delta,
+)
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+class FakeD1Result:
+    def __init__(self, rows: list[dict]) -> None:
+        self.results = rows
+
+
+class FakeD1Statement:
+    def __init__(self, database: FakeD1, sql: str, values: tuple = ()) -> None:
+        self.database = database
+        self.sql = sql
+        self.values = values
+
+    def bind(self, *values):
+        return FakeD1Statement(self.database, self.sql, values)
+
+    async def run(self):
+        cursor = self.database.connection.execute(self.sql, self.values)
+        rows = [dict(row) for row in cursor.fetchall()] if cursor.description else []
+        return FakeD1Result(rows)
+
+
+class FakeD1:
+    def __init__(self) -> None:
+        self.connection = sqlite3.connect(":memory:", isolation_level=None)
+        self.connection.row_factory = sqlite3.Row
+        self.connection.executescript(
+            (ROOT / "migrations/0001_formula_history.sql").read_text(encoding="utf-8")
+        )
+
+    def prepare(self, sql: str) -> FakeD1Statement:
+        return FakeD1Statement(self, sql)
+
+    async def batch(self, statements: list[FakeD1Statement]):
+        results = []
+        self.connection.execute("BEGIN")
+        try:
+            for statement in statements:
+                results.append(await statement.run())
+            self.connection.execute("COMMIT")
+        except Exception:
+            self.connection.execute("ROLLBACK")
+            raise
+        return results
+
+
+def report(value: str = "1") -> dict:
+    contribution = {
+        "material_id": "ingredient_a",
+        "material_name": "Ingredient A",
+        "source": {"kind": "supplier_spec", "reference": "Spec A v1"},
+    }
+    return {
+        "screened_components": [
+            {
+                "id": "protein",
+                "name": "Protein",
+                "value": value,
+                "unit": "g",
+                "contributions": [contribution],
+            }
+        ]
+    }
+
+
+class VersioningTests(unittest.IsolatedAsyncioTestCase):
+    def repository(self) -> InMemoryFormulaRepository:
+        ids = iter(["formula-1", "report-1", "report-2", "report-3"])
+        times = iter(["2026-09-21T10:00:00Z", "2026-09-21T10:01:00Z", "2026-09-21T10:02:00Z"])
+        return InMemoryFormulaRepository(
+            id_factory=lambda: next(ids),
+            token_factory=lambda: "private-token",
+            clock=lambda: next(times),
+        )
+
+    def test_fingerprints_are_canonical(self) -> None:
+        self.assertEqual(fingerprint({"b": 2, "a": 1}), fingerprint({"a": 1, "b": 2}))
+        self.assertNotEqual(fingerprint({"a": "1"}), fingerprint({"a": 1}))
+
+    def test_profile_references_are_deduplicated(self) -> None:
+        payload = report()
+        payload["screened_components"].append(
+            {**payload["screened_components"][0], "id": "energy", "name": "Energy"}
+        )
+        self.assertEqual(len(profile_references(payload)), 1)
+
+    def test_delta_reports_only_changed_components(self) -> None:
+        self.assertEqual(
+            report_delta(report("1"), report("1.25")),
+            [
+                {
+                    "id": "protein",
+                    "name": "Protein",
+                    "before": "1",
+                    "after": "1.25",
+                    "change": "0.25",
+                    "unit": "g",
+                }
+            ],
+        )
+
+    def test_versions_are_immutable_retrievable_and_restorable(self) -> None:
+        repository = self.repository()
+        created = repository.create(
+            file_name="formula.tsv", contents="first", report=report("1")
+        )
+        updated = repository.append(
+            formula_id=created["formula_id"],
+            access_token=created["access_token"],
+            expected_version=1,
+            file_name="formula.tsv",
+            contents="second",
+            report=report("1.25"),
+            cause="identity_replaced",
+        )
+        restored = repository.restore(
+            formula_id=created["formula_id"],
+            access_token=created["access_token"],
+            expected_version=2,
+            target_version=1,
+        )
+
+        self.assertEqual(updated["version"], 2)
+        self.assertEqual(updated["delta"][0]["change"], "0.25")
+        self.assertEqual(restored["version"], 3)
+        self.assertEqual(restored["cause"], "restored_from_v1")
+        self.assertEqual(restored["report"], created["report"])
+        self.assertEqual(repository.history("formula-1", "private-token")["current_version"], 3)
+        self.assertEqual(
+            repository.get_version("formula-1", "private-token", 1)["normalized_input"]["contents"],
+            "first",
+        )
+
+    def test_stale_version_and_invalid_token_fail_closed(self) -> None:
+        repository = self.repository()
+        created = repository.create(file_name="formula.tsv", contents="first", report=report())
+        with self.assertRaises(VersionConflictError):
+            repository.append(
+                formula_id=created["formula_id"],
+                access_token=created["access_token"],
+                expected_version=4,
+                file_name="formula.tsv",
+                contents="second",
+                report=report(),
+                cause="edit",
+            )
+        with self.assertRaises(FormulaAccessError):
+            repository.history(created["formula_id"], "wrong-token")
+
+    async def test_d1_repository_replays_the_same_version_contract(self) -> None:
+        ids = iter(
+            [
+                "formula-1",
+                "report-1",
+                "decision-1",
+                "report-2",
+                "report-3",
+                "copied-decision-1",
+                "restore-decision-1",
+            ]
+        )
+        times = iter(["2026-09-21T10:00:00Z", "2026-09-21T10:01:00Z", "2026-09-21T10:02:00Z"])
+        repository = D1FormulaRepository(
+            FakeD1(),
+            id_factory=lambda: next(ids),
+            token_factory=lambda: "private-token",
+            clock=lambda: next(times),
+        )
+        created = await repository.create(
+            file_name="formula.tsv",
+            contents="first",
+            report=report("1"),
+            decisions=[{"action": "confirm", "line_index": 1, "candidate_id": "local:a"}],
+        )
+        updated = await repository.append(
+            formula_id=created["formula_id"],
+            access_token=created["access_token"],
+            expected_version=1,
+            file_name="formula.tsv",
+            contents="second",
+            report=report("1.25"),
+            cause="identity_replaced",
+        )
+        history = await repository.history("formula-1", "private-token")
+        restored = await repository.restore(
+            formula_id="formula-1",
+            access_token="private-token",
+            expected_version=2,
+            target_version=1,
+        )
+
+        self.assertEqual(updated["delta"][0]["change"], "0.25")
+        self.assertEqual(history["current_version"], 2)
+        self.assertEqual([item["version"] for item in history["versions"]], [2, 1])
+        self.assertEqual(restored["report"], created["report"])
+
+
+if __name__ == "__main__":
+    unittest.main()

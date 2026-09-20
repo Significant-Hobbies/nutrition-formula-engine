@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.venv/
+.venv-workers/
+python_modules/
+pylock.toml
+.ruff_cache/
+.coverage
+artifacts/*.json
+artifacts/*.md
+.wrangler/
+artifacts/worker-build/
+node_modules/
+dist/
+eng.traineddata

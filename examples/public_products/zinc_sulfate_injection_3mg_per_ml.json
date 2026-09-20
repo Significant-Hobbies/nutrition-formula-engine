@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "batch": {
+    "name": "Market label: Zinc Sulfate Injection 3 mg zinc per mL",
+    "final_quantity": {"value": "7.41", "unit": "mg"}
+  },
+  "ingredients": [
+    {
+      "material_id": "zinc_sulfate_anhydrous_equivalent_usp",
+      "quantity": {"value": "7.41", "unit": "mg"}
+    }
+  ]
+}

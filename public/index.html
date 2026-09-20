@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Upload one batch formula and receive a traceable theoretical composition report."
+    />
+    <link rel="canonical" href="https://formula.significanthobbies.com/" />
+    <meta property="og:url" content="https://formula.significanthobbies.com/" />
+    <meta property="og:title" content="Formula Composition Report" />
+    <meta
+      property="og:description"
+      content="Upload one batch formula and receive a traceable theoretical composition report."
+    />
+    <title>Formula Composition Report</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" type="module"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Formula Composition Report home">
+        <span class="brand-mark" aria-hidden="true">FC</span>
+        <span>Formula Composition Report</span>
+      </a>
+      <span class="prototype-badge">Public prototype</span>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">One formula in. Traceable composition out.</p>
+        <h1 id="page-title">Add a batch formula</h1>
+        <p class="lede">
+          Paste it, upload a spreadsheet, or use a photo or PDF. You review the recovered rows
+          before anything is calculated.
+        </p>
+      </section>
+
+      <section id="upload-panel" class="upload-panel" aria-labelledby="upload-title">
+        <div class="panel-heading">
+          <div>
+            <p class="step">One input</p>
+            <h2 id="upload-title">Paste or choose a formula</h2>
+          </div>
+          <div class="source-actions">
+            <a class="sample-link" href="/sample-tonic.tsv" download>Download sample</a>
+            <button id="download-audit" class="text-button compact-button" type="button">
+              Download audit log
+            </button>
+          </div>
+        </div>
+
+        <label class="paste-label" for="formula-text">Paste text, a table, or JSON</label>
+        <textarea
+          id="formula-text"
+          rows="8"
+          placeholder="1000 LITRE&#10;FERRIC AMMONIUM CITRATE 13.4 KG&#10;CYANCOBALAMIN 0.085 GM"
+        ></textarea>
+
+        <div class="input-divider"><span>or choose one file</span></div>
+
+        <label id="drop-zone" class="drop-zone" for="formula-file">
+          <input
+            id="formula-file"
+            type="file"
+            accept=".tsv,.csv,.txt,.json,.xlsx,.png,.jpg,.jpeg,.webp,.bmp,.pdf,text/*,image/*,application/json,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          />
+          <span class="upload-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 15v3.5A1.5 1.5 0 006.5 20h11a1.5 1.5 0 001.5-1.5V15" />
+            </svg>
+          </span>
+          <strong>Drop a formula here or choose a file</strong>
+          <span>Text, CSV, JSON, XLSX, image, or PDF · Maximum 12 MB</span>
+        </label>
+
+        <div class="format-example" aria-label="Formula structure the app will recover">
+          <div class="format-head"><span>Item</span><span>Quantity</span><span>Unit</span></div>
+          <div><span>FINISHED BATCH</span><span>1000</span><span>L</span></div>
+          <div><span>Ferric ammonium citrate</span><span>13.4</span><span>kg</span></div>
+        </div>
+
+        <div id="file-summary" class="file-summary" hidden>
+          <div>
+            <strong id="file-name"></strong>
+            <span id="file-size"></span>
+          </div>
+        </div>
+        <div id="saved-workspace" class="saved-workspace" hidden>
+          <div>
+            <strong>Saved browser workspace available</strong>
+            <span id="saved-workspace-meta"></span>
+          </div>
+          <div>
+            <button id="resume-workspace" class="secondary-button" type="button">Resume</button>
+            <button id="discard-workspace" class="text-button" type="button">Discard</button>
+          </div>
+        </div>
+        <button id="prepare-button" class="primary-button wide-button" type="button">
+          Prepare formula for review
+        </button>
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+        <p class="audit-note">Session audit logs contain event metadata and hashes, not formula or OCR text.</p>
+      </section>
+
+      <section class="validation-panel" aria-labelledby="validation-title">
+        <div class="validation-summary">
+          <div>
+            <p class="eyebrow">Public validation evidence</p>
+            <h2 id="validation-title">15 independently published formulas reproduced</h2>
+            <p>
+              Five marketed-medicine salt conversions average <strong>0.244% difference</strong>
+              from the declared active amount; the largest is <strong>0.604%</strong>.
+              Across all 15 comparisons, the mean is <strong>0.570%</strong>; the largest is
+              <strong>4.643%</strong> for F-75 energy using reference-food profiles.
+            </p>
+          </div>
+          <dl>
+            <div><dt>15</dt><dd>public cases</dd></div>
+            <div><dt>35</dt><dd>stage benchmarks</dd></div>
+            <div><dt>51</dt><dd>engine/API tests</dd></div>
+          </dl>
+        </div>
+        <details class="case-studies">
+          <summary>View validation cases and sources</summary>
+          <p class="case-study-note">
+            Percentage difference compares one representative declared component per product.
+            These are calculation checks, not laboratory validation or government acceptance.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Public product</th><th>Compared component</th><th>Declared</th><th>Predicted</th><th>Difference</th><th>Source</th></tr></thead>
+              <tbody id="case-study-body"></tbody>
+            </table>
+          </div>
+        </details>
+      </section>
+
+      <section id="formula-review" class="upload-panel formula-review" aria-labelledby="formula-review-title" hidden>
+        <div class="panel-heading review-heading">
+          <div>
+            <p class="step">Review required</p>
+            <h2 id="formula-review-title" tabindex="-1">Check the recovered formula</h2>
+          </div>
+          <span id="ingestion-method" class="confidence-chip"></span>
+        </div>
+        <p class="review-intro">
+          Correct every OCR or parsing mistake here. These are the exact rows that will be calculated.
+        </p>
+        <div class="table-wrap draft-table-wrap">
+          <table class="draft-table">
+            <thead><tr><th>Item</th><th>Quantity</th><th>Unit</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
+            <tbody id="draft-body"></tbody>
+          </table>
+        </div>
+        <div class="draft-actions">
+          <button id="add-draft-row" class="secondary-button" type="button">Add row</button>
+          <div>
+            <button id="edit-source" class="text-button" type="button">Use a different input</button>
+            <button id="calculate-button" class="primary-button" type="button">Confirm and calculate</button>
+          </div>
+        </div>
+        <details id="source-text-details" class="source-text-details" hidden>
+          <summary>View recovered source text</summary>
+          <pre id="recovered-source-text"></pre>
+        </details>
+        <p id="review-status" class="status" role="status" aria-live="polite"></p>
+      </section>
+
+      <section id="results" class="results" aria-labelledby="results-title" hidden>
+        <div class="results-header">
+          <div>
+            <p class="eyebrow">Analysis complete</p>
+            <h2 id="results-title" tabindex="-1">Composition report</h2>
+          </div>
+          <div class="result-actions">
+            <button id="save-workspace" class="secondary-button" type="button">
+              Save versioned workspace
+            </button>
+            <button id="download-report" class="secondary-button" type="button">
+              Download report
+            </button>
+            <button id="download-json" class="secondary-button" type="button">
+              Download JSON
+            </button>
+            <button id="start-over" class="text-button" type="button">Analyze another</button>
+          </div>
+        </div>
+
+        <div class="report-receipt" aria-label="Calculation receipt">
+          <span id="engine-version"></span>
+          <span id="report-version">Session version 1</span>
+          <span id="report-fingerprint"></span>
+        </div>
+
+        <div class="summary-grid">
+          <article class="inference-card">
+            <p class="card-label">Likely product</p>
+            <h3 id="inference-name"></h3>
+            <p id="inference-reason"></p>
+            <p id="inference-boundary" class="quiet"></p>
+            <span id="inference-confidence" class="confidence-chip"></span>
+          </article>
+          <article class="coverage-card">
+            <p class="card-label">Input profile coverage</p>
+            <div class="coverage-number"><span id="coverage-known"></span>%</div>
+            <div class="coverage-track" aria-hidden="true"><span id="coverage-bar"></span></div>
+            <p id="coverage-note" class="quiet"></p>
+          </article>
+        </div>
+
+        <section id="identity-review" class="identity-review" aria-labelledby="identity-title">
+          <div class="review-callout-heading">
+            <div>
+              <p class="card-label">Review before sharing</p>
+              <h3 id="identity-title">Confirm the uncertain ingredients</h3>
+            </div>
+            <span id="review-count" class="review-count"></span>
+          </div>
+          <div id="identity-review-list" class="identity-review-list"></div>
+        </section>
+
+        <section class="report-section" aria-labelledby="formula-title">
+          <div class="section-heading">
+            <div>
+              <span class="section-number">01</span>
+              <h3 id="formula-title">Submitted formula and interpretation</h3>
+            </div>
+            <p>Exact uploaded quantities are preserved.</p>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Item</th><th>Submitted</th><th>Equivalent</th><th>Interpretation</th></tr></thead>
+              <tbody id="formula-body"></tbody>
+            </table>
+          </div>
+          <div class="formula-tools">
+            <button id="show-add-ingredient" class="secondary-button" type="button">
+              Add an ingredient
+            </button>
+            <form id="add-ingredient-form" class="add-ingredient-form" hidden>
+              <label>Ingredient <input id="new-item" required autocomplete="off" /></label>
+              <label>Quantity <input id="new-quantity" required inputmode="decimal" /></label>
+              <label>
+                Unit
+                <select id="new-unit">
+                  <option>kg</option><option>g</option><option>mg</option><option>ug</option>
+                  <option>L</option><option>mL</option>
+                </select>
+              </label>
+              <button class="primary-button" type="submit">Add and recalculate</button>
+              <button id="cancel-add-ingredient" class="text-button" type="button">Cancel</button>
+            </form>
+          </div>
+        </section>
+
+        <section class="report-section" aria-labelledby="components-title">
+          <div class="section-heading">
+            <div>
+              <span class="section-number">02</span>
+              <h3 id="components-title">Components present</h3>
+            </div>
+            <p id="basis-label"></p>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Component</th><th>Amount</th><th>Plausible range</th><th>Evidence</th></tr></thead>
+              <tbody id="components-body"></tbody>
+            </table>
+          </div>
+          <p class="table-note">Zero-result fields are retained internally but omitted here.</p>
+        </section>
+
+        <details id="history-panel" class="history-panel">
+          <summary>
+            <span>
+              <span class="section-number">03</span>
+              <strong>Version history and changes</strong>
+            </span>
+            <span id="history-count">1 version</span>
+          </summary>
+          <p id="history-status" class="quiet">
+            Versions remain in this browser session until you save a workspace.
+          </p>
+          <ol id="history-list" class="history-list"></ol>
+        </details>
+
+        <section class="report-section" aria-labelledby="review-title">
+          <div class="section-heading">
+            <div>
+              <span class="section-number">04</span>
+              <h3 id="review-title">Assumptions and missing evidence</h3>
+            </div>
+            <p>Confirm these before using the result externally.</p>
+          </div>
+          <div class="review-grid">
+            <div>
+              <h4>Assumptions used</h4>
+              <ul id="assumptions-list" class="review-list"></ul>
+            </div>
+            <div>
+              <h4>Information still needed</h4>
+              <ul id="missing-list" class="review-list"></ul>
+            </div>
+          </div>
+        </section>
+
+        <p class="disclaimer">
+          This output is a theoretical formulation calculation—not a laboratory assay,
+          regulatory classification, or government approval.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

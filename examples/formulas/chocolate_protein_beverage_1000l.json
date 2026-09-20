@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "batch": {
+    "name": "Chocolate protein beverage — 1,000 L manufacturing-style batch",
+    "final_quantity": {"value": "1000", "unit": "L"},
+    "final_density_g_per_ml": "1.045"
+  },
+  "serving": {"value": "250", "unit": "ml"},
+  "ingredients": [
+    {"ingredient": "RO process water", "quantity": {"value": "910", "unit": "kg"}},
+    {"ingredient": "chocolate milk base", "quantity": {"value": "50", "unit": "kg"}},
+    {"ingredient": "WPI-90 whey isolate", "quantity": {"value": "35", "unit": "kg"}},
+    {"ingredient": "white table sugar", "quantity": {"value": "40", "unit": "kg"}},
+    {"ingredient": "low-erucic rapeseed oil", "quantity": {"value": "10", "unit": "kg"}}
+  ],
+  "nutrient_retention": {"vitamin_c": "0.85", "thiamin": "0.95"}
+}

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "batch": {
+    "name": "DailyMed label: Plasma-Lyte A",
+    "final_quantity": {"value": "1", "unit": "L"}
+  },
+  "ingredients": [
+    {"material_id": "sodium_chloride_usp", "quantity": {"value": "5.26", "unit": "g"}},
+    {"material_id": "sodium_gluconate", "quantity": {"value": "5.02", "unit": "g"}},
+    {
+      "material_id": "sodium_acetate_trihydrate",
+      "quantity": {"value": "3.68", "unit": "g"}
+    },
+    {"material_id": "potassium_chloride_usp", "quantity": {"value": "0.37", "unit": "g"}},
+    {
+      "material_id": "magnesium_chloride_hexahydrate",
+      "quantity": {"value": "0.30", "unit": "g"}
+    }
+  ]
+}

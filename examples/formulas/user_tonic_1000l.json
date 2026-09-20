@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "batch": {
+    "name": "Submitted fortified syrup/tonic — 1,000 L assumption scenario",
+    "final_quantity": {"value": "1000", "unit": "L"}
+  },
+  "serving": {"value": "100", "unit": "ml"},
+  "ingredients": [
+    {"ingredient": "FERRIC AMMONIUM CITRATE", "quantity": {"value": "13.4", "unit": "kg"}},
+    {"ingredient": "CYANCOBALAMIN", "quantity": {"value": "0.085", "unit": "g"}},
+    {"ingredient": "FOLIC ACID", "quantity": {"value": "0.024", "unit": "kg"}},
+    {"ingredient": "ZINC SULPHATE", "quantity": {"value": "0.47", "unit": "kg"}},
+    {"ingredient": "PYRIDOXINE HCL -B6", "quantity": {"value": "0.12", "unit": "kg"}},
+    {"ingredient": "NEPAZENE", "quantity": {"value": "1", "unit": "kg"}},
+    {"ingredient": "NEPASOL", "quantity": {"value": "0.4", "unit": "kg"}},
+    {"ingredient": "BRONOPAL", "quantity": {"value": "0.1", "unit": "kg"}},
+    {"ingredient": "SOD BENZ", "quantity": {"value": "3", "unit": "kg"}},
+    {"ingredient": "BENZOIC ACID", "quantity": {"value": "1", "unit": "kg"}},
+    {"ingredient": "SUGAR", "quantity": {"value": "500", "unit": "kg"}},
+    {"ingredient": "ORANGE", "quantity": {"value": "2", "unit": "L"}},
+    {"ingredient": "XANTHUM GUM", "quantity": {"value": "4", "unit": "kg"}}
+  ]
+}

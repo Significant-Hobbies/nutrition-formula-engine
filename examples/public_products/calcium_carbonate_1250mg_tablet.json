@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "batch": {
+    "name": "Market label: Calcium Carbonate 1250 mg tablet",
+    "final_quantity": {"value": "1250", "unit": "mg"}
+  },
+  "ingredients": [
+    {
+      "material_id": "calcium_carbonate_usp",
+      "quantity": {"value": "1250", "unit": "mg"}
+    }
+  ]
+}

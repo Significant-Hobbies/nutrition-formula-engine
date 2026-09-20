@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-09-21",
+  "meaning": "Frozen pilot-quality checks separated by extraction, identity, and calculation stage.",
+  "thresholds": {
+    "extraction_exact_cases_percent": 100,
+    "identity_top_candidate_percent": 100,
+    "calculation_maximum_difference_percent": 5
+  },
+  "calculation_cases": [
+    {"public_case_index": 0, "fixture": "examples/public_products/who_ors_1l.json"},
+    {"public_case_index": 1, "fixture": "examples/public_products/sodium_chloride_09_1l.json"},
+    {"public_case_index": 2, "fixture": "examples/public_products/lactated_ringers_1l.json"},
+    {"public_case_index": 3, "fixture": "examples/public_products/ringers_1l.json"},
+    {"public_case_index": 4, "fixture": "examples/public_products/dextrose_5_1l.json"},
+    {"public_case_index": 5, "fixture": "examples/public_products/dextrose_10_1l.json"},
+    {"public_case_index": 6, "fixture": "examples/public_products/plasma_lyte_a_1l.json"},
+    {"public_case_index": 7, "fixture": "examples/public_products/sodium_bicarbonate_84mg_ml.json"},
+    {"public_case_index": 8, "fixture": "examples/public_products/who_f75_no_cereal_1l.json"},
+    {"public_case_index": 9, "fixture": "examples/public_products/who_f100_1l.json"},
+    {"public_case_index": 10, "fixture": "examples/public_products/magnesium_oxide_400mg_tablet.json"},
+    {"public_case_index": 11, "fixture": "examples/public_products/ferrous_sulfate_325mg_tablet.json"},
+    {"public_case_index": 12, "fixture": "examples/public_products/zinc_sulfate_injection_3mg_per_ml.json"},
+    {"public_case_index": 13, "fixture": "examples/public_products/calcium_carbonate_1250mg_tablet.json"},
+    {"public_case_index": 14, "fixture": "examples/public_products/potassium_chloride_750mg_tablet.json"}
+  ],
+  "identity_cases": [
+    {"kind": "food", "query": "sugar", "expected_material_id": "granulated_sugar"},
+    {"kind": "food", "query": "WPI 90", "expected_material_id": "whey_protein_isolate"},
+    {"kind": "food", "query": "SMP", "expected_material_id": "skim_milk_powder"},
+    {"kind": "food", "query": "rapeseed oil", "expected_material_id": "canola_oil"},
+    {"kind": "food", "query": "unsweetened cocoa", "expected_material_id": "cocoa_powder"},
+    {"kind": "chemical", "query": "sod benz", "expected_material_id": "sodium_benzoate"},
+    {"kind": "chemical", "query": "Nepazene", "expected_material_id": "nepazene_unresolved"},
+    {"kind": "chemical", "query": "Nipasol", "expected_material_id": "propylparaben_assumed"},
+    {"kind": "chemical", "query": "bronopal", "expected_material_id": "bronopol"},
+    {"kind": "chemical", "query": "xanthum gum", "expected_material_id": "xanthan_gum"}
+  ],
+  "extraction_cases": [
+    {
+      "id": "tsv",
+      "input": "Item\tQuantity\tUnit\nFINISHED BATCH\t1000\tL\nSugar\t500\tkg",
+      "expected_rows": 2,
+      "expected_last": {"item": "Sugar", "quantity": "500", "unit": "kg"}
+    },
+    {
+      "id": "csv",
+      "input": "Item,Quantity,Unit\nFINISHED BATCH,1000,L\n\"Orange flavour\",2,L",
+      "expected_rows": 2,
+      "expected_last": {"item": "Orange flavour", "quantity": "2", "unit": "L"}
+    },
+    {
+      "id": "pipe",
+      "input": "Item | Quantity | Unit\nFINISHED BATCH | 1000 | LITRE\nSugar | 500 | KG",
+      "expected_rows": 2,
+      "expected_last": {"item": "Sugar", "quantity": "500", "unit": "kg"}
+    },
+    {
+      "id": "semicolon_decimal_comma",
+      "input": "Item;Quantity;Unit\nFINISHED BATCH;1000;L\nOrange;2,5;L",
+      "expected_rows": 2,
+      "expected_last": {"item": "Orange", "quantity": "2.5", "unit": "L"}
+    },
+    {
+      "id": "ocr_lines",
+      "input": "1000 LITRE\nFERRIC AMMONIUM CITRATE 13.4 KG\nCYANOCOBALAMIN 0.085 GM",
+      "expected_rows": 3,
+      "expected_last": {"item": "CYANOCOBALAMIN", "quantity": "0.085", "unit": "g"}
+    },
+    {
+      "id": "json_rows",
+      "input": "{\"rows\":[{\"item\":\"FINISHED BATCH\",\"quantity\":\"1000\",\"unit\":\"L\"},{\"item\":\"Sugar\",\"quantity\":\"500\",\"unit\":\"kg\"}]}",
+      "expected_rows": 2,
+      "expected_last": {"item": "Sugar", "quantity": "500", "unit": "kg"}
+    },
+    {
+      "id": "json_flat_batch",
+      "input": "{\"batch\":\"1000 L\",\"ingredients\":[{\"name\":\"Sugar\",\"quantity\":\"500 kg\"}]}",
+      "expected_rows": 2,
+      "expected_last": {"item": "Sugar", "quantity": "500", "unit": "kg"}
+    },
+    {
+      "id": "json_quantity_unit",
+      "input": "[{\"item\":\"FINISHED BATCH\",\"quantity\":1000,\"unit\":\"L\"},{\"item\":\"Salt\",\"quantity\":1.5,\"unit\":\"kg\"}]",
+      "expected_rows": 2,
+      "expected_last": {"item": "Salt", "quantity": "1.5", "unit": "kg"}
+    },
+    {
+      "id": "tabless_columns",
+      "input": "FINISHED BATCH    1000    L\nSodium benzoate    3    KG",
+      "expected_rows": 2,
+      "expected_last": {"item": "Sodium benzoate", "quantity": "3", "unit": "kg"}
+    },
+    {
+      "id": "microgram_alias",
+      "input": "Item\tQuantity\tUnit\nFINISHED BATCH\t100\tkg\nVitamin B12\t85\tmcg",
+      "expected_rows": 2,
+      "expected_last": {"item": "Vitamin B12", "quantity": "85", "unit": "ug"}
+    }
+  ]
+}

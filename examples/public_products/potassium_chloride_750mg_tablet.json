@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "batch": {
+    "name": "Market label: Potassium Chloride 750 mg extended-release tablet",
+    "final_quantity": {"value": "750", "unit": "mg"}
+  },
+  "ingredients": [
+    {
+      "material_id": "potassium_chloride_usp",
+      "quantity": {"value": "750", "unit": "mg"}
+    }
+  ]
+}

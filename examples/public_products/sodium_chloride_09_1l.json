@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "batch": {"name": "0.9% Sodium Chloride Injection USP", "final_quantity": {"value": "1", "unit": "L"}},
+  "ingredients": [
+    {"material_id": "sodium_chloride_usp", "quantity": {"value": "9", "unit": "g"}}
+  ]
+}

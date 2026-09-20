@@ -1,0 +1,411 @@
+{
+  "schema_version": 1,
+  "nutrients": {
+    "energy": {"name": "Energy", "class": "macro", "unit": "kcal"},
+    "protein": {"name": "Protein", "class": "macro", "unit": "g"},
+    "carbohydrate": {"name": "Carbohydrate", "class": "macro", "unit": "g"},
+    "total_sugars": {"name": "Total sugars", "class": "macro", "unit": "g"},
+    "added_sugars": {"name": "Added sugars", "class": "macro", "unit": "g"},
+    "dietary_fibre": {"name": "Dietary fibre", "class": "macro", "unit": "g"},
+    "total_fat": {"name": "Total fat", "class": "macro", "unit": "g"},
+    "saturated_fat": {"name": "Saturated fat", "class": "macro", "unit": "g"},
+    "monounsaturated_fat": {"name": "Monounsaturated fat", "class": "macro", "unit": "g"},
+    "polyunsaturated_fat": {"name": "Polyunsaturated fat", "class": "macro", "unit": "g"},
+    "trans_fat": {"name": "Trans fat", "class": "macro", "unit": "g"},
+    "cholesterol": {"name": "Cholesterol", "class": "macro", "unit": "mg"},
+    "calcium": {"name": "Calcium", "class": "micro", "unit": "mg"},
+    "iron": {"name": "Iron", "class": "micro", "unit": "mg"},
+    "magnesium": {"name": "Magnesium", "class": "micro", "unit": "mg"},
+    "phosphorus": {"name": "Phosphorus", "class": "micro", "unit": "mg"},
+    "potassium": {"name": "Potassium", "class": "micro", "unit": "mg"},
+    "sodium": {"name": "Sodium", "class": "micro", "unit": "mg"},
+    "zinc": {"name": "Zinc", "class": "micro", "unit": "mg"},
+    "copper": {"name": "Copper", "class": "micro", "unit": "mg"},
+    "manganese": {"name": "Manganese", "class": "micro", "unit": "mg"},
+    "selenium": {"name": "Selenium", "class": "micro", "unit": "ug"},
+    "vitamin_c": {"name": "Vitamin C", "class": "micro", "unit": "mg"},
+    "thiamin": {"name": "Vitamin B1 (thiamin)", "class": "micro", "unit": "mg"},
+    "riboflavin": {"name": "Vitamin B2 (riboflavin)", "class": "micro", "unit": "mg"},
+    "niacin": {"name": "Vitamin B3 (niacin)", "class": "micro", "unit": "mg"},
+    "vitamin_b6": {"name": "Vitamin B6", "class": "micro", "unit": "mg"},
+    "folate_dfe": {"name": "Folate", "class": "micro", "unit": "ug"},
+    "folic_acid": {"name": "Folic acid", "class": "micro", "unit": "ug"},
+    "vitamin_b12": {"name": "Vitamin B12", "class": "micro", "unit": "ug"},
+    "vitamin_a_rae": {"name": "Vitamin A", "class": "micro", "unit": "ug"},
+    "vitamin_d": {"name": "Vitamin D", "class": "micro", "unit": "ug"},
+    "vitamin_e": {"name": "Vitamin E", "class": "micro", "unit": "mg"},
+    "vitamin_k": {"name": "Vitamin K", "class": "micro", "unit": "ug"}
+  },
+  "materials": {
+    "water": {
+      "name": "Purified water",
+      "aliases": ["water", "treated water", "process water", "RO water"],
+      "density_g_per_ml": "0.9982",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "specification", "reference": "Purified-water composition assumption"}
+    },
+    "granulated_sugar": {
+      "name": "Granulated sugar",
+      "aliases": ["sugar", "white sugar", "table sugar", "sucrose"],
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "energy": {"value": "387", "unit": "kcal"},
+        "carbohydrate": {"value": "99.98", "unit": "g"},
+        "total_sugars": {"value": "99.8", "unit": "g"},
+        "added_sugars": {"value": "99.8", "unit": "g"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "reference_database", "reference": "USDA FoodData Central FDC 169655"}
+    },
+    "sodium_chloride_food_grade": {
+      "name": "Food-grade sodium chloride",
+      "aliases": ["salt", "common salt", "sodium chloride", "food grade salt"],
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {"sodium": {"value": "39340", "unit": "mg"}},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "supplier_specification", "reference": "Validation spec: sodium 39.340% w/w"}
+    },
+    "potassium_chloride_food_grade": {
+      "name": "Food-grade potassium chloride",
+      "aliases": ["potassium chloride", "KCl", "food grade potassium chloride"],
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {"potassium": {"value": "52445", "unit": "mg"}},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "supplier_specification", "reference": "Validation spec: potassium 52.445% w/w"}
+    },
+    "calcium_lactate_pentahydrate": {
+      "name": "Calcium lactate pentahydrate",
+      "aliases": ["calcium lactate", "calcium lactate 5 hydrate"],
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {"calcium": {"value": "13000", "unit": "mg"}},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "supplier_specification", "reference": "Validation spec: calcium 13.0% w/w"}
+    },
+    "magnesium_citrate": {
+      "name": "Magnesium citrate",
+      "aliases": ["mag citrate", "trimagnesium citrate"],
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {"magnesium": {"value": "16000", "unit": "mg"}},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "supplier_specification", "reference": "Validation spec: magnesium 16.0% w/w"}
+    },
+    "ascorbic_acid": {
+      "name": "Ascorbic acid",
+      "aliases": ["vitamin C", "L ascorbic acid", "ascorbate"],
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {"vitamin_c": {"value": "100000", "unit": "mg"}},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "supplier_specification", "reference": "Validation spec: ascorbic acid 100.0% w/w"}
+    },
+    "skim_milk_powder": {
+      "name": "Instant nonfat dry milk with vitamins A and D",
+      "aliases": ["skim milk powder", "nonfat milk powder", "SMP", "milk solids non fat"],
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "energy": {"value": "358", "unit": "kcal"},
+        "protein": {"value": "35.1", "unit": "g"},
+        "carbohydrate": {"value": "52.19", "unit": "g"},
+        "total_sugars": {"value": "52.19", "unit": "g"},
+        "added_sugars": {"value": "0", "unit": "g"},
+        "dietary_fibre": {"value": "0", "unit": "g"},
+        "total_fat": {"value": "0.72", "unit": "g"},
+        "saturated_fat": {"value": "0.467", "unit": "g"},
+        "monounsaturated_fat": {"value": "0.187", "unit": "g"},
+        "polyunsaturated_fat": {"value": "0.028", "unit": "g"},
+        "cholesterol": {"value": "18", "unit": "mg"},
+        "calcium": {"value": "1231", "unit": "mg"},
+        "iron": {"value": "0.31", "unit": "mg"},
+        "magnesium": {"value": "117", "unit": "mg"},
+        "phosphorus": {"value": "985", "unit": "mg"},
+        "potassium": {"value": "1705", "unit": "mg"},
+        "sodium": {"value": "549", "unit": "mg"},
+        "zinc": {"value": "4.41", "unit": "mg"},
+        "copper": {"value": "0.041", "unit": "mg"},
+        "manganese": {"value": "0.02", "unit": "mg"},
+        "selenium": {"value": "27.3", "unit": "ug"},
+        "vitamin_c": {"value": "5.6", "unit": "mg"},
+        "thiamin": {"value": "0.413", "unit": "mg"},
+        "riboflavin": {"value": "1.744", "unit": "mg"},
+        "niacin": {"value": "0.891", "unit": "mg"},
+        "vitamin_b6": {"value": "0.345", "unit": "mg"},
+        "folate_dfe": {"value": "50", "unit": "ug"},
+        "vitamin_b12": {"value": "3.99", "unit": "ug"},
+        "vitamin_a_rae": {"value": "709", "unit": "ug"},
+        "vitamin_d": {"value": "11", "unit": "ug"},
+        "vitamin_e": {"value": "0.01", "unit": "mg"},
+        "vitamin_k": {"value": "0", "unit": "ug"}
+      },
+      "declared_zero_nutrients": ["trans_fat"],
+      "source": {"kind": "reference_database", "reference": "USDA FoodData Central FDC 171272"}
+    },
+    "cocoa_powder": {
+      "name": "Unsweetened cocoa powder",
+      "aliases": ["cocoa powder", "natural cocoa", "unsweetened cocoa"],
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "energy": {"value": "228", "unit": "kcal"},
+        "protein": {"value": "19.6", "unit": "g"},
+        "carbohydrate": {"value": "57.9", "unit": "g"},
+        "total_sugars": {"value": "1.75", "unit": "g"},
+        "added_sugars": {"value": "0", "unit": "g"},
+        "dietary_fibre": {"value": "37", "unit": "g"},
+        "total_fat": {"value": "13.7", "unit": "g"},
+        "saturated_fat": {"value": "8.07", "unit": "g"},
+        "monounsaturated_fat": {"value": "4.57", "unit": "g"},
+        "polyunsaturated_fat": {"value": "0.44", "unit": "g"},
+        "cholesterol": {"value": "0", "unit": "mg"},
+        "calcium": {"value": "128", "unit": "mg"},
+        "iron": {"value": "13.86", "unit": "mg"},
+        "magnesium": {"value": "499", "unit": "mg"},
+        "phosphorus": {"value": "734", "unit": "mg"},
+        "potassium": {"value": "1524", "unit": "mg"},
+        "sodium": {"value": "21", "unit": "mg"},
+        "zinc": {"value": "6.81", "unit": "mg"},
+        "copper": {"value": "3.788", "unit": "mg"},
+        "manganese": {"value": "3.837", "unit": "mg"},
+        "selenium": {"value": "14.3", "unit": "ug"},
+        "vitamin_c": {"value": "0", "unit": "mg"},
+        "thiamin": {"value": "0.078", "unit": "mg"},
+        "riboflavin": {"value": "0.241", "unit": "mg"},
+        "niacin": {"value": "2.185", "unit": "mg"},
+        "vitamin_b6": {"value": "0.118", "unit": "mg"},
+        "folate_dfe": {"value": "32", "unit": "ug"},
+        "vitamin_b12": {"value": "0", "unit": "ug"},
+        "vitamin_a_rae": {"value": "0", "unit": "ug"},
+        "vitamin_d": {"value": "0", "unit": "ug"},
+        "vitamin_e": {"value": "0.1", "unit": "mg"},
+        "vitamin_k": {"value": "2.5", "unit": "ug"}
+      },
+      "declared_zero_nutrients": ["trans_fat"],
+      "source": {"kind": "reference_database", "reference": "USDA FoodData Central FDC 169593"}
+    },
+    "canola_oil": {
+      "name": "Canola oil",
+      "aliases": ["rapeseed oil", "low erucic rapeseed oil"],
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "energy": {"value": "884", "unit": "kcal"},
+        "protein": {"value": "0", "unit": "g"},
+        "carbohydrate": {"value": "0", "unit": "g"},
+        "total_sugars": {"value": "0", "unit": "g"},
+        "added_sugars": {"value": "0", "unit": "g"},
+        "dietary_fibre": {"value": "0", "unit": "g"},
+        "total_fat": {"value": "100", "unit": "g"},
+        "saturated_fat": {"value": "7.365", "unit": "g"},
+        "monounsaturated_fat": {"value": "63.276", "unit": "g"},
+        "polyunsaturated_fat": {"value": "28.142", "unit": "g"},
+        "cholesterol": {"value": "0", "unit": "mg"},
+        "vitamin_e": {"value": "17.46", "unit": "mg"},
+        "vitamin_k": {"value": "71.3", "unit": "ug"}
+      },
+      "declared_zero_nutrients": [
+        "trans_fat", "calcium", "iron", "magnesium", "phosphorus", "potassium",
+        "sodium", "zinc", "copper", "manganese", "selenium", "vitamin_c",
+        "thiamin", "riboflavin", "niacin", "vitamin_b6", "folate_dfe",
+        "vitamin_b12", "vitamin_a_rae", "vitamin_d"
+      ],
+      "source": {"kind": "reference_database", "reference": "USDA FoodData Central FDC 172336"}
+    },
+    "whey_protein_isolate": {
+      "name": "Whey protein isolate",
+      "aliases": ["WPI", "WPI 90", "whey isolate", "90 percent whey protein isolate"],
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "energy": {"value": "370", "unit": "kcal"},
+        "protein": {"value": "90", "unit": "g"},
+        "carbohydrate": {"value": "2", "unit": "g"},
+        "total_sugars": {"value": "1", "unit": "g"},
+        "added_sugars": {"value": "0", "unit": "g"},
+        "dietary_fibre": {"value": "0", "unit": "g"},
+        "total_fat": {"value": "1.5", "unit": "g"},
+        "saturated_fat": {"value": "0.5", "unit": "g"},
+        "trans_fat": {"value": "0", "unit": "g"},
+        "cholesterol": {"value": "30", "unit": "mg"},
+        "calcium": {"value": "500", "unit": "mg"},
+        "iron": {"value": "0.5", "unit": "mg"},
+        "magnesium": {"value": "70", "unit": "mg"},
+        "phosphorus": {"value": "350", "unit": "mg"},
+        "potassium": {"value": "500", "unit": "mg"},
+        "sodium": {"value": "300", "unit": "mg"},
+        "zinc": {"value": "1", "unit": "mg"},
+        "selenium": {"value": "20", "unit": "ug"}
+      },
+      "source": {"kind": "supplier_specification", "reference": "Validation-only WPI supplier specification"}
+    },
+    "chocolate_dairy_base": {
+      "name": "Chocolate dairy base",
+      "aliases": ["chocolate milk base", "cocoa dairy premix"],
+      "components": [
+        {"material_id": "skim_milk_powder", "mass_fraction": "0.70"},
+        {"material_id": "cocoa_powder", "mass_fraction": "0.30"}
+      ]
+    },
+    "ferric_ammonium_citrate_brown_mid": {
+      "name": "Ferric ammonium citrate, brown grade at 19.5% iron",
+      "aliases": ["ferric ammonium citrate", "ammonium ferric citrate"],
+      "identity_status": "assumed",
+      "identity_note": "Brown grade and midpoint assay assumed; JECFA permits 16.5–22.5% iron for brown and 14.5–16.0% for green material",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "iron": {"value": "19500", "minimum": "14500", "maximum": "22500", "unit": "mg"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "assumption", "reference": "JECFA ferric ammonium citrate assay midpoint scenario"}
+    },
+    "cyanocobalamin_pure": {
+      "name": "Cyanocobalamin, pure",
+      "aliases": ["cyanocobalamin", "vitamin B12 cyanocobalamin"],
+      "identity_status": "assumed",
+      "identity_note": "Assumed pure cyanocobalamin rather than a carrier dilution or potency-standardized premix",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {"vitamin_b12": {"value": "100000000", "unit": "ug"}},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "assumption", "reference": "Pure cyanocobalamin scenario"}
+    },
+    "folic_acid_pure": {
+      "name": "Folic acid, pure",
+      "aliases": ["folic acid", "vitamin B9 folic acid"],
+      "identity_status": "assumed",
+      "identity_note": "Assumed pure folic acid; no conversion to dietary folate equivalents",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {"folic_acid": {"value": "100000000", "unit": "ug"}},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "assumption", "reference": "Pure folic acid scenario"}
+    },
+    "zinc_sulphate_monohydrate_355": {
+      "name": "Zinc sulphate monohydrate at 35.5% zinc",
+      "aliases": ["zinc sulphate", "zinc sulfate", "ZnSO4"],
+      "identity_status": "assumed",
+      "identity_note": "Monohydrate assumed; heptahydrate or anhydrous material would change elemental zinc",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {"zinc": {"value": "35500", "unit": "mg"}},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "assumption", "reference": "PubChem zinc sulphate monohydrate 35.5% zinc scenario"}
+    },
+    "pyridoxine_hydrochloride": {
+      "name": "Pyridoxine hydrochloride",
+      "aliases": ["pyridoxine HCl B6", "pyridoxine HCl", "vitamin B6 HCl"],
+      "identity_status": "assumed",
+      "identity_note": "Assumed pure pyridoxine hydrochloride and converted to pyridoxine at 82.27% by molecular mass",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {"vitamin_b6": {"value": "82.27", "unit": "g"}},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "assumption", "reference": "Pyridoxine/pyridoxine-HCl molecular-mass ratio scenario"}
+    },
+    "nepazene_unresolved": {
+      "name": "Nepazene (likely Nipazine), identity not confirmed",
+      "aliases": ["Nepazene", "Nipazine"],
+      "identity_status": "unresolved",
+      "identity_note": "Likely a spelling or transcription of Nipazine, a trade name used for sodium methylparaben, especially because it is paired with Nepasol/Nipasol; identity and salt form remain unconfirmed",
+      "identity_candidates": [
+        {
+          "rank": 1,
+          "identity": "Sodium methylparaben",
+          "trade_name": "Nipazine / Nipagin M Sodium",
+          "formula": "C8H7NaO3",
+          "identifier": "UNII CR6K9C2NHK",
+          "reason": "Closest contextual match and publicly listed as a pharmaceutical excipient paired with Nipasol",
+          "status": "leading_candidate"
+        },
+        {
+          "rank": 2,
+          "identity": "Methylparaben",
+          "trade_name": "Nipagin / Nipagin M",
+          "formula": "C8H8O3",
+          "identifier": "UNII A2I8C7HI9T",
+          "reason": "Established paraben trade name and plausible transcription, but it would be the neutral parent rather than the sodium salt",
+          "status": "alternative"
+        },
+        {
+          "rank": 3,
+          "identity": "Paraben preservative blend",
+          "trade_name": "Nipasept-type blend",
+          "formula": "Mixture",
+          "identifier": null,
+          "reason": "Similar preservative trade-name family; composition varies and requires the supplier product specification",
+          "status": "alternative"
+        }
+      ],
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {},
+      "missing_information": "Supplier label or CoA confirming whether this is Nipazine/sodium methylparaben, including CAS or UNII and assay",
+      "source": {"kind": "candidate_identity", "reference": "Nipazine candidate; supplier confirmation required"}
+    },
+    "sodium_methylparaben_assumed": {
+      "name": "Sodium methylparaben, assumed from Nepazene",
+      "aliases": ["sodium methylparaben", "methylparaben sodium", "Nipazine", "Nipagin M Sodium"],
+      "identity_status": "assumed",
+      "identity_note": "Leading Nepazene candidate selected for the complete scenario; supplier label or CoA is still required",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "sodium": {"value": "13202.6470338253029345891000976", "unit": "mg"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {
+        "kind": "stoichiometric_assumption",
+        "reference": "PubChem CID 23663626 molecular formula and molecular weight; identity assumed"
+      }
+    },
+    "propylparaben_assumed": {
+      "name": "Propylparaben, assumed from Nepasol",
+      "aliases": ["Nepasol", "Nipasol", "propylparaben"],
+      "identity_status": "assumed",
+      "identity_note": "Nepasol treated as likely Nipasol; public sources conflict between propylparaben and sodium propylparaben, so the sodium salt is not assumed",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "assumption", "reference": "Non-nutritive propylparaben scenario"}
+    },
+    "bronopol": {
+      "name": "Bronopol",
+      "aliases": ["2 bromo 2 nitropropane 1 3 diol"],
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "chemical_identity", "reference": "Bronopol treated as non-nutritive"}
+    },
+    "sodium_benzoate": {
+      "name": "Sodium benzoate",
+      "aliases": ["sod benz", "benzoate of soda"],
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {"sodium": {"value": "15952", "unit": "mg"}},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "stoichiometric", "reference": "Sodium fraction from sodium benzoate molecular mass"}
+    },
+    "benzoic_acid": {
+      "name": "Benzoic acid",
+      "aliases": ["benzoic acid food grade"],
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {},
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "chemical_identity", "reference": "Benzoic acid treated as non-nutritive"}
+    },
+    "orange_flavour_assumed": {
+      "name": "Orange flavour mixture, assumed non-nutritive",
+      "aliases": ["orange", "orange flavour", "orange flavor"],
+      "identity_status": "assumed",
+      "identity_note": "Assumed flavour rather than juice or concentrate, density 1.0 g/mL, and zero reportable standard macro/micronutrient contribution",
+      "density_g_per_ml": "1.0",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {},
+      "unlisted_nutrients_are_zero": true,
+      "missing_information": "Carrier composition, ingredient breakdown, density, and supplier nutrient specification",
+      "source": {"kind": "assumption", "reference": "Non-nutritive flavour-carrier scenario; supplier composition required"}
+    },
+    "xanthan_gum_fibre_assumed": {
+      "name": "Xanthan gum, assumed 100% dietary fibre",
+      "aliases": ["xanthum gum", "xanthan gum"],
+      "identity_status": "assumed",
+      "identity_note": "Spelling normalized to xanthan gum; assumed 100% dietary fibre and 2 kcal/g for scenario output",
+      "basis": {"value": "100", "unit": "g"},
+      "nutrients": {
+        "energy": {"value": "200", "unit": "kcal"},
+        "dietary_fibre": {"value": "100", "unit": "g"}
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {"kind": "assumption", "reference": "100% fibre validation scenario"}
+    }
+  }
+}

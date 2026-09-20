@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "product_name": "Submitted fortified medicinal syrup/tonic",
+  "formula": "../formulas/user_tonic_1000l.json",
+  "nutrition_catalog": "../../src/nutrition_formula/data/catalog.json",
+  "chemical_catalog": "../../src/nutrition_formula/data/chemical_catalog.json",
+  "required_metric_count": 20,
+  "confidence_profiles": {
+    "macro_partial": {"identity": "scenario", "composition": "reference", "quantity": "specified", "yield": "scenario"},
+    "range_active": {"identity": "scenario", "composition": "range", "quantity": "specified", "yield": "scenario"},
+    "scenario_active": {"identity": "scenario", "composition": "scenario", "quantity": "specified", "yield": "scenario"},
+    "stoichiometric": {"identity": "official", "composition": "official", "quantity": "specified", "yield": "scenario"},
+    "direct_named": {"identity": "official", "composition": "specified", "quantity": "specified", "yield": "scenario"},
+    "direct_assumed": {"identity": "scenario", "composition": "specified", "quantity": "specified", "yield": "scenario"},
+    "unresolved": {"identity": "unresolved", "composition": "unresolved", "quantity": "specified", "yield": "scenario"},
+    "inferred_identity": {"identity": "inferred", "composition": "scenario", "quantity": "specified", "yield": "scenario"},
+    "identified": {"identity": "official", "composition": "official", "quantity": "specified", "yield": "scenario"}
+  },
+  "metrics": [
+    {
+      "source": "nutrition",
+      "id": "energy",
+      "group": "Standard nutrition",
+      "confidence_profile": "macro_partial"
+    },
+    {
+      "source": "nutrition",
+      "id": "protein",
+      "group": "Standard nutrition",
+      "confidence_profile": "macro_partial"
+    },
+    {
+      "source": "nutrition",
+      "id": "carbohydrate",
+      "group": "Standard nutrition",
+      "confidence_profile": "macro_partial"
+    },
+    {
+      "source": "nutrition",
+      "id": "total_sugars",
+      "group": "Standard nutrition",
+      "confidence_profile": "macro_partial"
+    },
+    {
+      "source": "nutrition",
+      "id": "added_sugars",
+      "group": "Standard nutrition",
+      "confidence_profile": "macro_partial"
+    },
+    {
+      "source": "nutrition",
+      "id": "dietary_fibre",
+      "group": "Standard nutrition",
+      "confidence_profile": "macro_partial"
+    },
+    {
+      "source": "nutrition",
+      "id": "total_fat",
+      "group": "Standard nutrition",
+      "confidence_profile": "macro_partial"
+    },
+    {
+      "source": "chemical",
+      "id": "iron",
+      "group": "Active nutrient",
+      "status_override": "assumption-dependent",
+      "confidence_profile": "range_active"
+    },
+    {
+      "source": "chemical",
+      "id": "zinc",
+      "group": "Active nutrient",
+      "status_override": "assumption-dependent",
+      "confidence_profile": "scenario_active",
+      "range": {"kind": "bounded", "lower": "10.6867", "upper": "19.0341", "unit": "mg", "basis": "Zinc sulphate heptahydrate through anhydrous stoichiometric scenarios"}
+    },
+    {"source": "chemical", "id": "pyridoxine", "name": "Vitamin B6 as pyridoxine", "group": "Active nutrient", "status_override": "assumption-dependent", "confidence_profile": "scenario_active"},
+    {"source": "chemical", "id": "folic_acid", "group": "Active nutrient", "display_unit": "ug", "status_override": "assumption-dependent", "confidence_profile": "scenario_active"},
+    {"source": "chemical", "id": "cyanocobalamin", "name": "Vitamin B12 as cyanocobalamin", "group": "Active nutrient", "display_unit": "ug", "status_override": "assumption-dependent", "confidence_profile": "scenario_active"},
+    {"source": "chemical", "id": "sodium", "group": "Active nutrient", "status_override": "calculated", "confidence_profile": "stoichiometric"},
+    {"source": "chemical", "id": "ferric_ammonium_citrate", "group": "Medicinal ingredient", "status_override": "assumed grade/assay", "confidence_profile": "direct_named"},
+    {"source": "chemical", "id": "zinc_sulfate_monohydrate", "group": "Medicinal ingredient", "status_override": "assumed hydrate", "confidence_profile": "direct_assumed"},
+    {"source": "chemical", "id": "nepazene_unresolved", "group": "Unresolved ingredient", "status_override": "identity unresolved", "confidence_profile": "unresolved"},
+    {"source": "chemical", "id": "propylparaben", "group": "Preservative", "status_override": "assumed identity", "confidence_profile": "inferred_identity"},
+    {"source": "chemical", "id": "bronopol", "group": "Preservative", "status_override": "identified", "confidence_profile": "identified"},
+    {"source": "chemical", "id": "sodium_benzoate", "group": "Preservative", "status_override": "identified", "confidence_profile": "identified"},
+    {"source": "chemical", "id": "benzoic_acid", "group": "Preservative", "status_override": "identified", "confidence_profile": "identified"}
+  ],
+  "required_information": [
+    {
+      "id": "ferric_ammonium_citrate_spec",
+      "item": "Ferric ammonium citrate grade and lot assay",
+      "needed": "Supplier specification and CoA identifying green or brown grade and measured iron percentage",
+      "affects": ["Iron"]
+    },
+    {
+      "id": "zinc_sulphate_spec",
+      "item": "Zinc sulphate hydrate and lot assay",
+      "needed": "Supplier specification and CoA identifying anhydrous, monohydrate, or heptahydrate form and purity",
+      "affects": ["Zinc", "Zinc sulphate"]
+    },
+    {
+      "id": "vitamin_potencies",
+      "item": "Vitamin raw-material potencies",
+      "needed": "CoA assay, dilution or premix strength, moisture basis, and overage for cyanocobalamin, folic acid, and pyridoxine HCl",
+      "affects": ["Vitamin B6", "Folic acid", "Vitamin B12"]
+    },
+    {
+      "id": "nepasol_identity",
+      "item": "Nepasol product identity",
+      "needed": "Supplier label or CoA confirming whether the photographed name means Nipasol or another product and whether it is propylparaben or a salt",
+      "affects": ["Propylparaben"]
+    },
+    {
+      "id": "batch_measurements",
+      "item": "Actual manufacturing measurements",
+      "needed": "As-dispensed weights, acceptable weighing ranges, scale calibration uncertainty, actual final volume, temperature, and finished-product density",
+      "affects": ["All per-100-mL and per-100-g results"]
+    },
+    {
+      "id": "finished_product_assay",
+      "item": "Finished-product laboratory results",
+      "needed": "Validated assays with method uncertainty for actives and preservatives to confirm theoretical values",
+      "affects": ["Final released composition"]
+    }
+  ],
+  "assumptions": [
+    "All values are theoretical formulation values per 100 mL, based on an exact final batch volume of 1,000 L; they are not laboratory assay results.",
+    "The evidence confidence score is a reproducible data-quality score, not the probability that a result is correct and not a regulatory confidence interval.",
+    "Numeric ranges are scenario or specification envelopes. A missing range means the available inputs do not support defensible numeric bounds.",
+    "The energy value is retained from the existing nutrition calculation and has not been manually adjusted.",
+    "Nutrition rows are partial lower-bound calculations because the nutrient composition of Nepazene and the orange flavour carrier is unknown.",
+    "Protein and fat values of zero apply only to the characterized ingredients; the unresolved ingredients could change them.",
+    "Per-100-g values are unavailable until finished-product density is supplied.",
+    "Whole chemical ingredients and their active moieties overlap; for example ferric ammonium citrate must not be added to its contained iron."
+  ]
+}

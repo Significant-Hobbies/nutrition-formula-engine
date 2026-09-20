@@ -1,0 +1,22 @@
+{
+  "name": "nutrition-formula-engine-web",
+  "version": "0.1.0",
+  "description": "Browser ingestion and review UI for traceable formulation analysis",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build public --outDir ../dist --emptyOutDir",
+    "test": "node --test tests-web/*.test.js",
+    "check": "pnpm test && node --check public/app.js"
+  },
+  "license": "UNLICENSED",
+  "packageManager": "pnpm@10.33.2",
+  "dependencies": {
+    "pdfjs-dist": "6.3.289",
+    "read-excel-file": "9.3.10",
+    "tesseract.js": "7.0.0"
+  },
+  "devDependencies": {
+    "vite": "8.3.0"
+  }
+}
