@@ -55,6 +55,11 @@ class FakeD1:
                 encoding="utf-8"
             )
         )
+        self.connection.executescript(
+            (ROOT / "migrations/0003_owner_scoped_persistence.sql").read_text(
+                encoding="utf-8"
+            )
+        )
 
     def prepare(self, sql: str) -> FakeD1Statement:
         return FakeD1Statement(self, sql)
@@ -188,8 +193,10 @@ class VersioningTests(unittest.IsolatedAsyncioTestCase):
             ]
         )
         times = iter(["2026-09-21T10:00:00Z", "2026-09-21T10:01:00Z", "2026-09-21T10:02:00Z"])
+        database = FakeD1()
+        self.addCleanup(database.connection.close)
         repository = D1FormulaRepository(
-            FakeD1(),
+            database,
             id_factory=lambda: next(ids),
             token_factory=lambda: "private-token",
             clock=lambda: next(times),
@@ -221,6 +228,31 @@ class VersioningTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(history["current_version"], 2)
         self.assertEqual([item["version"] for item in history["versions"]], [2, 1])
         self.assertEqual(restored["report"], created["report"])
+
+    async def test_d1_formulas_are_isolated_by_sync_owner(self) -> None:
+        database = FakeD1()
+        self.addCleanup(database.connection.close)
+        owner_a = D1FormulaRepository(
+            database,
+            owner_id="owner-a",
+            id_factory=iter(["formula-a", "report-a"]).__next__,
+            token_factory=lambda: "owner-a-token",
+        )
+        owner_b = D1FormulaRepository(database, owner_id="owner-b")
+
+        created = await owner_a.create(
+            file_name="owner-a.tsv",
+            contents="ingredient\t1\tkg",
+            report={**report(), "product_name": "Owner A formula"},
+        )
+
+        self.assertEqual(
+            [item["formula_id"] for item in await owner_a.list_workspaces()],
+            [created["formula_id"]],
+        )
+        self.assertEqual(await owner_b.list_workspaces(), [])
+        with self.assertRaises(FormulaAccessError):
+            await owner_b.history(created["formula_id"], None)
 
 
 class MaterialProfileTests(unittest.IsolatedAsyncioTestCase):
@@ -289,6 +321,32 @@ class MaterialProfileTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(await repository.deactivate(second["id"], second["version"]))
         self.assertFalse(await repository.deactivate(second["id"], second["version"]))
         self.assertEqual(await repository.list_active(), [])
+
+    async def test_d1_profiles_are_isolated_by_sync_owner(self) -> None:
+        database = FakeD1()
+        self.addCleanup(database.connection.close)
+        owner_a = D1MaterialProfileRepository(database, owner_id="owner-a")
+        owner_b = D1MaterialProfileRepository(database, owner_id="owner-b")
+        first = await owner_a.save(
+            material_id="vitamin_c_supplier_a",
+            material=self.material(),
+            submitted_alias="Owner A vitamin C",
+        )
+        second = await owner_b.save(
+            material_id="vitamin_c_supplier_a",
+            material=self.material(),
+            submitted_alias="Owner B vitamin C",
+        )
+
+        self.assertNotEqual(first["version"], second["version"])
+        self.assertEqual(
+            [item["aliases"][1] for item in await owner_a.list_active()],
+            ["Owner A vitamin C"],
+        )
+        self.assertEqual(
+            [item["aliases"][1] for item in await owner_b.list_active()],
+            ["Owner B vitamin C"],
+        )
 
 
 if __name__ == "__main__":

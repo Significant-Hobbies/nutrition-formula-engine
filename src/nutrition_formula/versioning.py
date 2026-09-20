@@ -278,26 +278,56 @@ class D1FormulaRepository:
         self,
         database: Any,
         *,
+        owner_id: str = "legacy",
         clock: Callable[[], str] = _default_clock,
         id_factory: Callable[[], str] = _default_id,
         token_factory: Callable[[], str] = _default_token,
     ) -> None:
         self.database = database
+        self.owner_id = owner_id
         self.clock = clock
         self.id_factory = id_factory
         self.token_factory = token_factory
 
-    async def _formula(self, formula_id: str, access_token: str) -> dict[str, Any]:
+    async def _formula(self, formula_id: str, access_token: str | None = None) -> dict[str, Any]:
         result = await self.database.prepare(
             "SELECT id, created_at, current_version, access_token_hash "
-            "FROM formulas WHERE id = ?1"
-        ).bind(formula_id).run()
+            "FROM formulas WHERE id = ?1 AND owner_id = ?2"
+        ).bind(formula_id, self.owner_id).run()
         rows = d1_results(result)
-        if not rows or not hmac.compare_digest(
+        if not rows:
+            raise FormulaAccessError("Formula not found or access token is invalid")
+        if access_token is None:
+            if self.owner_id == "legacy":
+                raise FormulaAccessError("Formula not found or access token is invalid")
+        elif not hmac.compare_digest(
             rows[0]["access_token_hash"], access_token_hash(access_token)
         ):
             raise FormulaAccessError("Formula not found or access token is invalid")
         return rows[0]
+
+    async def list_workspaces(self) -> list[dict[str, Any]]:
+        result = await self.database.prepare(
+            "SELECT f.id, f.created_at, f.current_version, v.normalized_input_json, "
+            "r.report_json FROM formulas f "
+            "JOIN formula_versions v ON v.formula_id = f.id AND v.version = f.current_version "
+            "JOIN reports r ON r.id = v.report_id "
+            "WHERE f.owner_id = ?1 ORDER BY f.created_at DESC LIMIT 100"
+        ).bind(self.owner_id).run()
+        workspaces = []
+        for row in d1_results(result):
+            normalized_input = json.loads(row["normalized_input_json"])
+            report = json.loads(row["report_json"])
+            workspaces.append(
+                {
+                    "formula_id": row["id"],
+                    "created_at": row["created_at"],
+                    "current_version": int(row["current_version"]),
+                    "file_name": normalized_input["file_name"],
+                    "product_name": report.get("product_name", "Saved formula"),
+                }
+            )
+        return workspaces
 
     async def create(
         self,
@@ -326,8 +356,9 @@ class D1FormulaRepository:
         statements = [
                 self.database.prepare(
                     "INSERT INTO formulas "
-                    "(id, created_at, current_version, access_token_hash) VALUES (?1, ?2, 1, ?3)"
-                ).bind(formula_id, created_at, access_token_hash(access_token)),
+                    "(id, created_at, current_version, access_token_hash, owner_id) "
+                    "VALUES (?1, ?2, 1, ?3, ?4)"
+                ).bind(formula_id, created_at, access_token_hash(access_token), self.owner_id),
                 self.database.prepare(
                     "INSERT INTO formula_versions "
                     "(formula_id, version, report_id, created_at, cause, input_fingerprint, "
@@ -388,7 +419,7 @@ class D1FormulaRepository:
         self,
         *,
         formula_id: str,
-        access_token: str,
+        access_token: str | None,
         expected_version: int,
         file_name: str,
         contents: str,
@@ -463,7 +494,7 @@ class D1FormulaRepository:
         return record
 
     async def get_version(
-        self, formula_id: str, access_token: str, version: int
+        self, formula_id: str, access_token: str | None, version: int
     ) -> dict[str, Any]:
         await self._formula(formula_id, access_token)
         result = await self.database.prepare(
@@ -493,7 +524,7 @@ class D1FormulaRepository:
             "report": json.loads(row["report_json"]),
         }
 
-    async def history(self, formula_id: str, access_token: str) -> dict[str, Any]:
+    async def history(self, formula_id: str, access_token: str | None) -> dict[str, Any]:
         formula = await self._formula(formula_id, access_token)
         result = await self.database.prepare(
             "SELECT v.version, v.report_id, v.created_at, v.cause, v.input_fingerprint, "
@@ -529,7 +560,7 @@ class D1FormulaRepository:
         self,
         *,
         formula_id: str,
-        access_token: str,
+        access_token: str | None,
         expected_version: int,
         target_version: int,
     ) -> dict[str, Any]:

@@ -5,7 +5,7 @@ from pathlib import Path
 
 from nutrition_formula.http_api import (
     bearer_token,
-    owner_token_matches,
+    sync_owner_id,
     validate_accepted_aliases,
     validate_analysis_body,
     validate_material_save_body,
@@ -55,9 +55,12 @@ class UploadWorkflowTests(unittest.TestCase):
         with self.assertRaisesRegex(FormulaUploadError, "access token"):
             bearer_token(None)
 
-    def test_owner_token_comparison_handles_exact_unicode_values(self) -> None:
-        self.assertTrue(owner_token_matches("owner-雪", "owner-雪"))
-        self.assertFalse(owner_token_matches("owner-雪", "owner-snow"))
+    def test_sync_keys_are_validated_and_scoped_deterministically(self) -> None:
+        key = "a" * 43
+        self.assertEqual(sync_owner_id(key), sync_owner_id(key))
+        self.assertNotEqual(sync_owner_id(key), sync_owner_id("b" * 43))
+        with self.assertRaisesRegex(FormulaUploadError, "sync key"):
+            sync_owner_id("short")
 
     def test_saved_alias_and_material_profile_requests_are_bounded(self) -> None:
         self.assertEqual(

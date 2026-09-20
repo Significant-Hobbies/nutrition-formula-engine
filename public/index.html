@@ -14,34 +14,34 @@
       property="og:description"
       content="Upload one batch formula and receive a traceable theoretical composition report."
     />
-    <title>Formula Composition Report</title>
+    <title>Formula Composition Workspace</title>
     <link rel="stylesheet" href="/styles.css" />
     <script src="/app.js" type="module"></script>
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="/" aria-label="Formula Composition Report home">
+      <a class="brand" href="/" aria-label="Formula Composition Workspace home">
         <span class="brand-mark" aria-hidden="true">FC</span>
-        <span>Formula Composition Report</span>
+        <span>Formula Composition</span>
       </a>
-      <span class="prototype-badge">Public prototype</span>
+      <span class="workspace-badge"><i aria-hidden="true"></i>Versioned workspace</span>
     </header>
 
     <main>
       <section class="intro" aria-labelledby="page-title">
-        <p class="eyebrow">One formula in. Traceable composition out.</p>
-        <h1 id="page-title">Add a batch formula</h1>
+        <p class="eyebrow">Traceable formulation analysis</p>
+        <h1 id="page-title">Analyze a batch formula</h1>
         <p class="lede">
-          Paste it, upload a spreadsheet, or use a photo or PDF. You review the recovered rows
-          before anything is calculated.
+          Paste a formula or upload a file. Review the recovered rows, then calculate a
+          versioned composition report.
         </p>
       </section>
 
       <section id="upload-panel" class="upload-panel" aria-labelledby="upload-title">
         <div class="panel-heading">
           <div>
-            <p class="step">One input</p>
-            <h2 id="upload-title">Paste or choose a formula</h2>
+            <p class="step">Formula input</p>
+            <h2 id="upload-title">Start with one formula</h2>
           </div>
           <div class="source-actions">
             <a class="sample-link" href="/sample-tonic.tsv" download>Download sample</a>
@@ -94,9 +94,25 @@
           </div>
           <div>
             <button id="resume-workspace" class="secondary-button" type="button">Resume</button>
-            <button id="discard-workspace" class="text-button" type="button">Discard</button>
+            <button id="discard-workspace" class="text-button" type="button">Forget on this browser</button>
           </div>
         </div>
+        <details id="database-sync" class="database-sync">
+          <summary>
+            <span><strong>Database sync</strong><small id="database-sync-status">Checking D1…</small></span>
+            <span id="database-workspace-count">0 saved</span>
+          </summary>
+          <p class="quiet">Your recovery key unlocks the same private history on another device. Formula data stays in D1; only the key and active pointer stay in this browser.</p>
+          <div class="database-sync-actions">
+            <button id="copy-sync-key" class="secondary-button" type="button">Copy recovery key</button>
+            <form id="import-sync-key-form">
+              <label for="import-sync-key">Use an existing recovery key</label>
+              <input id="import-sync-key" type="password" autocomplete="off" minlength="32" />
+              <button class="secondary-button" type="submit">Connect</button>
+            </form>
+          </div>
+          <div id="database-workspace-list" class="database-workspace-list"></div>
+        </details>
         <button id="prepare-button" class="primary-button wide-button" type="button">
           Prepare formula for review
         </button>
@@ -119,7 +135,7 @@
           <dl>
             <div><dt>26</dt><dd>public cases</dd></div>
             <div><dt>66</dt><dd>stage benchmarks</dd></div>
-            <div><dt>81</dt><dd>engine/API tests</dd></div>
+            <div><dt>83</dt><dd>engine/API tests</dd></div>
           </dl>
         </div>
         <details class="case-studies">
@@ -233,13 +249,6 @@
             Confirm an interpretation, then save it once for faster reuse in later formulas.
           </p>
           <div id="ingredient-library-list" class="ingredient-library-list"></div>
-          <form id="ingredient-owner-form" class="ingredient-owner-form" hidden>
-            <label>
-              Owner key
-              <input id="ingredient-owner-key" type="password" autocomplete="current-password" />
-            </label>
-            <button class="secondary-button" type="submit">Use owner key for shared saves</button>
-          </form>
         </details>
 
         <section class="report-section" aria-labelledby="formula-title">

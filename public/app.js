@@ -16,9 +16,11 @@ import {
   loadBrowserWorkspace,
   saveBrowserIngredient,
   saveBrowserWorkspace,
+  serverWorkspaceRecord,
 } from "./workspace-store.js";
 
 const MAX_INPUT_BYTES = 12 * 1024 * 1024;
+const SYNC_KEY_STORAGE = "formula-composition-sync-key";
 
 const fileInput = document.querySelector("#formula-file");
 const formulaText = document.querySelector("#formula-text");
@@ -48,10 +50,54 @@ let workspace = null;
 let savedIngredients = [];
 let sharedIngredientProfiles = [];
 let sharedIngredientLibraryAvailable = false;
+let remoteWorkspaces = [];
+let volatileSyncKey = null;
 const confirmedIdentities = new Set();
 const auditLog = createAuditLog();
 
+function generateSyncKey() {
+  const bytes = crypto.getRandomValues(new Uint8Array(32));
+  return btoa(String.fromCharCode(...bytes))
+    .replaceAll("+", "-")
+    .replaceAll("/", "_")
+    .replaceAll("=", "");
+}
+
+function getSyncKey() {
+  try {
+    let key = localStorage.getItem(SYNC_KEY_STORAGE);
+    if (!key) {
+      key = generateSyncKey();
+      localStorage.setItem(SYNC_KEY_STORAGE, key);
+    }
+    return key;
+  } catch {
+    volatileSyncKey ||= generateSyncKey();
+    return volatileSyncKey;
+  }
+}
+
+function setSyncKey(value) {
+  volatileSyncKey = value;
+  try {
+    localStorage.setItem(SYNC_KEY_STORAGE, value);
+  } catch {
+    // The in-memory key still supports this tab when browser storage is unavailable.
+  }
+}
+
+function databaseHeaders(extra = {}) {
+  return { "X-Sync-Key": getSyncKey(), ...extra };
+}
+
 async function persistBrowserWorkspace() {
+  if (workspace?.mode === "server") {
+    await saveBrowserWorkspace(serverWorkspaceRecord({
+      formulaId: workspace.formulaId,
+      currentVersion: workspace.currentVersion,
+    }));
+    return;
+  }
   if (workspace?.mode !== "browser") return;
   await saveBrowserWorkspace(browserWorkspaceRecord({
     history: sessionHistory,
@@ -68,9 +114,14 @@ async function refreshSavedWorkspaceOffer() {
     const saved = await loadBrowserWorkspace();
     panel.hidden = !saved;
     if (saved) {
-      const latest = saved.history.at(-1);
-      document.querySelector("#saved-workspace-meta").textContent =
-        `${saved.history.length} retained versions · saved ${new Date(saved.saved_at).toLocaleString()} · latest version ${latest.version}`;
+      const server = saved.storage === "server";
+      const version = server ? saved.current_version : saved.history.at(-1).version;
+      document.querySelector("#saved-workspace strong").textContent = server
+        ? "Saved database workspace available"
+        : "Saved browser workspace available";
+      document.querySelector("#saved-workspace-meta").textContent = server
+        ? `D1 workspace · saved ${new Date(saved.saved_at).toLocaleString()} · latest version ${version}`
+        : `${saved.history.length} retained versions · saved ${new Date(saved.saved_at).toLocaleString()} · latest version ${version}`;
     }
   } catch {
     panel.hidden = true;
@@ -156,7 +207,6 @@ function renderIngredientLibrary() {
     })),
   ];
   document.querySelector("#ingredient-library-count").textContent = `${entries.length} saved`;
-  document.querySelector("#ingredient-owner-form").hidden = !sharedIngredientLibraryAvailable;
   list.replaceChildren();
   for (const entry of entries) {
     const item = document.createElement("div");
@@ -167,16 +217,9 @@ function renderIngredientLibrary() {
     detail.textContent = entry.detail;
     const remove = reviewButton("Remove", async () => {
       if (entry.storage === "shared") {
-        const ownerKey = sessionStorage.getItem("ingredient-owner-key") || "";
-        if (!ownerKey) {
-          document.querySelector("#ingredient-library").open = true;
-          document.querySelector("#ingredient-owner-key").focus();
-          setIngredientLibraryStatus("Enter the owner key before changing the shared library.", true);
-          return;
-        }
         const response = await fetch(`/api/ingredients/${encodeURIComponent(entry.material_id)}/${encodeURIComponent(entry.version)}`, {
           method: "DELETE",
-          headers: { "Authorization": `Bearer ${ownerKey}` },
+          headers: databaseHeaders(),
         });
         const payload = await response.json();
         if (!response.ok) {
@@ -203,7 +246,7 @@ async function refreshIngredientLibrary() {
     savedIngredients = [];
   }
   try {
-    const response = await fetch("/api/ingredients");
+    const response = await fetch("/api/ingredients", { headers: databaseHeaders() });
     if (response.ok) {
       const payload = await response.json();
       sharedIngredientProfiles = payload.profiles || [];
@@ -224,14 +267,10 @@ async function saveIngredientForReuse(row) {
     setIngredientLibraryStatus("This ingredient does not yet have a reusable composition profile.", true);
     return;
   }
-  const ownerKey = sessionStorage.getItem("ingredient-owner-key") || "";
-  if (sharedIngredientLibraryAvailable && ownerKey) {
+  if (sharedIngredientLibraryAvailable) {
     const response = await fetch("/api/ingredients", {
       method: "POST",
-      headers: {
-        "Authorization": `Bearer ${ownerKey}`,
-        "Content-Type": "application/json",
-      },
+      headers: databaseHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify({
         material_id: row.material_id,
         submitted_alias: row.item,
@@ -260,6 +299,99 @@ async function saveIngredientForReuse(row) {
     `${row.item} is saved for every formula in this browser. Shared sync is not configured yet.`,
   );
   recordAudit("ingredient_profile_saved", { storage: "browser" });
+}
+
+async function migrateBrowserIngredients() {
+  if (!sharedIngredientLibraryAvailable || savedIngredients.length === 0) return;
+  for (const ingredient of [...savedIngredients]) {
+    const response = await fetch("/api/ingredients", {
+      method: "POST",
+      headers: databaseHeaders({ "Content-Type": "application/json" }),
+      body: JSON.stringify({
+        material_id: ingredient.material_id,
+        submitted_alias: ingredient.alias,
+        kind: "food",
+      }),
+    });
+    if (!response.ok) continue;
+    await deleteBrowserIngredient(ingredient.alias_key);
+  }
+}
+
+function renderRemoteWorkspaces() {
+  const list = document.querySelector("#database-workspace-list");
+  list.replaceChildren();
+  document.querySelector("#database-workspace-count").textContent = `${remoteWorkspaces.length} saved`;
+  for (const record of remoteWorkspaces) {
+    const item = document.createElement("div");
+    item.className = "database-workspace-item";
+    const copy = document.createElement("span");
+    const title = document.createElement("strong");
+    title.textContent = record.product_name;
+    const meta = document.createElement("small");
+    meta.textContent = `${record.file_name} · version ${record.current_version} · ${new Date(record.created_at).toLocaleString()}`;
+    copy.append(title, meta);
+    const resume = reviewButton("Resume", () => loadRemoteWorkspace(record.formula_id));
+    resume.setAttribute("aria-label", `Resume ${record.product_name} from database`);
+    item.append(copy, resume);
+    list.append(item);
+  }
+}
+
+async function refreshDatabaseSync() {
+  try {
+    const response = await fetch("/api/formulas", { headers: databaseHeaders() });
+    if (!response.ok) throw new Error("D1 unavailable");
+    const payload = await response.json();
+    remoteWorkspaces = payload.workspaces || [];
+    document.querySelector("#database-sync-status").textContent = "D1 connected · private key active";
+    sharedIngredientLibraryAvailable = true;
+    await migrateBrowserIngredients();
+    await refreshIngredientLibrary();
+  } catch {
+    remoteWorkspaces = [];
+    document.querySelector("#database-sync-status").textContent = "Browser fallback · D1 unavailable";
+  }
+  renderRemoteWorkspaces();
+}
+
+async function loadRemoteWorkspace(formulaId) {
+  const historyResponse = await fetch(`/api/formulas/${encodeURIComponent(formulaId)}`, {
+    headers: databaseHeaders(),
+  });
+  const historyPayload = await historyResponse.json();
+  if (!historyResponse.ok) throw new Error(historyPayload.error || "The database workspace could not be loaded.");
+  const metadata = new Map(historyPayload.versions.map((item) => [item.version, item]));
+  const versions = await Promise.all(historyPayload.versions.map(async (item) => {
+    const response = await fetch(`/api/formulas/${encodeURIComponent(formulaId)}/versions/${item.version}`, {
+      headers: databaseHeaders(),
+    });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload.error || "A database version could not be loaded.");
+    return payload;
+  }));
+  versions.sort((left, right) => left.version - right.version);
+  sessionHistory = versions.map((version) => ({
+    version: version.version,
+    server_version: version.version,
+    created_at: version.created_at,
+    cause: version.cause,
+    delta: metadata.get(version.version)?.delta || [],
+    report: version.report,
+  }));
+  const latest = versions.at(-1);
+  latestContents = latest.normalized_input.contents;
+  latestFileName = latest.normalized_input.file_name;
+  workspace = {
+    mode: "server",
+    formulaId,
+    accessToken: null,
+    currentVersion: historyPayload.current_version,
+  };
+  await persistBrowserWorkspace();
+  formulaReview.hidden = true;
+  renderResult(latest.report);
+  recordAudit("workspace_resumed", { storage: "database", version: workspace.currentVersion });
 }
 
 function selectFile(file) {
@@ -693,10 +825,10 @@ async function restoreVersion(record) {
     if (workspace?.mode === "server" && record.server_version) {
       const response = await fetch(`/api/formulas/${workspace.formulaId}/restore`, {
         method: "POST",
-        headers: {
-          "Authorization": `Bearer ${workspace.accessToken}`,
+        headers: databaseHeaders({
+          ...(workspace.accessToken ? { "Authorization": `Bearer ${workspace.accessToken}` } : {}),
           "Content-Type": "application/json",
-        },
+        }),
         body: JSON.stringify({
           expected_version: workspace.currentVersion,
           target_version: record.server_version,
@@ -751,7 +883,7 @@ function renderHistory() {
     : `Session version ${sessionHistory.at(-1)?.version || 1}`;
   document.querySelector("#history-status").textContent = workspace
     ? workspace.mode === "server"
-      ? "This workspace is stored as immutable server versions for the current browser session."
+      ? "This workspace and its immutable history are stored in D1 and available with your recovery key."
       : "This workspace is stored only in this browser. Server persistence is not configured."
     : "Versions remain in this browser session until you save a workspace.";
 }
@@ -831,10 +963,12 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
     }
     const response = await fetch(endpoint, {
       method: "POST",
-      headers: {
+      headers: databaseHeaders({
         "Content-Type": "application/json",
-        ...(workspace?.mode === "server" ? { "Authorization": `Bearer ${workspace.accessToken}` } : {}),
-      },
+        ...(workspace?.mode === "server" && workspace.accessToken
+          ? { "Authorization": `Bearer ${workspace.accessToken}` }
+          : {}),
+      }),
       body: JSON.stringify(requestBody),
     });
     responseStatus = response.status;
@@ -844,6 +978,8 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
     const data = payload.report || payload;
     if (workspace?.mode === "server" && payload.version) {
       workspace.currentVersion = payload.version.version;
+      await persistBrowserWorkspace();
+      await refreshDatabaseSync();
     }
     sessionHistory = appendSessionVersion(
       sessionHistory,
@@ -897,7 +1033,7 @@ document.querySelector("#save-workspace").addEventListener("click", async () => 
   try {
     const response = await fetch("/api/formulas", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: databaseHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify({
         file_name: latestFileName,
         contents: latestContents,
@@ -931,8 +1067,11 @@ document.querySelector("#save-workspace").addEventListener("click", async () => 
       currentVersion: payload.version.version,
     };
     if (sessionHistory.length) sessionHistory.at(-1).server_version = payload.version.version;
+    await persistBrowserWorkspace();
     button.textContent = "Workspace saved";
     renderHistory();
+    await refreshSavedWorkspaceOffer();
+    await refreshDatabaseSync();
     recordAudit("workspace_saved", { version: workspace.currentVersion });
   } catch (error) {
     button.disabled = false;
@@ -944,7 +1083,16 @@ document.querySelector("#save-workspace").addEventListener("click", async () => 
 
 document.querySelector("#resume-workspace").addEventListener("click", async () => {
   const saved = await loadBrowserWorkspace();
-  if (!saved?.history?.length) return;
+  if (!saved) return;
+  if (saved.storage === "server") {
+    try {
+      await loadRemoteWorkspace(saved.formula_id);
+    } catch (error) {
+      setStatus(error.message, true);
+    }
+    return;
+  }
+  if (!saved.history?.length) return;
   sessionHistory = saved.history;
   latestContents = saved.latest_contents;
   latestFileName = saved.latest_file_name;
@@ -965,6 +1113,30 @@ document.querySelector("#discard-workspace").addEventListener("click", async () 
   await clearBrowserWorkspace();
   document.querySelector("#saved-workspace").hidden = true;
   recordAudit("workspace_discarded", { storage: "browser" });
+});
+
+document.querySelector("#copy-sync-key").addEventListener("click", async () => {
+  await navigator.clipboard.writeText(getSyncKey());
+  document.querySelector("#database-sync-status").textContent = "Recovery key copied · keep it private";
+  recordAudit("database_sync_key_copied");
+});
+
+document.querySelector("#import-sync-key-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const input = document.querySelector("#import-sync-key");
+  const value = input.value.trim();
+  if (!/^[A-Za-z0-9_-]{32,200}$/.test(value)) {
+    document.querySelector("#database-sync-status").textContent = "Enter a valid recovery key";
+    input.focus();
+    return;
+  }
+  setSyncKey(value);
+  input.value = "";
+  await clearBrowserWorkspace();
+  await refreshDatabaseSync();
+  await refreshSavedWorkspaceOffer();
+  document.querySelector("#database-sync").open = true;
+  recordAudit("database_sync_key_imported");
 });
 
 calculateButton.addEventListener("click", async () => {
@@ -1059,21 +1231,6 @@ addIngredientForm.addEventListener("submit", async (event) => {
   }
 });
 
-document.querySelector("#ingredient-owner-form").addEventListener("submit", (event) => {
-  event.preventDefault();
-  const input = document.querySelector("#ingredient-owner-key");
-  const ownerKey = input.value.trim();
-  if (!ownerKey) {
-    setIngredientLibraryStatus("Enter the owner key to enable shared saves.", true);
-    input.focus();
-    return;
-  }
-  sessionStorage.setItem("ingredient-owner-key", ownerKey);
-  input.value = "";
-  setIngredientLibraryStatus("Owner key is active for this browser session. Save an ingredient to verify it.");
-  recordAudit("ingredient_owner_key_set");
-});
-
 function renderCaseStudies(data) {
   const body = document.querySelector("#case-study-body");
   body.replaceChildren();
@@ -1105,7 +1262,7 @@ function renderCaseStudies(data) {
 
 renderCaseStudies(caseStudiesData);
 refreshSavedWorkspaceOffer();
-refreshIngredientLibrary();
+refreshIngredientLibrary().then(refreshDatabaseSync);
 
 if (new URLSearchParams(window.location.search).get("sample") === "1") {
   fetch(sampleTsvUrl)

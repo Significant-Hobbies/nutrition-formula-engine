@@ -4,10 +4,11 @@
 
 Use a Cloudflare Python Worker so the web service reuses the tested `Decimal`
 calculation engine rather than creating a second implementation. The repository
-now contains immutable formula-version and reusable-ingredient repositories and
-D1 migrations alongside the request-scoped analysis endpoint. No `FORMULA_DB`
-binding or ingredient-owner secret has been configured, so the current UI
-labels and uses its IndexedDB fallback.
+contains immutable formula-version and reusable-ingredient repositories and D1
+migrations alongside the request-scoped analysis endpoint. The production
+Worker binds `FORMULA_DB`; a browser-generated recovery key scopes formula and
+ingredient records so the same workspace can be reopened on another device
+without adding an account system.
 
 The interface accepts pasted text, TSV, CSV, TXT, JSON, XLSX, images, and PDFs
 through one input surface. Deterministic browser normalizers convert text and
@@ -29,14 +30,14 @@ browser displays editable `Item / Quantity / Unit` rows and requires explicit
 review before sending canonical TSV to the calculation endpoint. The API stays
 independent of the capture method, and the original image, PDF, or spreadsheet
 does not need to leave the browser. Identity-review choices create immutable
-session versions. An explicit save stores the latest ten versions in browser
-IndexedDB when D1 is unavailable; the original upload is not retained. Server
-durability becomes active only after a D1 database is created, migrated, and
-bound.
+session versions. An explicit save stores the reviewed formula, report, and
+decisions in D1. IndexedDB retains only the active pointer and recovery key
+during normal operation; it stores the latest ten versions only when D1 is
+unavailable. The original upload is not retained.
 
-Confirmed ingredient interpretations can also be saved for reuse. In the
-current public deployment they apply automatically to every later formula in
-the same browser. The stored record retains the submitted alias, selected
+Confirmed ingredient interpretations can also be saved for reuse. They apply
+automatically to later formulas opened with the same recovery key, including on
+another device. The stored record retains the submitted alias, selected
 material ID, canonical name, profile version, source, and acceptance time.
 
 ### OCR/model decision
@@ -105,16 +106,20 @@ screened result, assumptions, missing information, and Markdown export.
 ### Implemented versioned-workspace endpoints
 
 - `POST /api/formulas` creates a formula, version 1, and a random access token.
-- `GET /api/formulas/{formula_id}` returns the current immutable version.
+- `GET /api/formulas` lists the recovery-key owner's saved workspaces.
+- `GET /api/formulas/{formula_id}` returns immutable version history.
 - `GET /api/formulas/{formula_id}/versions/{version}` returns a named version.
 - `POST /api/formulas/{formula_id}/versions` appends a version using an
   `expected_version` precondition.
 - `POST /api/formulas/{formula_id}/restore` copies an earlier snapshot into a
   new current version.
 
-All reads and mutations require the bearer access token. Only its SHA-256 hash
-is stored. When `FORMULA_DB` is absent, these endpoints return a visible 503
-`persistence_unavailable` response rather than pretending a server save worked.
+All reads and mutations require `X-Sync-Key`. The Worker validates its format
+and stores only an opaque SHA-256-derived owner ID. A formula bearer token is
+also checked when an active browser session supplies it, but the recovery key
+is sufficient for cross-device resume. When `FORMULA_DB` is absent, these
+endpoints return a visible 503 `persistence_unavailable` response rather than
+pretending a server save worked.
 
 ### Implemented ingredient-library endpoints
 
@@ -131,10 +136,10 @@ formula. Live external search is reported as unavailable in this increment.
 - `DELETE /api/ingredients/{material_id}/{version}` deactivates one active
   profile version.
 
-Shared writes require `Authorization: Bearer <INGREDIENT_ADMIN_TOKEN>` and fail
-closed when the owner secret is absent. When D1 is absent, all three shared
-library routes report `persistence_unavailable`; the UI stores and reapplies
-the alias locally instead of claiming a shared save.
+Ingredient reads and writes use the same `X-Sync-Key` owner scope as formulas.
+When D1 is absent, all three library routes report `persistence_unavailable`;
+the UI stores and reapplies the alias locally instead of claiming a database
+save.
 
 ### Planned line-level correction endpoint
 
@@ -169,12 +174,13 @@ the numerical changes from the previous report.
 
 `migrations/0001_formula_history.sql` defines the base tables and indexes;
 `migrations/0002_shared_ingredient_library.sql` adds immutable profile status,
-kind, supersession, and alias lookup. Normalized
+kind, supersession, and alias lookup. `migrations/0003_owner_scoped_persistence.sql`
+adds owner-scoped formula and profile indexes. Normalized
 formula lines live inside the immutable formula-version JSON snapshot rather
 than a mutable `formula_lines` table. Uploaded source files do not need durable
 object storage, so R2 remains unnecessary. The migration and repository are
-tested through a D1-compatible SQLite harness; production provisioning remains
-an explicit deployment step.
+tested through a D1-compatible SQLite harness and applied to the production D1
+database.
 
 ## Public database adapters
 

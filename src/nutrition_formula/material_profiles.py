@@ -42,6 +42,7 @@ def material_profile_record(
     kind: str = "food",
     accepted_at: str | None = None,
     supersedes_version: str | None = None,
+    owner_id: str = "legacy",
 ) -> dict[str, Any]:
     """Build a validated immutable snapshot from a calculation catalog material."""
 
@@ -71,7 +72,7 @@ def material_profile_record(
         "profile": snapshot,
         "source": deepcopy(source),
     }
-    version = fingerprint(payload)[:20]
+    version = fingerprint({**payload, "owner_id": owner_id})[:20]
     return {
         **payload,
         "version": version,
@@ -157,20 +158,30 @@ def search_saved_profiles(
 class D1MaterialProfileRepository:
     """D1 adapter for the shared, immutable accepted ingredient library."""
 
-    def __init__(self, database: Any, *, clock: Callable[[], str] = _default_clock) -> None:
+    def __init__(
+        self,
+        database: Any,
+        *,
+        owner_id: str = "legacy",
+        clock: Callable[[], str] = _default_clock,
+    ) -> None:
         self.database = database
+        self.owner_id = owner_id
         self.clock = clock
 
     async def list_active(self) -> list[dict[str, Any]]:
         profiles_result = await self.database.prepare(
             "SELECT id, version, name, kind, status, supersedes_version, evidence_kind, "
             "source_json, profile_json, profile_fingerprint, retrieved_at, accepted_at "
-            "FROM material_profiles WHERE status = 'active' ORDER BY name, accepted_at DESC"
-        ).run()
+            "FROM material_profiles WHERE owner_id = ?1 AND status = 'active' "
+            "ORDER BY name, accepted_at DESC"
+        ).bind(self.owner_id).run()
         aliases_result = await self.database.prepare(
-            "SELECT profile_id, profile_version, alias FROM material_profile_aliases "
-            "ORDER BY normalized_alias"
-        ).run()
+            "SELECT a.profile_id, a.profile_version, a.alias "
+            "FROM material_profile_aliases a JOIN material_profiles p "
+            "ON p.id = a.profile_id AND p.version = a.profile_version "
+            "WHERE p.owner_id = ?1 ORDER BY a.normalized_alias"
+        ).bind(self.owner_id).run()
         aliases: dict[tuple[str, str], list[str]] = {}
         for row in d1_results(aliases_result):
             aliases.setdefault((row["profile_id"], row["profile_version"]), []).append(row["alias"])
@@ -204,8 +215,8 @@ class D1MaterialProfileRepository:
     ) -> dict[str, Any]:
         current_result = await self.database.prepare(
             "SELECT version FROM material_profiles WHERE id = ?1 AND status = 'active' "
-            "ORDER BY accepted_at DESC LIMIT 1"
-        ).bind(material_id).run()
+            "AND owner_id = ?2 ORDER BY accepted_at DESC LIMIT 1"
+        ).bind(material_id, self.owner_id).run()
         current_rows = d1_results(current_result)
         current_version = current_rows[0]["version"] if current_rows else None
         record = material_profile_record(
@@ -215,6 +226,7 @@ class D1MaterialProfileRepository:
             kind=kind,
             accepted_at=self.clock(),
             supersedes_version=current_version,
+            owner_id=self.owner_id,
         )
         if current_version == record["version"]:
             existing = [item for item in await self.list_active() if item["id"] == material_id]
@@ -225,15 +237,15 @@ class D1MaterialProfileRepository:
             statements.append(
                 self.database.prepare(
                     "UPDATE material_profiles SET status = 'superseded' "
-                    "WHERE id = ?1 AND version = ?2 AND status = 'active'"
-                ).bind(material_id, current_version)
+                    "WHERE id = ?1 AND version = ?2 AND owner_id = ?3 AND status = 'active'"
+                ).bind(material_id, current_version, self.owner_id)
             )
         statements.append(
             self.database.prepare(
                 "INSERT INTO material_profiles "
                 "(id, version, name, kind, status, supersedes_version, evidence_kind, "
-                "source_json, profile_json, profile_fingerprint, retrieved_at, accepted_at) "
-                "VALUES (?1, ?2, ?3, ?4, 'active', ?5, ?6, ?7, ?8, ?9, ?10, ?11)"
+                "source_json, profile_json, profile_fingerprint, retrieved_at, accepted_at, owner_id) "
+                "VALUES (?1, ?2, ?3, ?4, 'active', ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)"
             ).bind(
                 record["id"],
                 record["version"],
@@ -246,6 +258,7 @@ class D1MaterialProfileRepository:
                 record["profile_fingerprint"],
                 record["source"].get("retrieved_at"),
                 record["accepted_at"],
+                self.owner_id,
             )
         )
         for alias in record["aliases"]:
@@ -268,6 +281,7 @@ class D1MaterialProfileRepository:
     async def deactivate(self, material_id: str, version: str) -> bool:
         result = await self.database.prepare(
             "UPDATE material_profiles SET status = 'inactive' "
-            "WHERE id = ?1 AND version = ?2 AND status = 'active' RETURNING id"
-        ).bind(material_id, version).run()
+            "WHERE id = ?1 AND version = ?2 AND owner_id = ?3 "
+            "AND status = 'active' RETURNING id"
+        ).bind(material_id, version, self.owner_id).run()
         return bool(d1_results(result))

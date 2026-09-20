@@ -23,6 +23,14 @@
     "binding": "ASSETS",
     "run_worker_first": ["/api/*"]
   },
+  "d1_databases": [
+    {
+      "binding": "FORMULA_DB",
+      "database_name": "nutrition-formula-engine",
+      "database_id": "f26fe712-fb44-4626-a1d8-6a9095512b0e",
+      "migrations_dir": "migrations"
+    }
+  ],
   "observability": {
     "enabled": true,
     "logs": {

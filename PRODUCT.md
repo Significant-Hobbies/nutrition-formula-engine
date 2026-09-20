@@ -51,27 +51,27 @@ concise report.
   confirm it, reject and replace it, remove the row, or add another ingredient;
   recalculate immediately after a formula change.
 - Let the operator save a confirmed ingredient interpretation once and
-  automatically reuse that alias in later formulas. Label browser-only storage
-  honestly until authenticated shared persistence is configured.
+  automatically reuse that alias in later formulas with the same recovery key,
+  including on another device.
 - Let the user inspect how each result was calculated, including every
   contributing formula line, material path, profile value, retention factor,
   source, and normalized amount.
-- Keep immutable in-session versions with numerical deltas and restore an older
-  result by creating a new version. On explicit save, use server persistence
-  when configured and otherwise label the browser-only IndexedDB fallback.
+- Keep immutable versions with numerical deltas and restore an older result by
+  creating a new version. On explicit save, use D1 and retain IndexedDB as a
+  visibly labelled availability fallback.
 - Support food/nutraceutical and medicinal composition workflows, while
   keeping regulatory classification and label formatting outside the first
   calculation step.
 - Theoretical calculations do not replace supplier specifications, lot CoAs,
   finished-product assays, stability studies, or regulatory review.
 - Additional OCR languages, handwriting support, proprietary spreadsheet
-  formats, formatting-model fallback, live external ingredient search, and a
-  configured production D1 database are future capabilities.
+  formats, formatting-model fallback, live external ingredient search, and an
+  account-based authentication layer are future capabilities.
 
 ## Evidence on Hand
 
-- A Decimal-based formulation engine with 81 passing Python engine/API tests
-  and 31 passing browser/data tests.
+- A Decimal-based formulation engine with 83 passing Python engine/API tests
+  and 32 passing browser/data tests.
 - Twenty-six public-product checks against WHO, USDA MyPlate, and DailyMed
   compositions.
 - A frozen 66-case benchmark split across extraction, identity ranking, and

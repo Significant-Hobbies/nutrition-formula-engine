@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { browserIngredientRecord, browserWorkspaceRecord } from "../public/workspace-store.js";
+import {
+  browserIngredientRecord,
+  browserWorkspaceRecord,
+  serverWorkspaceRecord,
+} from "../public/workspace-store.js";
 
 test("browser workspace records are bounded and detached from live history", () => {
   const history = Array.from({ length: 12 }, (_, index) => ({
@@ -25,6 +29,13 @@ test("browser workspace requires a calculated version", () => {
   assert.throws(
     () => browserWorkspaceRecord({ history: [] }),
     /calculated report/,
+  );
+});
+
+test("database workspace pointers retain no formula or report contents", () => {
+  assert.deepEqual(
+    Object.keys(serverWorkspaceRecord({ formulaId: "formula-1", currentVersion: 3 })).sort(),
+    ["current_version", "formula_id", "id", "saved_at", "storage"],
   );
 });
 

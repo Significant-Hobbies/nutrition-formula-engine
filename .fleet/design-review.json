@@ -2,9 +2,9 @@
   "$schema": "fleet.design-review.v1",
   "version": 1,
   "project": "nutrition-formula-engine",
-  "target": "versioned formula analysis workspace with reusable ingredient profiles",
+  "target": "simple database-backed formula composition workspace",
   "surfaceMode": "operate",
-  "mode": "preserve",
+  "mode": "overhaul",
   "register": "product",
   "context": {
     "product": "PRODUCT.md",
@@ -12,15 +12,26 @@
   },
   "direction": {
     "references": [
-      "iridescent uncertainty bands",
       "laboratory instrument bench",
-      "conventional compliance portal"
+      "regulatory case file",
+      "controlled composition register"
     ],
     "probes": [
-      "artifacts/design/direction-options.svg"
+      {
+        "id": "regulatory-dossier",
+        "path": "artifacts/design/database-direction-options.svg"
+      },
+      {
+        "id": "simple-laboratory-workbench",
+        "path": "artifacts/design/database-direction-options.svg"
+      },
+      {
+        "id": "clinical-ledger",
+        "path": "artifacts/design/database-direction-options.svg"
+      }
     ],
-    "selected": "clear-compliance-desk",
-    "approval": "owner-selected-in-conversation",
+    "selected": "simple-laboratory-workbench",
+    "approval": "approved",
     "before": "artifacts/design/direction-options.svg.png",
     "library": {
       "strategy": "upstream-first",
@@ -44,7 +55,7 @@
       "audience": "Formulators and product teams reviewing food, nutraceutical, supplement, or medicinal batch formulas.",
       "job": "Submit one formula, correct only material ambiguities, and export a traceable composition report.",
       "thesis": "The formula is the work surface; uncertainty belongs visibly at the edge of each result rather than in a separate compliance dashboard.",
-      "system": "Clear Compliance Desk: one restrained professional workspace with a single pasted-table input and inline corrections.",
+      "system": "Simple Laboratory Workbench: one restrained professional workspace with a single input, visible database state, and inline corrections.",
       "signature": "Every uncertain value carries a visible evidence band linked to the ingredient assumption that created it.",
       "risk": "A visually expressive evidence system could distract from high-density review; the selected direction must preserve familiar table scanning and keyboard correction."
     }
@@ -83,9 +94,9 @@
     "detector": {
       "posture": "advisory",
       "findings": [
-        "The selected-direction composite is retained as the visual baseline because no dedicated pre-increment screenshot existed.",
-        "Responsive browser checks confirmed no horizontal overflow at 390, 768, or 1440 pixels after correcting hidden-review and mobile-action layout defects.",
-        "The saved ingredient library stays inside the established review surface and uses the same compact disclosure, status, and secondary-action patterns.",
+        "The owner selected the simple workbench direction and explicitly rejected additional product-shell complexity.",
+        "Responsive screenshots at 390, 768, and 1440 pixels retain the single-column formula workflow and compact database disclosure.",
+        "Formula history and reusable ingredient profiles use the same recovery-key-scoped D1 workspace without adding account navigation.",
         "The 517.57 kB lazy ingestion chunk remains a build warning; PDF, spreadsheet, and OCR code is loaded only when needed."
       ]
     },
@@ -114,6 +125,6 @@
   },
   "ownerFeedback": {
     "decision": "keep",
-    "note": "The reusable-ingredient increment preserves the selected Clear Compliance Desk direction and single-input workflow."
+    "note": "Keep it nice and simple; use the restrained workbench direction without overengineering the product shell."
   }
 }

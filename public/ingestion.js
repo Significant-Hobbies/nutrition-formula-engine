@@ -78,7 +78,7 @@ async function ingestPdf(file, onProgress) {
   const bytes = new Uint8Array(await file.arrayBuffer());
   const pdf = await getDocument({ data: bytes }).promise;
   if (pdf.numPages > MAX_PDF_PAGES) {
-    throw new Error(`This prototype reads up to ${MAX_PDF_PAGES} PDF pages; this file has ${pdf.numPages}.`);
+    throw new Error(`This workspace reads up to ${MAX_PDF_PAGES} PDF pages; this file has ${pdf.numPages}.`);
   }
 
   const pageTexts = [];

@@ -12,7 +12,7 @@ from workers import Response, WorkerEntrypoint
 
 from nutrition_formula.http_api import (
     bearer_token,
-    owner_token_matches,
+    sync_owner_id,
     validate_accepted_aliases,
     validate_analysis_body,
     validate_material_save_body,
@@ -47,17 +47,6 @@ def _log(event, request_id, **details):
     console.log(json.dumps({"event": event, "request_id": request_id, **details}))
 
 
-def _owner_write_status(request, env):
-    if not hasattr(env, "INGREDIENT_ADMIN_TOKEN"):
-        return "unconfigured"
-    try:
-        supplied = bearer_token(request.headers.get("authorization"))
-    except FormulaUploadError:
-        return "denied"
-    expected = str(env.INGREDIENT_ADMIN_TOKEN)
-    return "authorized" if owner_token_matches(supplied, expected) else "denied"
-
-
 class Default(WorkerEntrypoint):
     async def fetch(self, request):
         parsed_url = urlparse(request.url)
@@ -78,9 +67,10 @@ class Default(WorkerEntrypoint):
                 result = search_local_ingredients(
                     params.get("q", [""])[0], params.get("kind", ["all"])[0]
                 )
-                if hasattr(self.env, "FORMULA_DB"):
+                sync_key = request.headers.get("x-sync-key")
+                if hasattr(self.env, "FORMULA_DB") and sync_key:
                     profiles = await D1MaterialProfileRepository(
-                        self.env.FORMULA_DB
+                        self.env.FORMULA_DB, owner_id=sync_owner_id(sync_key)
                     ).list_active()
                     saved = search_saved_profiles(
                         profiles,
@@ -112,27 +102,14 @@ class Default(WorkerEntrypoint):
                     status=503,
                     request_id=request_id,
                 )
-            repository = D1MaterialProfileRepository(self.env.FORMULA_DB)
             try:
+                owner_id = sync_owner_id(request.headers.get("x-sync-key"))
+                repository = D1MaterialProfileRepository(
+                    self.env.FORMULA_DB, owner_id=owner_id
+                )
                 if path == "/api/ingredients" and method == "GET":
                     profiles = await repository.list_active()
                     return _json({"profiles": profiles}, request_id=request_id)
-                write_status = _owner_write_status(request, self.env)
-                if write_status == "unconfigured":
-                    return _json(
-                        {
-                            "error": "Owner writes are not configured",
-                            "code": "owner_write_unconfigured",
-                        },
-                        status=503,
-                        request_id=request_id,
-                    )
-                if write_status != "authorized":
-                    return _json(
-                        {"error": "Owner authorization is required"},
-                        status=403,
-                        request_id=request_id,
-                    )
                 if path == "/api/ingredients" and method == "POST":
                     body = await request.json()
                     material_id, submitted_alias, kind = validate_material_save_body(body)
@@ -198,9 +175,17 @@ class Default(WorkerEntrypoint):
                     status=503,
                     request_id=request_id,
                 )
-            repository = D1FormulaRepository(self.env.FORMULA_DB)
             try:
-                profiles = await D1MaterialProfileRepository(self.env.FORMULA_DB).list_active()
+                owner_id = sync_owner_id(request.headers.get("x-sync-key"))
+                repository = D1FormulaRepository(self.env.FORMULA_DB, owner_id=owner_id)
+                profiles = await D1MaterialProfileRepository(
+                    self.env.FORMULA_DB, owner_id=owner_id
+                ).list_active()
+                if path == "/api/formulas" and method == "GET":
+                    return _json(
+                        {"workspaces": await repository.list_workspaces()},
+                        request_id=request_id,
+                    )
                 if path == "/api/formulas" and method == "POST":
                     body = await request.json()
                     file_name, contents = validate_analysis_body(body)
@@ -233,7 +218,8 @@ class Default(WorkerEntrypoint):
                 append_match = re.fullmatch(r"/api/formulas/([^/]+)/versions", path)
                 formula_match = re.fullmatch(r"/api/formulas/([^/]+)", path)
                 restore_match = re.fullmatch(r"/api/formulas/([^/]+)/restore", path)
-                token = bearer_token(request.headers.get("authorization"))
+                authorization = request.headers.get("authorization")
+                token = bearer_token(authorization) if authorization else None
 
                 if formula_match and method == "GET":
                     history = await repository.history(formula_match.group(1), token)
@@ -348,11 +334,25 @@ class Default(WorkerEntrypoint):
                         request_id=request_id,
                     )
                 file_name, contents = validate_analysis_body(body)
-                profiles = (
-                    await D1MaterialProfileRepository(self.env.FORMULA_DB).list_active()
-                    if hasattr(self.env, "FORMULA_DB")
-                    else []
-                )
+                profiles = []
+                sync_key = request.headers.get("x-sync-key")
+                if hasattr(self.env, "FORMULA_DB") and sync_key:
+                    owner_id = sync_owner_id(sync_key)
+                    try:
+                        profiles = await D1MaterialProfileRepository(
+                            self.env.FORMULA_DB,
+                            owner_id=owner_id,
+                        ).list_active()
+                    except Exception as exc:  # noqa: BLE001 - analysis remains available
+                        console.error(
+                            json.dumps(
+                                {
+                                    "event": "ingredient_profiles_unavailable",
+                                    "request_id": request_id,
+                                    "error_type": type(exc).__name__,
+                                }
+                            )
+                        )
                 result = analyze_formula_upload(
                     contents,
                     file_name,

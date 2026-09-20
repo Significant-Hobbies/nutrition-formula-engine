@@ -44,6 +44,19 @@ export function browserWorkspaceRecord({ history, latestContents, latestFileName
   };
 }
 
+export function serverWorkspaceRecord({ formulaId, currentVersion }) {
+  if (!formulaId || !Number.isInteger(currentVersion) || currentVersion < 1) {
+    throw new Error("A saved database workspace is required.");
+  }
+  return {
+    id: ACTIVE_ID,
+    storage: "server",
+    formula_id: formulaId,
+    current_version: currentVersion,
+    saved_at: new Date().toISOString(),
+  };
+}
+
 export function saveBrowserWorkspace(record) {
   return transaction(STORE_NAME, "readwrite", (store) => store.put(record));
 }
