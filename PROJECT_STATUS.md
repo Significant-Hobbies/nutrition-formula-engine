@@ -57,9 +57,8 @@ perform FSSAI classification, label formatting, or regulatory approval.
 - Traffic: 100% on the current release, verified 2026-09-21
 - Source state: committed and pushed to `origin/main`; the active Worker version
   is tagged with the same full Git SHA
-- Validation-suite state: the deployed release contains the prior 35-case benchmark
-  and 79 automated tests; the expanded local 66-case/105-test candidate has not
-  been deployed
+- Validation-suite state: the deployed release contains the frozen 66-case
+  benchmark and 105 automated tests
 - Production smoke state: root and health routes, valid sample calculation,
   malformed JSON, local candidate search, browser calculation, browser-only
   save, reload, and resume were verified against the public domain
@@ -72,7 +71,6 @@ perform FSSAI classification, label formatting, or regulatory approval.
 - Live PubChem and FoodData Central candidate adapters and accepted-profile cache
 - Line-level reject/search decision persistence against the server repository
 - Additional OCR languages, handwriting support, and proprietary document formats
-- A commit-tagged reproducible deployment
 
 ## Boundaries
 
