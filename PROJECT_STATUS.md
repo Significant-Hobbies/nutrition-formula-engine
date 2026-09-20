@@ -52,14 +52,16 @@ perform FSSAI classification, label formatting, or regulatory approval.
 ## Public release
 
 - Canonical URL: <https://formula.significanthobbies.com>
-- Cloudflare Worker version: `08bcbd54-f960-4eb2-8a4d-508603205418`
-- Traffic: 100% on the version above, verified 2026-09-21
-- Source state: deployed from the current uncommitted, untagged local tree;
-  commit and push were not performed
-- Validation-suite state: the four additional external formulas are verified
-  locally and are not part of the deployed Worker version above
-- Current next-level workspace changes are local only and are not part of the
-  deployed Worker version above
+- Traffic: 100% on the current release, verified 2026-09-21
+- Source state: committed and pushed to `origin/main`; the active Worker version
+  is tagged with the same full Git SHA
+- Validation-suite state: all 35 frozen benchmark cases and 79 automated tests
+  described above are included in the deployed source
+- Production smoke state: root and health routes, valid sample calculation,
+  malformed JSON, local candidate search, browser calculation, browser-only
+  save, reload, and resume were verified against the public domain
+- Persistence state: `FORMULA_DB` is intentionally unconfigured; the public UI
+  labels and uses its browser IndexedDB fallback
 
 ## Not yet configured or implemented
 
