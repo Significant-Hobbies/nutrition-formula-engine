@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Open formulas you saved in Formula Calculator." />
+    <link rel="canonical" href="https://formula.significanthobbies.com/recent-formulas/" />
+    <title>Recent Formulas | Formula Calculator</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/recent-formulas.js" type="module"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Formula Calculator home">
+        <span class="brand-mark" aria-hidden="true">FC</span>
+        <span>Formula Calculator</span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="/">Calculator</a>
+        <a class="is-active" href="/recent-formulas/" aria-current="page">Recent formulas</a>
+        <a href="/case-studies/">Case studies</a>
+      </nav>
+    </header>
+
+    <main class="recent-formulas-page">
+      <section class="intro recent-formulas-intro" aria-labelledby="page-title">
+        <p class="eyebrow">Recent formulas</p>
+        <h1 id="page-title">Open a saved formula</h1>
+        <p class="lede">Continue a formula or review its earlier versions.</p>
+      </section>
+
+      <section class="recent-formulas-panel" aria-labelledby="saved-formulas-title">
+        <div class="recent-formulas-heading">
+          <div>
+            <h2 id="saved-formulas-title">Your formulas</h2>
+            <p id="recent-formulas-status" class="quiet" role="status" aria-live="polite">
+              Loading saved formulas…
+            </p>
+          </div>
+          <a class="primary-button" href="/">New formula</a>
+        </div>
+
+        <div id="recent-formulas-list" class="recent-formulas-list"></div>
+
+        <div id="recent-formulas-empty" class="recent-formulas-empty" hidden>
+          <h3>No saved formulas yet</h3>
+          <p>Check a formula first. You can save it from the results page.</p>
+          <a class="secondary-button" href="/">Check a formula</a>
+        </div>
+      </section>
+
+      <p class="public-formulas-note">
+        Saved formulas are public and appear here on every device.
+      </p>
+    </main>
+  </body>
+</html>

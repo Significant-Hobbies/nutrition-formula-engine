@@ -11,8 +11,7 @@ from js import console
 from workers import Response, WorkerEntrypoint
 
 from nutrition_formula.http_api import (
-    bearer_token,
-    sync_owner_id,
+    PUBLIC_OWNER_ID,
     validate_accepted_aliases,
     validate_analysis_body,
     validate_material_save_body,
@@ -67,10 +66,9 @@ class Default(WorkerEntrypoint):
                 result = search_local_ingredients(
                     params.get("q", [""])[0], params.get("kind", ["all"])[0]
                 )
-                sync_key = request.headers.get("x-sync-key")
-                if hasattr(self.env, "FORMULA_DB") and sync_key:
+                if hasattr(self.env, "FORMULA_DB"):
                     profiles = await D1MaterialProfileRepository(
-                        self.env.FORMULA_DB, owner_id=sync_owner_id(sync_key)
+                        self.env.FORMULA_DB, owner_id=PUBLIC_OWNER_ID
                     ).list_active()
                     saved = search_saved_profiles(
                         profiles,
@@ -103,9 +101,8 @@ class Default(WorkerEntrypoint):
                     request_id=request_id,
                 )
             try:
-                owner_id = sync_owner_id(request.headers.get("x-sync-key"))
                 repository = D1MaterialProfileRepository(
-                    self.env.FORMULA_DB, owner_id=owner_id
+                    self.env.FORMULA_DB, owner_id=PUBLIC_OWNER_ID
                 )
                 if path == "/api/ingredients" and method == "GET":
                     profiles = await repository.list_active()
@@ -176,10 +173,11 @@ class Default(WorkerEntrypoint):
                     request_id=request_id,
                 )
             try:
-                owner_id = sync_owner_id(request.headers.get("x-sync-key"))
-                repository = D1FormulaRepository(self.env.FORMULA_DB, owner_id=owner_id)
+                repository = D1FormulaRepository(
+                    self.env.FORMULA_DB, owner_id=PUBLIC_OWNER_ID
+                )
                 profiles = await D1MaterialProfileRepository(
-                    self.env.FORMULA_DB, owner_id=owner_id
+                    self.env.FORMULA_DB, owner_id=PUBLIC_OWNER_ID
                 ).list_active()
                 if path == "/api/formulas" and method == "GET":
                     return _json(
@@ -201,7 +199,7 @@ class Default(WorkerEntrypoint):
                         report=report,
                         decisions=body.get("decisions", []),
                     )
-                    access_token = record.pop("access_token")
+                    record.pop("access_token")
                     _log(
                         "formula_history_created",
                         request_id,
@@ -209,7 +207,7 @@ class Default(WorkerEntrypoint):
                         ingredient_count=len(report["formula_rows"]) - 1,
                     )
                     return _json(
-                        {"report": report, "version": record, "access_token": access_token},
+                        {"report": report, "version": record},
                         status=201,
                         request_id=request_id,
                     )
@@ -218,15 +216,12 @@ class Default(WorkerEntrypoint):
                 append_match = re.fullmatch(r"/api/formulas/([^/]+)/versions", path)
                 formula_match = re.fullmatch(r"/api/formulas/([^/]+)", path)
                 restore_match = re.fullmatch(r"/api/formulas/([^/]+)/restore", path)
-                authorization = request.headers.get("authorization")
-                token = bearer_token(authorization) if authorization else None
-
                 if formula_match and method == "GET":
-                    history = await repository.history(formula_match.group(1), token)
+                    history = await repository.history(formula_match.group(1), None)
                     return _json(history, request_id=request_id)
                 if version_match and method == "GET":
                     version = await repository.get_version(
-                        version_match.group(1), token, int(version_match.group(2))
+                        version_match.group(1), None, int(version_match.group(2))
                     )
                     return _json(version, request_id=request_id)
                 if append_match and method == "POST":
@@ -240,7 +235,7 @@ class Default(WorkerEntrypoint):
                     )
                     version = await repository.append(
                         formula_id=append_match.group(1),
-                        access_token=token,
+                        access_token=None,
                         expected_version=expected,
                         file_name=file_name,
                         contents=contents,
@@ -259,7 +254,7 @@ class Default(WorkerEntrypoint):
                         )
                     version = await repository.restore(
                         formula_id=restore_match.group(1),
-                        access_token=token,
+                        access_token=None,
                         expected_version=expected,
                         target_version=target,
                     )
@@ -335,13 +330,11 @@ class Default(WorkerEntrypoint):
                     )
                 file_name, contents = validate_analysis_body(body)
                 profiles = []
-                sync_key = request.headers.get("x-sync-key")
-                if hasattr(self.env, "FORMULA_DB") and sync_key:
-                    owner_id = sync_owner_id(sync_key)
+                if hasattr(self.env, "FORMULA_DB"):
                     try:
                         profiles = await D1MaterialProfileRepository(
                             self.env.FORMULA_DB,
-                            owner_id=owner_id,
+                            owner_id=PUBLIC_OWNER_ID,
                         ).list_active()
                     except Exception as exc:  # noqa: BLE001 - analysis remains available
                         console.error(

@@ -324,7 +324,11 @@ class D1FormulaRepository:
                     "created_at": row["created_at"],
                     "current_version": int(row["current_version"]),
                     "file_name": normalized_input["file_name"],
-                    "product_name": report.get("product_name", "Saved formula"),
+                    "product_name": (
+                        report.get("product_inference", {}).get("name")
+                        or report.get("product_name")
+                        or "Saved formula"
+                    ),
                 }
             )
         return workspaces

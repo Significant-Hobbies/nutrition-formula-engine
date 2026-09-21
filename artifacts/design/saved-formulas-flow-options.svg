@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1120" viewBox="0 0 1680 1120">
+  <rect width="1680" height="1120" fill="#edf1ef"/>
+  <text x="56" y="58" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#152421">Make saved formulas understandable</text>
+  <text x="56" y="88" font-family="Arial, sans-serif" font-size="16" fill="#53635f">Three different flows. The database stays the same; only the user experience changes.</text>
+
+  <!-- Option A -->
+  <g transform="translate(48 128)">
+    <rect width="504" height="920" rx="22" fill="#fbfcfb" stroke="#b9c9c4" stroke-width="2"/>
+    <rect width="504" height="78" rx="22" fill="#173f39"/>
+    <rect y="56" width="504" height="22" fill="#173f39"/>
+    <text x="24" y="31" font-family="Arial" font-size="11" font-weight="700" fill="#a8d8cc">A · START FIRST</text>
+    <text x="24" y="56" font-family="Arial" font-size="20" font-weight="700" fill="#ffffff">New formula</text>
+    <rect x="369" y="23" width="111" height="34" rx="17" fill="#285d55"/>
+    <text x="390" y="44" font-family="Arial" font-size="11" font-weight="700" fill="#ffffff">Recent formulas</text>
+
+    <rect x="22" y="104" width="460" height="360" rx="12" fill="#ffffff" stroke="#c9d5d1"/>
+    <text x="42" y="140" font-family="Arial" font-size="22" font-weight="700" fill="#172825">Check a formula</text>
+    <text x="42" y="166" font-family="Arial" font-size="12" fill="#64726f">Paste text, upload a file, or add a photo.</text>
+    <rect x="42" y="190" width="420" height="190" rx="8" fill="#f5f8f7" stroke="#c9d5d1"/>
+    <text x="60" y="222" font-family="monospace" font-size="11" fill="#30413d">FINISHED BATCH       1000 L</text>
+    <text x="60" y="250" font-family="monospace" font-size="11" fill="#30413d">FERRIC AMMONIUM      13.4 KG</text>
+    <text x="60" y="278" font-family="monospace" font-size="11" fill="#30413d">CYANOCOBALAMIN       0.085 G</text>
+    <text x="60" y="306" font-family="monospace" font-size="11" fill="#30413d">NEPAZENE                 1 KG</text>
+    <text x="60" y="350" font-family="Arial" font-size="10" fill="#7c8986">Drop a PDF, image, spreadsheet, or text here</text>
+    <rect x="42" y="398" width="420" height="46" rx="7" fill="#19766a"/>
+    <text x="200" y="426" font-family="Arial" font-size="12" font-weight="700" fill="#ffffff">Check formula</text>
+
+    <path d="M252 480 L252 526" stroke="#86a09a" stroke-width="2" stroke-dasharray="5 5"/>
+    <polygon points="247,521 257,521 252,530" fill="#86a09a"/>
+    <rect x="22" y="542" width="460" height="180" rx="12" fill="#ffffff" stroke="#c9d5d1"/>
+    <text x="42" y="578" font-family="Arial" font-size="12" font-weight="700" fill="#19766a">RESULT</text>
+    <text x="42" y="610" font-family="Arial" font-size="19" font-weight="700" fill="#172825">Formula checked</text>
+    <text x="42" y="635" font-family="Arial" font-size="11" fill="#64726f">13 ingredients · 1 assumption · 99.4% identified</text>
+    <rect x="42" y="662" width="182" height="40" rx="7" fill="#19766a"/>
+    <text x="95" y="687" font-family="Arial" font-size="11" font-weight="700" fill="#fff">Save formula</text>
+    <text x="245" y="686" font-family="Arial" font-size="11" fill="#53635f">Download report</text>
+
+    <rect x="22" y="748" width="460" height="118" rx="10" fill="#e7f2ef"/>
+    <text x="42" y="779" font-family="Arial" font-size="11" font-weight="700" fill="#175f56">THE IDEA</text>
+    <text x="42" y="803" font-family="Arial" font-size="11" fill="#40514d">Saving appears only after there is something to save.</text>
+    <text x="42" y="823" font-family="Arial" font-size="11" fill="#40514d">Recent formulas is one quiet link in the header.</text>
+    <text x="42" y="843" font-family="Arial" font-size="11" fill="#40514d">Device transfer lives inside Recent formulas.</text>
+    <text x="22" y="897" font-family="Arial" font-size="12" font-weight="700" fill="#19766a">RECOMMENDED</text>
+  </g>
+
+  <!-- Option B -->
+  <g transform="translate(588 128)">
+    <rect width="504" height="920" rx="22" fill="#fbfcfb" stroke="#b9c9c4" stroke-width="2"/>
+    <rect width="504" height="78" rx="22" fill="#173f39"/>
+    <rect y="56" width="504" height="22" fill="#173f39"/>
+    <text x="24" y="31" font-family="Arial" font-size="11" font-weight="700" fill="#a8d8cc">B · CHOOSE FIRST</text>
+    <text x="24" y="56" font-family="Arial" font-size="20" font-weight="700" fill="#ffffff">Formula checker</text>
+
+    <text x="22" y="122" font-family="Arial" font-size="22" font-weight="700" fill="#172825">What do you want to do?</text>
+    <rect x="22" y="148" width="222" height="180" rx="12" fill="#e6f3ef" stroke="#75a99e"/>
+    <circle cx="58" cy="186" r="19" fill="#19766a"/>
+    <text x="51" y="194" font-family="Arial" font-size="24" fill="#fff">+</text>
+    <text x="42" y="233" font-family="Arial" font-size="17" font-weight="700" fill="#172825">New formula</text>
+    <text x="42" y="257" font-family="Arial" font-size="11" fill="#53635f">Paste or upload ingredients</text>
+    <text x="42" y="278" font-family="Arial" font-size="11" fill="#53635f">and calculate a result.</text>
+    <text x="42" y="308" font-family="Arial" font-size="11" font-weight="700" fill="#19766a">Start →</text>
+    <rect x="260" y="148" width="222" height="180" rx="12" fill="#ffffff" stroke="#c9d5d1"/>
+    <rect x="280" y="169" width="38" height="38" rx="7" fill="#e7ecea"/>
+    <text x="289" y="194" font-family="Arial" font-size="18" fill="#3c554f">≡</text>
+    <text x="280" y="233" font-family="Arial" font-size="17" font-weight="700" fill="#172825">Recent formulas</text>
+    <text x="280" y="257" font-family="Arial" font-size="11" fill="#53635f">Open a saved formula or</text>
+    <text x="280" y="278" font-family="Arial" font-size="11" fill="#53635f">look at an older version.</text>
+    <text x="280" y="308" font-family="Arial" font-size="11" font-weight="700" fill="#19766a">Open →</text>
+
+    <text x="22" y="372" font-family="Arial" font-size="15" font-weight="700" fill="#172825">Recently opened</text>
+    <rect x="22" y="392" width="460" height="84" rx="9" fill="#ffffff" stroke="#c9d5d1"/>
+    <text x="42" y="422" font-family="Arial" font-size="13" font-weight="700" fill="#172825">Oral haematinic syrup</text>
+    <text x="42" y="446" font-family="Arial" font-size="11" fill="#64726f">Version 3 · Updated 21 Sep</text>
+    <text x="421" y="438" font-family="Arial" font-size="18" fill="#19766a">›</text>
+    <rect x="22" y="488" width="460" height="84" rx="9" fill="#ffffff" stroke="#c9d5d1"/>
+    <text x="42" y="518" font-family="Arial" font-size="13" font-weight="700" fill="#172825">Electrolyte drink</text>
+    <text x="42" y="542" font-family="Arial" font-size="11" fill="#64726f">Version 1 · Updated 18 Sep</text>
+    <text x="421" y="534" font-family="Arial" font-size="18" fill="#19766a">›</text>
+    <text x="22" y="612" font-family="Arial" font-size="11" fill="#60706c">Using another device?</text>
+    <text x="137" y="612" font-family="Arial" font-size="11" font-weight="700" fill="#19766a">Open with access key</text>
+
+    <rect x="22" y="748" width="460" height="118" rx="10" fill="#edf0ef"/>
+    <text x="42" y="779" font-family="Arial" font-size="11" font-weight="700" fill="#40514d">THE IDEA</text>
+    <text x="42" y="803" font-family="Arial" font-size="11" fill="#40514d">New work and old work are equally visible.</text>
+    <text x="42" y="823" font-family="Arial" font-size="11" fill="#40514d">Useful for repeat users with many formulas.</text>
+    <text x="42" y="843" font-family="Arial" font-size="11" fill="#40514d">Adds one decision before starting.</text>
+    <text x="22" y="897" font-family="Arial" font-size="12" font-weight="700" fill="#6b7774">BEST FOR HEAVY REPEAT USE</text>
+  </g>
+
+  <!-- Option C -->
+  <g transform="translate(1128 128)">
+    <rect width="504" height="920" rx="22" fill="#fbfcfb" stroke="#b9c9c4" stroke-width="2"/>
+    <rect width="150" height="920" rx="22" fill="#173f39"/>
+    <rect x="128" width="22" height="920" fill="#173f39"/>
+    <text x="18" y="32" font-family="Arial" font-size="10" font-weight="700" fill="#a8d8cc">C · DOCUMENT</text>
+    <rect x="16" y="58" width="118" height="38" rx="7" fill="#f4fffb"/>
+    <text x="39" y="82" font-family="Arial" font-size="11" font-weight="700" fill="#175f56">+ New formula</text>
+    <text x="18" y="130" font-family="Arial" font-size="10" font-weight="700" fill="#9fc3ba">RECENT</text>
+    <rect x="10" y="145" width="130" height="68" rx="7" fill="#285d55"/>
+    <text x="18" y="168" font-family="Arial" font-size="10" font-weight="700" fill="#fff">Oral haematinic</text>
+    <text x="18" y="185" font-family="Arial" font-size="10" font-weight="700" fill="#fff">syrup</text>
+    <text x="18" y="203" font-family="Arial" font-size="9" fill="#bfe1d9">Saved just now</text>
+    <text x="18" y="246" font-family="Arial" font-size="10" fill="#d0e5e0">Electrolyte drink</text>
+    <text x="18" y="276" font-family="Arial" font-size="10" fill="#d0e5e0">Protein beverage</text>
+    <text x="18" y="870" font-family="Arial" font-size="9" fill="#b1cec7">Use on another</text>
+    <text x="18" y="886" font-family="Arial" font-size="9" fill="#b1cec7">device</text>
+
+    <text x="174" y="44" font-family="Arial" font-size="20" font-weight="700" fill="#172825">Oral haematinic syrup</text>
+    <text x="174" y="66" font-family="Arial" font-size="10" fill="#19766a">Saved just now</text>
+    <rect x="404" y="26" width="78" height="30" rx="15" fill="#e5efec"/>
+    <text x="423" y="45" font-family="Arial" font-size="10" font-weight="700" fill="#28645b">History</text>
+    <rect x="170" y="98" width="312" height="188" rx="10" fill="#ffffff" stroke="#c9d5d1"/>
+    <text x="188" y="128" font-family="Arial" font-size="11" font-weight="700" fill="#52615e">FORMULA</text>
+    <text x="188" y="158" font-family="monospace" font-size="9" fill="#30413d">FINISHED BATCH      1000 L</text>
+    <text x="188" y="183" font-family="monospace" font-size="9" fill="#30413d">FERRIC AMMONIUM     13.4 KG</text>
+    <text x="188" y="208" font-family="monospace" font-size="9" fill="#30413d">CYANOCOBALAMIN      0.085 G</text>
+    <text x="188" y="233" font-family="monospace" font-size="9" fill="#30413d">NEPAZENE                1 KG</text>
+    <rect x="188" y="246" width="276" height="28" rx="5" fill="#e6f3ef"/>
+    <text x="268" y="264" font-family="Arial" font-size="9" font-weight="700" fill="#19766a">Changes save automatically</text>
+    <rect x="170" y="306" width="312" height="240" rx="10" fill="#ffffff" stroke="#c9d5d1"/>
+    <text x="188" y="338" font-family="Arial" font-size="11" font-weight="700" fill="#52615e">CURRENT RESULT</text>
+    <text x="188" y="374" font-family="Arial" font-size="22" font-weight="700" fill="#172825">99.4%</text>
+    <text x="263" y="374" font-family="Arial" font-size="10" fill="#64726f">of input identified</text>
+    <line x1="188" y1="397" x2="464" y2="397" stroke="#d6dfdc"/>
+    <text x="188" y="425" font-family="Arial" font-size="11" fill="#40514d">Sugar</text>
+    <text x="418" y="425" font-family="Arial" font-size="11" font-weight="700" fill="#172825">50.0 g</text>
+    <text x="188" y="452" font-family="Arial" font-size="11" fill="#40514d">Iron</text>
+    <text x="418" y="452" font-family="Arial" font-size="11" font-weight="700" fill="#172825">2.35 g</text>
+    <text x="188" y="479" font-family="Arial" font-size="11" fill="#40514d">Zinc</text>
+    <text x="418" y="479" font-family="Arial" font-size="11" font-weight="700" fill="#172825">107 mg</text>
+    <rect x="188" y="499" width="276" height="30" rx="5" fill="#19766a"/>
+    <text x="281" y="518" font-family="Arial" font-size="9" font-weight="700" fill="#fff">Download report</text>
+
+    <rect x="170" y="748" width="312" height="118" rx="10" fill="#e7f2ef"/>
+    <text x="188" y="779" font-family="Arial" font-size="11" font-weight="700" fill="#175f56">THE IDEA</text>
+    <text x="188" y="803" font-family="Arial" font-size="10" fill="#40514d">Every formula behaves like a document.</text>
+    <text x="188" y="823" font-family="Arial" font-size="10" fill="#40514d">It saves automatically while you work.</text>
+    <text x="188" y="843" font-family="Arial" font-size="10" fill="#40514d">Fast later, but it changes more behavior.</text>
+    <text x="170" y="897" font-family="Arial" font-size="12" font-weight="700" fill="#6b7774">BEST FOR DAILY POWER USERS</text>
+  </g>
+</svg>

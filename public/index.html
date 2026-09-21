@@ -26,6 +26,7 @@
       </a>
       <nav class="site-nav" aria-label="Main navigation">
         <a class="is-active" href="/" aria-current="page">Calculator</a>
+        <a href="/recent-formulas/">Recent formulas</a>
         <a href="/case-studies/">Case studies</a>
       </nav>
     </header>
@@ -89,32 +90,6 @@
             <span id="file-size"></span>
           </div>
         </div>
-        <div id="saved-workspace" class="saved-workspace" hidden>
-          <div>
-            <strong>Saved work found</strong>
-            <span id="saved-workspace-meta"></span>
-          </div>
-          <div>
-            <button id="resume-workspace" class="secondary-button" type="button">Resume</button>
-            <button id="discard-workspace" class="text-button" type="button">Forget on this browser</button>
-          </div>
-        </div>
-        <details id="database-sync" class="database-sync">
-          <summary>
-            <span><strong>Saved work</strong><small id="database-sync-status">Checking online save…</small></span>
-            <span id="database-workspace-count">0 saved</span>
-          </summary>
-          <p class="quiet">Your access key opens the same saved work on another device. Keep this key private.</p>
-          <div class="database-sync-actions">
-            <button id="copy-sync-key" class="secondary-button" type="button">Copy access key</button>
-            <form id="import-sync-key-form">
-              <label for="import-sync-key">Use an existing access key</label>
-              <input id="import-sync-key" type="password" autocomplete="off" minlength="32" />
-              <button class="secondary-button" type="submit">Connect</button>
-            </form>
-          </div>
-          <div id="database-workspace-list" class="database-workspace-list"></div>
-        </details>
         <button id="prepare-button" class="primary-button wide-button" type="button">
           Check formula
         </button>
@@ -180,7 +155,7 @@
           </div>
           <div class="result-actions">
             <button id="save-workspace" class="secondary-button" type="button">
-              Save this version
+              Save formula
             </button>
             <button id="download-report" class="secondary-button" type="button">
               Download report

@@ -10,6 +10,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         calculator: resolve(import.meta.dirname, "public/index.html"),
+        recentFormulas: resolve(import.meta.dirname, "public/recent-formulas/index.html"),
         caseStudies: resolve(import.meta.dirname, "public/case-studies/index.html"),
       },
     },

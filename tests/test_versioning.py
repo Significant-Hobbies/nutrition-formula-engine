@@ -60,6 +60,11 @@ class FakeD1:
                 encoding="utf-8"
             )
         )
+        self.connection.executescript(
+            (ROOT / "migrations/0004_public_saved_formulas.sql").read_text(
+                encoding="utf-8"
+            )
+        )
 
     def prepare(self, sql: str) -> FakeD1Statement:
         return FakeD1Statement(self, sql)
@@ -243,13 +248,16 @@ class VersioningTests(unittest.IsolatedAsyncioTestCase):
         created = await owner_a.create(
             file_name="owner-a.tsv",
             contents="ingredient\t1\tkg",
-            report={**report(), "product_name": "Owner A formula"},
+            report={
+                **report(),
+                "product_name": "Owner A formula",
+                "product_inference": {"name": "Inferred owner A product"},
+            },
         )
 
-        self.assertEqual(
-            [item["formula_id"] for item in await owner_a.list_workspaces()],
-            [created["formula_id"]],
-        )
+        workspaces = await owner_a.list_workspaces()
+        self.assertEqual([item["formula_id"] for item in workspaces], [created["formula_id"]])
+        self.assertEqual(workspaces[0]["product_name"], "Inferred owner A product")
         self.assertEqual(await owner_b.list_workspaces(), [])
         with self.assertRaises(FormulaAccessError):
             await owner_b.history(created["formula_id"], None)

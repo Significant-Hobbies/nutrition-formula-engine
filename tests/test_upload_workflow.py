@@ -4,8 +4,7 @@ import unittest
 from pathlib import Path
 
 from nutrition_formula.http_api import (
-    bearer_token,
-    sync_owner_id,
+    PUBLIC_OWNER_ID,
     validate_accepted_aliases,
     validate_analysis_body,
     validate_material_save_body,
@@ -28,7 +27,7 @@ class UploadWorkflowTests(unittest.TestCase):
         with self.assertRaisesRegex(FormulaUploadError, "file_name and contents"):
             validate_analysis_body({"file_name": "batch.tsv"})
 
-    def test_version_request_requires_optimistic_version_and_bearer_token(self) -> None:
+    def test_version_request_requires_optimistic_version(self) -> None:
         self.assertEqual(
             validate_version_body(
                 {
@@ -47,20 +46,12 @@ class UploadWorkflowTests(unittest.TestCase):
                 [{"action": "replace"}],
             ),
         )
-        self.assertEqual(bearer_token("Bearer private-token"), "private-token")
         with self.assertRaisesRegex(FormulaUploadError, "positive integer"):
             validate_version_body(
                 {"file_name": "batch.tsv", "contents": "rows", "expected_version": 0}
             )
-        with self.assertRaisesRegex(FormulaUploadError, "access token"):
-            bearer_token(None)
-
-    def test_sync_keys_are_validated_and_scoped_deterministically(self) -> None:
-        key = "a" * 43
-        self.assertEqual(sync_owner_id(key), sync_owner_id(key))
-        self.assertNotEqual(sync_owner_id(key), sync_owner_id("b" * 43))
-        with self.assertRaisesRegex(FormulaUploadError, "sync key"):
-            sync_owner_id("short")
+    def test_saved_formulas_use_one_public_owner(self) -> None:
+        self.assertEqual(PUBLIC_OWNER_ID, "public")
 
     def test_saved_alias_and_material_profile_requests_are_bounded(self) -> None:
         self.assertEqual(

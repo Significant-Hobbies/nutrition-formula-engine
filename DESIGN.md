@@ -14,14 +14,17 @@ composition report without decorative interface complexity.
 4. Review only the ingredient identities needing attention.
 5. Confirm, reject, or search for another identity.
 6. See the present-components result update immediately on the same page.
+7. Save the result when it should appear on the separate **Recent formulas** page.
 
 There are no upload tabs, input-mode selectors, dashboards, or setup wizard.
-Public case studies live on one separate page so the calculator stays focused.
+Recent formulas and public case studies each live on a separate page so the
+calculator stays focused. Version history appears only after a saved formula is
+opened. The saved list is public and identical on every device.
 
 ## Layout
 
 - One centered workspace with a clear product title and brief instruction.
-- One small header link opens the separate case-study page.
+- Small header links open Recent formulas and the separate case-study page.
 - A single large paste area is the dominant control above the fold.
 - The editable recovered formula appears before calculation.
 - The macro/micronutrient result follows, then assumptions and missing evidence.

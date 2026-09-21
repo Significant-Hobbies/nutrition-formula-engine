@@ -26,8 +26,8 @@ replace, remove, or add ingredient identities and recalculate immediately.
 An identified ingredient can be saved once and reused automatically when the
 same submitted name appears in later formulas. Saved formulas, immutable
 versions, and reusable ingredient profiles are stored in Cloudflare D1 under a
-high-entropy recovery key. Importing that key reconnects the same private
-workspace on another device.
+single public data set. **Recent formulas** is a separate page and shows the
+same saved formulas on every device without an account or access key.
 Every recalculation creates an immutable in-session report version. The history
 shows component deltas and can restore an earlier result as a new version.
 Use `public/sample-tonic.tsv` as the reference input. The web report shows only
@@ -49,9 +49,9 @@ text, OCR text, ingredient names, and report contents.
 The log is capped at 500 events and disappears when the page session ends, so
 download it before closing the tab when a run should be retained for review.
 
-When the user explicitly selects **Save versioned workspace**, the reviewed
+When the user explicitly selects **Save formula**, the reviewed
 formula, report snapshots, and decisions are stored in D1. The browser retains
-only the recovery key and active-workspace pointer. If D1 is unavailable, the
+only the active-formula pointer. If D1 is unavailable, the
 app visibly falls back to browser IndexedDB and keeps the latest ten versions.
 The original image, PDF, or spreadsheet is not stored; the reviewed normalized
 formula is.
@@ -187,17 +187,15 @@ label set IDs and exact basis assumptions.
 
 The frozen pilot benchmark contains 66 stage-specific cases: 20 extraction
 cases, 20 identity-ranking cases, and the 26 public calculation cases. The
-current local suite contains 84 Python engine/API tests and 34 browser/data
+current local suite contains 84 Python engine/API tests and 38 browser/data
 tests. Thresholds and fixtures are recorded in `benchmarks/manifest.json`.
 
 ## Versioned workspace status
 
 The public Worker binds the `nutrition-formula-engine` D1 database. Formula
-history and reusable ingredient profiles are scoped by an opaque SHA-256 owner
-identifier derived from a browser-generated recovery key; the raw key is not
-stored in D1 or application logs. The repository contract is also exercised
-against a local SQLite-compatible test binding, including cross-owner isolation.
-Browser IndexedDB remains an explicit availability fallback.
+history and reusable ingredient profiles are intentionally public and shared.
+The repository contract is also exercised against a local SQLite-compatible
+test binding. Browser IndexedDB remains an explicit availability fallback.
 
 `GET /api/ingredients/search` currently searches the versioned local food and
 chemical catalogs and returns candidates without applying them. FoodData

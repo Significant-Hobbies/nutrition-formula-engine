@@ -9,7 +9,6 @@ import {
 import {
   browserIngredientRecord,
   browserWorkspaceRecord,
-  clearBrowserWorkspace,
   deleteBrowserIngredient,
   loadBrowserIngredients,
   loadBrowserWorkspace,
@@ -19,7 +18,6 @@ import {
 } from "./workspace-store.js";
 
 const MAX_INPUT_BYTES = 12 * 1024 * 1024;
-const SYNC_KEY_STORAGE = "formula-composition-sync-key";
 
 const fileInput = document.querySelector("#formula-file");
 const formulaText = document.querySelector("#formula-text");
@@ -49,45 +47,8 @@ let workspace = null;
 let savedIngredients = [];
 let sharedIngredientProfiles = [];
 let sharedIngredientLibraryAvailable = false;
-let remoteWorkspaces = [];
-let volatileSyncKey = null;
 const confirmedIdentities = new Set();
 const auditLog = createAuditLog();
-
-function generateSyncKey() {
-  const bytes = crypto.getRandomValues(new Uint8Array(32));
-  return btoa(String.fromCharCode(...bytes))
-    .replaceAll("+", "-")
-    .replaceAll("/", "_")
-    .replaceAll("=", "");
-}
-
-function getSyncKey() {
-  try {
-    let key = localStorage.getItem(SYNC_KEY_STORAGE);
-    if (!key) {
-      key = generateSyncKey();
-      localStorage.setItem(SYNC_KEY_STORAGE, key);
-    }
-    return key;
-  } catch {
-    volatileSyncKey ||= generateSyncKey();
-    return volatileSyncKey;
-  }
-}
-
-function setSyncKey(value) {
-  volatileSyncKey = value;
-  try {
-    localStorage.setItem(SYNC_KEY_STORAGE, value);
-  } catch {
-    // The in-memory key still supports this tab when browser storage is unavailable.
-  }
-}
-
-function databaseHeaders(extra = {}) {
-  return { "X-Sync-Key": getSyncKey(), ...extra };
-}
 
 async function persistBrowserWorkspace() {
   if (workspace?.mode === "server") {
@@ -105,26 +66,6 @@ async function persistBrowserWorkspace() {
     formulaId: workspace.formulaId,
   }));
   workspace.currentVersion = sessionHistory.at(-1)?.version || workspace.currentVersion;
-}
-
-async function refreshSavedWorkspaceOffer() {
-  const panel = document.querySelector("#saved-workspace");
-  try {
-    const saved = await loadBrowserWorkspace();
-    panel.hidden = !saved;
-    if (saved) {
-      const server = saved.storage === "server";
-      const version = server ? saved.current_version : saved.history.at(-1).version;
-      document.querySelector("#saved-workspace strong").textContent = server
-        ? "Saved online work found"
-        : "Saved work found in this browser";
-      document.querySelector("#saved-workspace-meta").textContent = server
-        ? `Saved ${new Date(saved.saved_at).toLocaleString()} · latest version ${version}`
-        : `${saved.history.length} saved versions · ${new Date(saved.saved_at).toLocaleString()} · latest version ${version}`;
-    }
-  } catch {
-    panel.hidden = true;
-  }
 }
 
 function durationSince(startedAt) {
@@ -218,7 +159,6 @@ function renderIngredientLibrary() {
       if (entry.storage === "shared") {
         const response = await fetch(`/api/ingredients/${encodeURIComponent(entry.material_id)}/${encodeURIComponent(entry.version)}`, {
           method: "DELETE",
-          headers: databaseHeaders(),
         });
         const payload = await response.json();
         if (!response.ok) {
@@ -245,7 +185,7 @@ async function refreshIngredientLibrary() {
     savedIngredients = [];
   }
   try {
-    const response = await fetch("/api/ingredients", { headers: databaseHeaders() });
+    const response = await fetch("/api/ingredients");
     if (response.ok) {
       const payload = await response.json();
       sharedIngredientProfiles = payload.profiles || [];
@@ -269,7 +209,7 @@ async function saveIngredientForReuse(row) {
   if (sharedIngredientLibraryAvailable) {
     const response = await fetch("/api/ingredients", {
       method: "POST",
-      headers: databaseHeaders({ "Content-Type": "application/json" }),
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         material_id: row.material_id,
         submitted_alias: row.item,
@@ -305,7 +245,7 @@ async function migrateBrowserIngredients() {
   for (const ingredient of [...savedIngredients]) {
     const response = await fetch("/api/ingredients", {
       method: "POST",
-      headers: databaseHeaders({ "Content-Type": "application/json" }),
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         material_id: ingredient.material_id,
         submitted_alias: ingredient.alias,
@@ -317,54 +257,25 @@ async function migrateBrowserIngredients() {
   }
 }
 
-function renderRemoteWorkspaces() {
-  const list = document.querySelector("#database-workspace-list");
-  list.replaceChildren();
-  document.querySelector("#database-workspace-count").textContent = `${remoteWorkspaces.length} saved`;
-  for (const record of remoteWorkspaces) {
-    const item = document.createElement("div");
-    item.className = "database-workspace-item";
-    const copy = document.createElement("span");
-    const title = document.createElement("strong");
-    title.textContent = record.product_name;
-    const meta = document.createElement("small");
-    meta.textContent = `${record.file_name} · version ${record.current_version} · ${new Date(record.created_at).toLocaleString()}`;
-    copy.append(title, meta);
-    const resume = reviewButton("Resume", () => loadRemoteWorkspace(record.formula_id));
-    resume.setAttribute("aria-label", `Open saved ${record.product_name}`);
-    item.append(copy, resume);
-    list.append(item);
-  }
-}
-
 async function refreshDatabaseSync() {
   try {
-    const response = await fetch("/api/formulas", { headers: databaseHeaders() });
+    const response = await fetch("/api/formulas");
     if (!response.ok) throw new Error("D1 unavailable");
-    const payload = await response.json();
-    remoteWorkspaces = payload.workspaces || [];
-    document.querySelector("#database-sync-status").textContent = "Online save is ready · access key active";
     sharedIngredientLibraryAvailable = true;
     await migrateBrowserIngredients();
     await refreshIngredientLibrary();
   } catch {
-    remoteWorkspaces = [];
-    document.querySelector("#database-sync-status").textContent = "Using this browser only · online save unavailable";
+    sharedIngredientLibraryAvailable = false;
   }
-  renderRemoteWorkspaces();
 }
 
 async function loadRemoteWorkspace(formulaId) {
-  const historyResponse = await fetch(`/api/formulas/${encodeURIComponent(formulaId)}`, {
-    headers: databaseHeaders(),
-  });
+  const historyResponse = await fetch(`/api/formulas/${encodeURIComponent(formulaId)}`);
   const historyPayload = await historyResponse.json();
   if (!historyResponse.ok) throw new Error(historyPayload.error || "The saved work could not be opened.");
   const metadata = new Map(historyPayload.versions.map((item) => [item.version, item]));
   const versions = await Promise.all(historyPayload.versions.map(async (item) => {
-    const response = await fetch(`/api/formulas/${encodeURIComponent(formulaId)}/versions/${item.version}`, {
-      headers: databaseHeaders(),
-    });
+    const response = await fetch(`/api/formulas/${encodeURIComponent(formulaId)}/versions/${item.version}`);
     const payload = await response.json();
     if (!response.ok) throw new Error(payload.error || "A saved version could not be opened.");
     return payload;
@@ -384,13 +295,36 @@ async function loadRemoteWorkspace(formulaId) {
   workspace = {
     mode: "server",
     formulaId,
-    accessToken: null,
     currentVersion: historyPayload.current_version,
   };
   await persistBrowserWorkspace();
   formulaReview.hidden = true;
   renderResult(latest.report);
   recordAudit("workspace_resumed", { storage: "database", version: workspace.currentVersion });
+}
+
+async function loadSavedBrowserFormula() {
+  const saved = await loadBrowserWorkspace();
+  if (!saved) throw new Error("No formula is saved in this browser.");
+  if (saved.storage === "server") {
+    await loadRemoteWorkspace(saved.formula_id);
+    return;
+  }
+  if (!saved.history?.length) throw new Error("The saved formula has no calculated result.");
+  sessionHistory = saved.history;
+  latestContents = saved.latest_contents;
+  latestFileName = saved.latest_file_name;
+  workspace = {
+    mode: "browser",
+    formulaId: saved.formula_id,
+    currentVersion: saved.history.at(-1).version,
+  };
+  formulaReview.hidden = true;
+  renderResult(saved.history.at(-1).report);
+  recordAudit("workspace_resumed", {
+    storage: "browser",
+    version: workspace.currentVersion,
+  });
 }
 
 function selectFile(file) {
@@ -824,10 +758,7 @@ async function restoreVersion(record) {
     if (workspace?.mode === "server" && record.server_version) {
       const response = await fetch(`/api/formulas/${workspace.formulaId}/restore`, {
         method: "POST",
-        headers: databaseHeaders({
-          ...(workspace.accessToken ? { "Authorization": `Bearer ${workspace.accessToken}` } : {}),
-          "Content-Type": "application/json",
-        }),
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           expected_version: workspace.currentVersion,
           target_version: record.server_version,
@@ -882,9 +813,9 @@ function renderHistory() {
     : `Current version ${sessionHistory.at(-1)?.version || 1}`;
   document.querySelector("#history-status").textContent = workspace
     ? workspace.mode === "server"
-      ? "This work and all saved versions are available with your access key."
-      : "This work is stored only in this browser. Online save is not available right now."
-    : "Versions stay in this browser until you save your work.";
+      ? "This formula and its earlier versions are saved online."
+      : "This formula and its earlier versions are saved in this browser."
+    : "Save this formula to keep it and its earlier versions.";
 }
 
 function renderList(selector, items, fallback) {
@@ -926,6 +857,9 @@ function renderResult(result) {
   renderHistory();
   renderList("#assumptions-list", result.report_assumptions, "No extra assumptions were used.");
   renderList("#missing-list", result.missing_information, "No missing ingredient information was found.");
+  const saveButton = document.querySelector("#save-workspace");
+  saveButton.disabled = Boolean(workspace);
+  saveButton.textContent = workspace ? "Saved" : "Save formula";
   results.hidden = false;
   results.scrollIntoView({ behavior: "smooth", block: "start" });
   document.querySelector("#results-title").focus();
@@ -962,12 +896,7 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
     }
     const response = await fetch(endpoint, {
       method: "POST",
-      headers: databaseHeaders({
-        "Content-Type": "application/json",
-        ...(workspace?.mode === "server" && workspace.accessToken
-          ? { "Authorization": `Bearer ${workspace.accessToken}` }
-          : {}),
-      }),
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestBody),
     });
     responseStatus = response.status;
@@ -1032,7 +961,7 @@ document.querySelector("#save-workspace").addEventListener("click", async () => 
   try {
     const response = await fetch("/api/formulas", {
       method: "POST",
-      headers: databaseHeaders({ "Content-Type": "application/json" }),
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         file_name: latestFileName,
         contents: latestContents,
@@ -1050,9 +979,8 @@ document.querySelector("#save-workspace").addEventListener("click", async () => 
         currentVersion: sessionHistory.at(-1)?.version || 1,
       };
       await persistBrowserWorkspace();
-      button.textContent = "Saved in this browser";
+      button.textContent = "Saved";
       renderHistory();
-      await refreshSavedWorkspaceOffer();
       recordAudit("workspace_saved", {
         storage: "browser",
         version: workspace.currentVersion,
@@ -1062,80 +990,20 @@ document.querySelector("#save-workspace").addEventListener("click", async () => 
     workspace = {
       mode: "server",
       formulaId: payload.version.formula_id,
-      accessToken: payload.access_token,
       currentVersion: payload.version.version,
     };
     if (sessionHistory.length) sessionHistory.at(-1).server_version = payload.version.version;
     await persistBrowserWorkspace();
-    button.textContent = "Saved online";
+    button.textContent = "Saved";
     renderHistory();
-    await refreshSavedWorkspaceOffer();
     await refreshDatabaseSync();
     recordAudit("workspace_saved", { version: workspace.currentVersion });
   } catch (error) {
     button.disabled = false;
-    button.textContent = "Save this version";
+    button.textContent = "Save formula";
     updateStatus(document.querySelector("#history-status"), error.message, true);
     recordAudit("workspace_save_failed", { error_type: error?.constructor?.name || "Error" });
   }
-});
-
-document.querySelector("#resume-workspace").addEventListener("click", async () => {
-  const saved = await loadBrowserWorkspace();
-  if (!saved) return;
-  if (saved.storage === "server") {
-    try {
-      await loadRemoteWorkspace(saved.formula_id);
-    } catch (error) {
-      setStatus(error.message, true);
-    }
-    return;
-  }
-  if (!saved.history?.length) return;
-  sessionHistory = saved.history;
-  latestContents = saved.latest_contents;
-  latestFileName = saved.latest_file_name;
-  workspace = {
-    mode: "browser",
-    formulaId: saved.formula_id,
-    currentVersion: saved.history.at(-1).version,
-  };
-  formulaReview.hidden = true;
-  renderResult(saved.history.at(-1).report);
-  recordAudit("workspace_resumed", {
-    storage: "browser",
-    version: workspace.currentVersion,
-  });
-});
-
-document.querySelector("#discard-workspace").addEventListener("click", async () => {
-  await clearBrowserWorkspace();
-  document.querySelector("#saved-workspace").hidden = true;
-  recordAudit("workspace_discarded", { storage: "browser" });
-});
-
-document.querySelector("#copy-sync-key").addEventListener("click", async () => {
-  await navigator.clipboard.writeText(getSyncKey());
-  document.querySelector("#database-sync-status").textContent = "Access key copied · keep it private";
-  recordAudit("database_sync_key_copied");
-});
-
-document.querySelector("#import-sync-key-form").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const input = document.querySelector("#import-sync-key");
-  const value = input.value.trim();
-  if (!/^[A-Za-z0-9_-]{32,200}$/.test(value)) {
-    document.querySelector("#database-sync-status").textContent = "Enter a valid access key";
-    input.focus();
-    return;
-  }
-  setSyncKey(value);
-  input.value = "";
-  await clearBrowserWorkspace();
-  await refreshDatabaseSync();
-  await refreshSavedWorkspaceOffer();
-  document.querySelector("#database-sync").open = true;
-  recordAudit("database_sync_key_imported");
 });
 
 calculateButton.addEventListener("click", async () => {
@@ -1189,7 +1057,7 @@ document.querySelector("#start-over").addEventListener("click", () => {
   formulaReview.hidden = true;
   results.hidden = true;
   document.querySelector("#save-workspace").disabled = false;
-  document.querySelector("#save-workspace").textContent = "Save this version";
+  document.querySelector("#save-workspace").textContent = "Save formula";
   setStatus("");
   setReviewStatus("");
   uploadPanel.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1230,8 +1098,14 @@ addIngredientForm.addEventListener("submit", async (event) => {
   }
 });
 
-refreshSavedWorkspaceOffer();
 refreshIngredientLibrary().then(refreshDatabaseSync);
+
+const requestedFormula = new URLSearchParams(window.location.search).get("formula");
+const resumeBrowserFormula = new URLSearchParams(window.location.search).get("resume") === "browser";
+if (requestedFormula || resumeBrowserFormula) {
+  (requestedFormula ? loadRemoteWorkspace(requestedFormula) : loadSavedBrowserFormula())
+    .catch((error) => setStatus(error.message, true));
+}
 
 if (new URLSearchParams(window.location.search).get("sample") === "1") {
   fetch(sampleTsvUrl)

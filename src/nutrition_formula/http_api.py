@@ -2,10 +2,7 @@
 
 from __future__ import annotations
 
-import re
-
 from nutrition_formula.tsv import FormulaUploadError
-from nutrition_formula.versioning import fingerprint
 
 
 def validate_analysis_body(body: object) -> tuple[str, str]:
@@ -73,20 +70,4 @@ def validate_version_body(body: object) -> tuple[str, str, int, str, list[dict]]
     return file_name, contents, expected_version, cause, decisions
 
 
-def bearer_token(authorization: str | None) -> str:
-    if not authorization or not authorization.startswith("Bearer "):
-        raise FormulaUploadError("A formula access token is required")
-    token = authorization.removeprefix("Bearer ").strip()
-    if not token:
-        raise FormulaUploadError("A formula access token is required")
-    return token
-
-
-def sync_owner_id(sync_key: str | None) -> str:
-    """Validate a high-entropy browser sync key and return its opaque owner ID."""
-
-    if not sync_key or not 32 <= len(sync_key) <= 200:
-        raise FormulaUploadError("A database sync key is required")
-    if not re.fullmatch(r"[A-Za-z0-9_-]+", sync_key):
-        raise FormulaUploadError("The database sync key is invalid")
-    return fingerprint(f"formula-sync:{sync_key}")
+PUBLIC_OWNER_ID = "public"

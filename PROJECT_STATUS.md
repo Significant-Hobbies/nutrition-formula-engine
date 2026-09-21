@@ -28,11 +28,13 @@ perform FSSAI classification, label formatting, or regulatory approval.
 - Calculation receipts with engine version and catalog fingerprints
 - Immutable session report versions with component deltas and restore-as-new-version
 - Explicit browser IndexedDB save/resume fallback with the latest ten versions
-- D1-backed formula history and reusable ingredient profiles that reconnect on
-  another device with a high-entropy recovery key
+- Public D1-backed formula history and reusable ingredient profiles shared by
+  every device without an account or access key
+- A separate Recent formulas page; saving is offered only after calculation,
+  version history stays inside an opened formula, and the list is public
 - Immutable, source-retaining D1 ingredient-profile versions with
   confirm-before-save and explicit deactivate controls
-- Owner-scoped D1 schema and Worker repository endpoints, verified through a
+- Public-scope D1 schema and Worker repository endpoints, verified through a
   local D1-compatible SQLite harness and local Worker integration tests
 - Local catalog candidate search across food and chemical profiles
 - Downloadable Markdown composition report and structured JSON
@@ -54,7 +56,7 @@ perform FSSAI classification, label formatting, or regulatory approval.
 - A separate public case-study page showing all 55 supported ingredient and
   nutrient comparisons across 26 products, with one source link per product
 - A frozen 66-case benchmark: 20 extraction, 20 identity, and 26 calculation cases
-- 84 Python engine/API tests and 34 browser/data tests, plus 220 deterministic
+- 84 Python engine/API tests and 38 browser/data tests, plus 220 deterministic
   generated arithmetic trials and 48 parser-alias combinations
 
 ## Public release
@@ -64,14 +66,15 @@ perform FSSAI classification, label formatting, or regulatory approval.
 - Source state: committed and pushed to `origin/main`; the active Worker version
   receives 100% of traffic and is tagged with the same full Git SHA
 - Validation-suite state: the release contains the frozen 66-case benchmark
-  and 118 automated tests
+  and 122 automated tests
 - Production smoke state: root and health routes, valid sample calculation,
   malformed JSON, local candidate search, browser calculation, D1 save, reload,
-  resume, recovery-key import, owner isolation, and reusable-ingredient flow
-  were verified against the public domain. The separate case-study page shows
-  26 products and all 55 supported published comparisons.
-- Persistence state: `FORMULA_DB` is migrated and bound; formulas and accepted
-  profiles are scoped by a recovery-key-derived opaque owner ID
+  resume from the public Recent formulas page, version append, and
+  reusable-ingredient flow were verified against the public domain. The
+  separate case-study page shows 26 products and all 55 supported published
+  comparisons.
+- Persistence state: `FORMULA_DB` is bound and migrated; formulas and accepted
+  profiles use one intentionally public data set shared by every device
 
 ## Not yet configured or implemented
 

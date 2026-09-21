@@ -377,33 +377,6 @@ h1 {
   background: var(--blue-soft);
 }
 
-.saved-workspace {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin: 1rem 0;
-  padding: 0.9rem 1rem;
-  border: 1px solid #b2ccff;
-  border-radius: 0.6rem;
-  background: var(--blue-soft);
-}
-
-.saved-workspace > div {
-  display: flex;
-  gap: 0.65rem;
-}
-
-.saved-workspace > div:first-child {
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.saved-workspace span {
-  color: var(--muted);
-  font-size: 0.78rem;
-}
-
 .wide-button {
   width: 100%;
   margin-top: 20px;
@@ -708,10 +681,14 @@ h1 {
 .primary-button,
 .secondary-button,
 .text-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 42px;
   cursor: pointer;
   border-radius: 7px;
   font-weight: 750;
+  text-decoration: none;
 }
 
 .primary-button {
@@ -874,78 +851,85 @@ h1 {
   background: var(--surface);
 }
 
-.database-sync {
-  margin: 14px 0;
+.recent-formulas-page {
+  width: min(920px, calc(100% - 40px));
+}
+
+.recent-formulas-intro {
+  max-width: none;
+}
+
+.recent-formulas-panel {
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--surface);
+  box-shadow: var(--shadow);
 }
 
-.database-sync > summary,
-.database-workspace-item {
+.recent-formulas-panel {
+  padding: 26px;
+}
+
+.recent-formulas-heading,
+.recent-formula-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 20px;
 }
 
-.database-sync > summary {
-  padding: 13px 14px;
-  cursor: pointer;
+.recent-formulas-heading h2,
+.recent-formula-card h3 {
+  margin-bottom: 4px;
 }
 
-.database-sync > summary span:first-child,
-.database-workspace-item span {
+.recent-formulas-heading .quiet,
+.recent-formula-card p {
+  margin: 0;
+}
+
+.recent-formulas-list {
   display: grid;
-  gap: 2px;
+  margin-top: 22px;
+  gap: 10px;
 }
 
-.database-sync small,
-.database-workspace-item small {
+.recent-formula-card {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.recent-formula-card p {
   color: var(--muted);
+  font-size: 13px;
 }
 
-.database-sync > .quiet,
-.database-sync-actions,
-.database-workspace-list {
-  margin-right: 14px;
-  margin-left: 14px;
-}
-
-.database-sync-actions,
-.database-sync-actions form {
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-}
-
-.database-sync-actions form {
-  flex: 1;
-}
-
-.database-sync-actions label {
-  display: grid;
-  flex: 1;
-  gap: 4px;
-  color: var(--muted);
+.formula-storage-label {
+  display: inline-flex;
+  margin-top: 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue-dark);
   font-size: 11px;
   font-weight: 700;
-  text-transform: uppercase;
 }
 
-.database-sync-actions input {
-  min-width: 0;
+.recent-formulas-empty {
+  padding: 48px 20px 30px;
+  text-align: center;
 }
 
-.database-workspace-list {
-  display: grid;
-  padding: 12px 0 14px;
-  gap: 8px;
+.recent-formulas-empty p {
+  color: var(--muted);
 }
 
-.database-workspace-item {
-  padding-top: 9px;
-  border-top: 1px solid var(--line);
+.public-formulas-note {
+  margin: 14px 2px 0;
+  color: var(--muted);
+  font-size: 12px;
 }
 
 .ingredient-library > summary {
@@ -1015,14 +999,6 @@ h1 {
   border-color: #abefc6;
   background: var(--green-soft);
   color: var(--green);
-}
-
-.database-sync-actions input {
-  min-height: 40px;
-  padding: 0 10px;
-  border: 1px solid #98a2b3;
-  border-radius: 8px;
-  font-size: 14px;
 }
 
 .summary-grid {
@@ -1457,12 +1433,6 @@ td[data-label="Converted to"] {
     gap: 12px;
   }
 
-  .saved-workspace,
-  .saved-workspace > div:last-child {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
   .primary-button {
     width: 100%;
   }
@@ -1524,10 +1494,19 @@ td[data-label="Converted to"] {
     margin-left: 20px;
   }
 
-  .database-sync-actions,
-  .database-sync-actions form {
+  .recent-formulas-panel {
+    padding: 18px;
+  }
+
+  .recent-formulas-heading,
+  .recent-formula-card {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .recent-formulas-heading .primary-button,
+  .recent-formula-card .secondary-button {
+    width: 100%;
   }
 
   .result-actions {
@@ -1653,6 +1632,23 @@ td[data-label="Converted to"] {
     width: 100%;
     grid-column: 1;
     grid-row: auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .site-header .brand {
+    display: none;
+  }
+
+  .site-nav {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .site-nav a {
+    padding-right: 6px;
+    padding-left: 6px;
+    font-size: 12px;
   }
 }
 
