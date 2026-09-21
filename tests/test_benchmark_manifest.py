@@ -54,6 +54,74 @@ class BenchmarkManifestTests(unittest.TestCase):
                 )
                 self.assertEqual(difference, Decimal(case["difference_percent"]))
 
+    def test_all_displayed_case_study_values_match_engine_results(self) -> None:
+        metric_ids = {
+            "Glucose": "glucose",
+            "Sodium": "sodium",
+            "Chloride": "chloride",
+            "Potassium": "potassium",
+            "Citrate": "citrate",
+            "Calcium": "calcium",
+            "Lactate": "lactate",
+            "Dextrose": "dextrose",
+            "Energy": "energy",
+            "Magnesium": "magnesium",
+            "Acetate": "acetate",
+            "Gluconate": "gluconate",
+            "Bicarbonate": "bicarbonate",
+            "Protein": "protein",
+            "Carbohydrate": "carbohydrate",
+            "Vitamin C": "vitamin_c",
+            "Elemental magnesium": "elemental_magnesium",
+            "Elemental iron": "elemental_iron",
+            "Elemental zinc": "elemental_zinc",
+            "Elemental calcium": "elemental_calcium",
+            "Elemental copper": "elemental_copper",
+            "Elemental selenium": "elemental_selenium",
+            "Elemental potassium": "elemental_potassium",
+            "Phosphorus": "phosphorus",
+            "Elemental manganese": "elemental_manganese",
+            "Elemental chromium": "elemental_chromium",
+        }
+        fixtures = {
+            case["public_case_index"]: ROOT / case["fixture"]
+            for case in self.manifest["calculation_cases"]
+        }
+        checked = 0
+        for case_index, case in enumerate(self.public_cases):
+            formula = json.loads(fixtures[case_index].read_text(encoding="utf-8"))
+            result = calculate(self.catalog, formula)
+            comparisons = case.get("components") or [case]
+            for comparison in comparisons:
+                with self.subTest(
+                    product=case["product"], component=comparison["component"]
+                ):
+                    metric_id = metric_ids[comparison["component"]]
+                    if case["product"] == "USDA MyPlate Yogurt Smoothie in a Bag":
+                        metric_id = {
+                            "Calcium": "food_calcium",
+                            "Potassium": "food_potassium",
+                        }.get(comparison["component"], metric_id)
+                    item = next(
+                        nutrient
+                        for nutrient in result["nutrients"]
+                        if nutrient["id"] == metric_id
+                    )
+                    unit = comparison["predicted"].split(" ", 1)[1]
+                    if unit.endswith("/L"):
+                        actual = Decimal(item["per_100_ml"]) * Decimal(10)
+                    elif unit.endswith("/100 mL"):
+                        actual = Decimal(item["per_100_ml"])
+                    else:
+                        actual = Decimal(item["total_batch"])
+                    shown = Decimal(comparison["predicted"].split(" ", 1)[0])
+                    self.assertEqual(
+                        actual.quantize(shown, rounding=ROUND_HALF_UP),
+                        shown,
+                    )
+                    checked += 1
+        self.assertEqual(checked, 55)
+
     def test_identity_cases_select_the_expected_local_candidate(self) -> None:
         for case in self.manifest["identity_cases"]:
             with self.subTest(query=case["query"]):

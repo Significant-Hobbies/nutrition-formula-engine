@@ -17,6 +17,44 @@ test("publishes all twenty-six public validation cases", () => {
   );
 });
 
+test("publishes every available comparison instead of one headline value", () => {
+  const comparisons = data.cases.flatMap((study) => study.components || [{
+    component: study.component,
+    declared: study.declared,
+    predicted: study.predicted,
+    difference_percent: study.difference_percent,
+  }]);
+
+  assert.equal(comparisons.length, 55);
+  assert.equal(comparisons.length, data.overall_summary.comparison_count);
+  assert.equal(
+    data.cases.find((study) => study.product === "Plasma-Lyte A").components.length,
+    6,
+  );
+  assert.equal(
+    data.cases.find((study) => study.product === "USDA MyPlate Yogurt Smoothie in a Bag").components.length,
+    6,
+  );
+  for (const comparison of comparisons) {
+    assert.ok(comparison.component);
+    assert.ok(comparison.declared);
+    assert.ok(comparison.predicted);
+    assert.ok(Number.isFinite(Number(comparison.difference_percent)));
+  }
+});
+
+test("case studies have a separate plain-English page", async () => {
+  const html = await readFile(
+    new URL("../public/case-studies/index.html", import.meta.url),
+    "utf8",
+  );
+  const home = await readFile(new URL("../public/index.html", import.meta.url), "utf8");
+  assert.match(html, /Every product and value/);
+  assert.match(html, /never guess a missing amount/);
+  assert.match(home, /href="\/case-studies\/"/);
+  assert.doesNotMatch(home, /id="case-study-body"/);
+});
+
 test("marketed medicine summary matches the displayed case differences", () => {
   const medicineNames = new Set([
     "Magnesium Oxide 400 mg tablet",

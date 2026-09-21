@@ -5,35 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Upload one batch formula and receive a traceable theoretical composition report."
+      content="Upload one batch formula and see the calculated ingredients and nutrients."
     />
     <link rel="canonical" href="https://formula.significanthobbies.com/" />
     <meta property="og:url" content="https://formula.significanthobbies.com/" />
-    <meta property="og:title" content="Formula Composition Report" />
+    <meta property="og:title" content="Formula Calculator" />
     <meta
       property="og:description"
-      content="Upload one batch formula and receive a traceable theoretical composition report."
+      content="Upload one batch formula and see the calculated ingredients and nutrients."
     />
-    <title>Formula Composition Workspace</title>
+    <title>Formula Calculator</title>
     <link rel="stylesheet" href="/styles.css" />
     <script src="/app.js" type="module"></script>
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="/" aria-label="Formula Composition Workspace home">
+      <a class="brand" href="/" aria-label="Formula Calculator home">
         <span class="brand-mark" aria-hidden="true">FC</span>
-        <span>Formula Composition</span>
+        <span>Formula Calculator</span>
       </a>
-      <span class="workspace-badge"><i aria-hidden="true"></i>Versioned workspace</span>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a class="is-active" href="/" aria-current="page">Calculator</a>
+        <a href="/case-studies/">Case studies</a>
+      </nav>
     </header>
 
     <main>
       <section class="intro" aria-labelledby="page-title">
-        <p class="eyebrow">Traceable formulation analysis</p>
-        <h1 id="page-title">Analyze a batch formula</h1>
+        <p class="eyebrow">Formula calculator</p>
+        <h1 id="page-title">Calculate what is in a batch</h1>
         <p class="lede">
-          Paste a formula or upload a file. Review the recovered rows, then calculate a
-          versioned composition report.
+          Paste a formula or upload a file. Check the rows, then see the ingredients and nutrients.
         </p>
       </section>
 
@@ -46,7 +48,7 @@
           <div class="source-actions">
             <a class="sample-link" href="/sample-tonic.tsv" download>Download sample</a>
             <button id="download-audit" class="text-button compact-button" type="button">
-              Download audit log
+              Download activity log
             </button>
           </div>
         </div>
@@ -89,7 +91,7 @@
         </div>
         <div id="saved-workspace" class="saved-workspace" hidden>
           <div>
-            <strong>Saved browser workspace available</strong>
+            <strong>Saved work found</strong>
             <span id="saved-workspace-meta"></span>
           </div>
           <div>
@@ -99,14 +101,14 @@
         </div>
         <details id="database-sync" class="database-sync">
           <summary>
-            <span><strong>Database sync</strong><small id="database-sync-status">Checking D1…</small></span>
+            <span><strong>Saved work</strong><small id="database-sync-status">Checking online save…</small></span>
             <span id="database-workspace-count">0 saved</span>
           </summary>
-          <p class="quiet">Your recovery key unlocks the same private history on another device. Formula data stays in D1; only the key and active pointer stay in this browser.</p>
+          <p class="quiet">Your access key opens the same saved work on another device. Keep this key private.</p>
           <div class="database-sync-actions">
-            <button id="copy-sync-key" class="secondary-button" type="button">Copy recovery key</button>
+            <button id="copy-sync-key" class="secondary-button" type="button">Copy access key</button>
             <form id="import-sync-key-form">
-              <label for="import-sync-key">Use an existing recovery key</label>
+              <label for="import-sync-key">Use an existing access key</label>
               <input id="import-sync-key" type="password" autocomplete="off" minlength="32" />
               <button class="secondary-button" type="submit">Connect</button>
             </form>
@@ -114,55 +116,41 @@
           <div id="database-workspace-list" class="database-workspace-list"></div>
         </details>
         <button id="prepare-button" class="primary-button wide-button" type="button">
-          Prepare formula for review
+          Check formula
         </button>
         <p id="status" class="status" role="status" aria-live="polite"></p>
-        <p class="audit-note">Session audit logs contain event metadata and hashes, not formula or OCR text.</p>
+        <p class="audit-note">The activity log records actions and times. It does not include formula text.</p>
       </section>
 
       <section class="validation-panel" aria-labelledby="validation-title">
         <div class="validation-summary">
           <div>
-            <p class="eyebrow">Public validation evidence</p>
-            <h2 id="validation-title">26 independently published formulas reproduced</h2>
+            <p class="eyebrow">Tested with public products</p>
+            <h2 id="validation-title">26 products and 55 published values checked</h2>
             <p>
-              Fifteen marketed-medicine salt conversions average <strong>0.226% difference</strong>
-              from the declared active amount; the largest is <strong>0.976%</strong>.
-              Across all 26 comparisons, the mean is <strong>0.524%</strong>; the largest is
-              <strong>4.643%</strong> for F-75 energy using reference-food profiles.
+              See every value we compared, what our calculator returned, the difference,
+              and the public source.
             </p>
           </div>
           <dl>
-            <div><dt>26</dt><dd>public cases</dd></div>
-            <div><dt>66</dt><dd>stage benchmarks</dd></div>
-            <div><dt>83</dt><dd>engine/API tests</dd></div>
+            <div><dt>26</dt><dd>products</dd></div>
+            <div><dt>55</dt><dd>values</dd></div>
+            <div><dt>118</dt><dd>tests</dd></div>
           </dl>
         </div>
-        <details class="case-studies">
-          <summary>View validation cases and sources</summary>
-          <p class="case-study-note">
-            Percentage difference compares one representative declared component per product.
-            These are calculation checks, not laboratory validation or government acceptance.
-          </p>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Public product</th><th>Compared component</th><th>Declared</th><th>Predicted</th><th>Difference</th><th>Source</th></tr></thead>
-              <tbody id="case-study-body"></tbody>
-            </table>
-          </div>
-        </details>
+        <a class="validation-link" href="/case-studies/">View all case studies</a>
       </section>
 
       <section id="formula-review" class="upload-panel formula-review" aria-labelledby="formula-review-title" hidden>
         <div class="panel-heading review-heading">
           <div>
-            <p class="step">Review required</p>
-            <h2 id="formula-review-title" tabindex="-1">Check the recovered formula</h2>
+            <p class="step">Check before calculating</p>
+            <h2 id="formula-review-title" tabindex="-1">Check the formula</h2>
           </div>
           <span id="ingestion-method" class="confidence-chip"></span>
         </div>
         <p class="review-intro">
-          Correct every OCR or parsing mistake here. These are the exact rows that will be calculated.
+          Fix any reading mistakes. We will calculate exactly what is shown here.
         </p>
         <div class="table-wrap draft-table-wrap">
           <table class="draft-table">
@@ -187,12 +175,12 @@
       <section id="results" class="results" aria-labelledby="results-title" hidden>
         <div class="results-header">
           <div>
-            <p class="eyebrow">Analysis complete</p>
-            <h2 id="results-title" tabindex="-1">Composition report</h2>
+            <p class="eyebrow">Calculation complete</p>
+            <h2 id="results-title" tabindex="-1">Results</h2>
           </div>
           <div class="result-actions">
             <button id="save-workspace" class="secondary-button" type="button">
-              Save versioned workspace
+              Save this version
             </button>
             <button id="download-report" class="secondary-button" type="button">
               Download report
@@ -204,7 +192,7 @@
           </div>
         </div>
 
-        <div class="report-receipt" aria-label="Calculation receipt">
+        <div class="report-receipt" aria-label="Calculation details">
           <span id="engine-version"></span>
           <span id="report-version">Session version 1</span>
           <span id="report-fingerprint"></span>
@@ -219,7 +207,7 @@
             <span id="inference-confidence" class="confidence-chip"></span>
           </article>
           <article class="coverage-card">
-            <p class="card-label">Input profile coverage</p>
+            <p class="card-label">Ingredients identified</p>
             <div class="coverage-number"><span id="coverage-known"></span>%</div>
             <div class="coverage-track" aria-hidden="true"><span id="coverage-bar"></span></div>
             <p id="coverage-note" class="quiet"></p>
@@ -240,13 +228,13 @@
         <details id="ingredient-library" class="ingredient-library">
           <summary>
             <span>
-              <span class="card-label">Reusable profiles</span>
-              <strong>Saved ingredient library</strong>
+              <span class="card-label">For future formulas</span>
+              <strong>Saved ingredients</strong>
             </span>
             <span id="ingredient-library-count">0 saved</span>
           </summary>
           <p id="ingredient-library-status" class="quiet">
-            Confirm an interpretation, then save it once for faster reuse in later formulas.
+            Confirm how we read an ingredient, then save it for later formulas.
           </p>
           <div id="ingredient-library-list" class="ingredient-library-list"></div>
         </details>
@@ -255,13 +243,13 @@
           <div class="section-heading">
             <div>
               <span class="section-number">01</span>
-              <h3 id="formula-title">Submitted formula and interpretation</h3>
+              <h3 id="formula-title">Formula and how we read it</h3>
             </div>
-            <p>Exact uploaded quantities are preserved.</p>
+            <p>The amounts you gave us are kept unchanged.</p>
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Item</th><th>Submitted</th><th>Equivalent</th><th>Interpretation</th></tr></thead>
+              <thead><tr><th>Item</th><th>Given</th><th>Converted to</th><th>Read as</th></tr></thead>
               <tbody id="formula-body"></tbody>
             </table>
           </div>
@@ -295,23 +283,23 @@
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Component</th><th>Amount</th><th>Plausible range</th><th>Evidence</th></tr></thead>
+              <thead><tr><th>Component</th><th>Amount</th><th>Possible range</th><th>Confidence</th></tr></thead>
               <tbody id="components-body"></tbody>
             </table>
           </div>
-          <p class="table-note">Zero-result fields are retained internally but omitted here.</p>
+          <p class="table-note">Items with a zero amount are not shown here.</p>
         </section>
 
         <details id="history-panel" class="history-panel">
           <summary>
             <span>
               <span class="section-number">03</span>
-              <strong>Version history and changes</strong>
+              <strong>Saved versions and changes</strong>
             </span>
             <span id="history-count">1 version</span>
           </summary>
           <p id="history-status" class="quiet">
-            Versions remain in this browser session until you save a workspace.
+            Versions stay in this browser until you save your work.
           </p>
           <ol id="history-list" class="history-list"></ol>
         </details>
@@ -320,25 +308,25 @@
           <div class="section-heading">
             <div>
               <span class="section-number">04</span>
-              <h3 id="review-title">Assumptions and missing evidence</h3>
+              <h3 id="review-title">What we assumed and what is missing</h3>
             </div>
-            <p>Confirm these before using the result externally.</p>
+            <p>Check these before you share the result.</p>
           </div>
           <div class="review-grid">
             <div>
-              <h4>Assumptions used</h4>
+              <h4>What we assumed</h4>
               <ul id="assumptions-list" class="review-list"></ul>
             </div>
             <div>
-              <h4>Information still needed</h4>
+              <h4>What we still need</h4>
               <ul id="missing-list" class="review-list"></ul>
             </div>
           </div>
         </section>
 
         <p class="disclaimer">
-          This output is a theoretical formulation calculation—not a laboratory assay,
-          regulatory classification, or government approval.
+          This is a calculation from the formula and source data. It is not a laboratory test
+          or government approval.
         </p>
       </section>
     </main>

@@ -16,10 +16,12 @@ composition report without decorative interface complexity.
 6. See the present-components result update immediately on the same page.
 
 There are no upload tabs, input-mode selectors, dashboards, or setup wizard.
+Public case studies live on one separate page so the calculator stays focused.
 
 ## Layout
 
 - One centered workspace with a clear product title and brief instruction.
+- One small header link opens the separate case-study page.
 - A single large paste area is the dominant control above the fold.
 - The editable recovered formula appears before calculation.
 - The macro/micronutrient result follows, then assumptions and missing evidence.

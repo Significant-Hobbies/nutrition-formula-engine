@@ -8,6 +8,7 @@
   },
   "overall_summary": {
     "case_count": 26,
+    "comparison_count": 55,
     "mean_absolute_percentage_difference": "0.524",
     "median_absolute_percentage_difference": "0.123",
     "maximum_absolute_percentage_difference": "4.643",
@@ -20,6 +21,13 @@
       "declared": "75 mEq/L",
       "predicted": "74.0719 mEq/L",
       "difference_percent": "1.238",
+      "components": [
+        {"component": "Glucose", "declared": "75 mmol/L", "predicted": "74.9334 mmol/L", "difference_percent": "0.089"},
+        {"component": "Sodium", "declared": "75 mEq/L", "predicted": "74.0719 mEq/L", "difference_percent": "1.238"},
+        {"component": "Chloride", "declared": "65 mEq/L", "predicted": "64.6108 mEq/L", "difference_percent": "0.599"},
+        {"component": "Potassium", "declared": "20 mEq/L", "predicted": "20.1207 mEq/L", "difference_percent": "0.604"},
+        {"component": "Citrate", "declared": "10 mmol/L", "predicted": "9.8606 mmol/L", "difference_percent": "1.394"}
+      ],
       "source": "WHO",
       "source_url": "https://pmnch.who.int/resources/publications/i/item/the-treatment-of-diarrhoea"
     },
@@ -29,6 +37,10 @@
       "declared": "154 mEq/L",
       "predicted": "154.0041 mEq/L",
       "difference_percent": "0.003",
+      "components": [
+        {"component": "Sodium", "declared": "154 mEq/L", "predicted": "154.0041 mEq/L", "difference_percent": "0.003"},
+        {"component": "Chloride", "declared": "154 mEq/L", "predicted": "154.0041 mEq/L", "difference_percent": "0.003"}
+      ],
       "source": "DailyMed",
       "source_url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=a4edf2d5-a9ff-30d4-e053-2995a90a5650&type=display"
     },
@@ -38,6 +50,13 @@
       "declared": "130 mEq/L",
       "predicted": "130.3332 mEq/L",
       "difference_percent": "0.256",
+      "components": [
+        {"component": "Sodium", "declared": "130 mEq/L", "predicted": "130.3332 mEq/L", "difference_percent": "0.256"},
+        {"component": "Potassium", "declared": "4 mEq/L", "predicted": "4.0241 mEq/L", "difference_percent": "0.604"},
+        {"component": "Calcium", "declared": "3 mEq/L", "predicted": "2.7207 mEq/L", "difference_percent": "9.309"},
+        {"component": "Chloride", "declared": "109 mEq/L", "predicted": "109.4143 mEq/L", "difference_percent": "0.380"},
+        {"component": "Lactate", "declared": "28 mEq/L", "predicted": "27.6638 mEq/L", "difference_percent": "1.201"}
+      ],
       "source": "DailyMed",
       "source_url": "https://www.dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d3d29c8f-c326-4097-814a-7f4e08c67068"
     },
@@ -47,6 +66,12 @@
       "declared": "147 mEq/L",
       "predicted": "147.1595 mEq/L",
       "difference_percent": "0.108",
+      "components": [
+        {"component": "Sodium", "declared": "147 mEq/L", "predicted": "147.1595 mEq/L", "difference_percent": "0.108"},
+        {"component": "Potassium", "declared": "4 mEq/L", "predicted": "4.0241 mEq/L", "difference_percent": "0.604"},
+        {"component": "Calcium", "declared": "4.5 mEq/L", "predicted": "4.4892 mEq/L", "difference_percent": "0.240"},
+        {"component": "Chloride", "declared": "156 mEq/L", "predicted": "155.6728 mEq/L", "difference_percent": "0.210"}
+      ],
       "source": "DailyMed label",
       "source_url": "https://dailymed.nlm.nih.gov/dailymed/"
     },
@@ -56,6 +81,10 @@
       "declared": "5 g/100 mL",
       "predicted": "5 g/100 mL",
       "difference_percent": "0.000",
+      "components": [
+        {"component": "Dextrose", "declared": "5 g/100 mL", "predicted": "5 g/100 mL", "difference_percent": "0.000"},
+        {"component": "Energy", "declared": "17 kcal/100 mL", "predicted": "17 kcal/100 mL", "difference_percent": "0.000"}
+      ],
       "source": "DailyMed label",
       "source_url": "https://dailymed.nlm.nih.gov/dailymed/"
     },
@@ -65,6 +94,10 @@
       "declared": "10 g/100 mL",
       "predicted": "10 g/100 mL",
       "difference_percent": "0.000",
+      "components": [
+        {"component": "Dextrose", "declared": "10 g/100 mL", "predicted": "10 g/100 mL", "difference_percent": "0.000"},
+        {"component": "Energy", "declared": "34 kcal/100 mL", "predicted": "34 kcal/100 mL", "difference_percent": "0.000"}
+      ],
       "source": "DailyMed label",
       "source_url": "https://dailymed.nlm.nih.gov/dailymed/"
     },
@@ -74,6 +107,14 @@
       "declared": "140 mEq/L",
       "predicted": "140.0625 mEq/L",
       "difference_percent": "0.045",
+      "components": [
+        {"component": "Sodium", "declared": "140 mEq/L", "predicted": "140.0625 mEq/L", "difference_percent": "0.045"},
+        {"component": "Potassium", "declared": "5 mEq/L", "predicted": "4.9631 mEq/L", "difference_percent": "0.738"},
+        {"component": "Magnesium", "declared": "3 mEq/L", "predicted": "2.9513 mEq/L", "difference_percent": "1.623"},
+        {"component": "Chloride", "declared": "98 mEq/L", "predicted": "97.9213 mEq/L", "difference_percent": "0.080"},
+        {"component": "Acetate", "declared": "27 mEq/L", "predicted": "27.0429 mEq/L", "difference_percent": "0.159"},
+        {"component": "Gluconate", "declared": "23 mEq/L", "predicted": "23.0127 mEq/L", "difference_percent": "0.055"}
+      ],
       "source": "DailyMed",
       "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6ec9e61c-2c26-402f-8604-f446b2e34058"
     },
@@ -83,6 +124,10 @@
       "declared": "1 mEq/mL",
       "predicted": "0.9999 mEq/mL",
       "difference_percent": "0.008",
+      "components": [
+        {"component": "Sodium", "declared": "1 mEq/mL", "predicted": "0.9999 mEq/mL", "difference_percent": "0.008"},
+        {"component": "Bicarbonate", "declared": "1 mEq/mL", "predicted": "0.9999 mEq/mL", "difference_percent": "0.008"}
+      ],
       "source": "DailyMed",
       "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9545d58c-1c49-79b3-e053-2995a90a9d40"
     },
@@ -92,6 +137,10 @@
       "declared": "75 kcal/100 mL",
       "predicted": "71.518 kcal/100 mL",
       "difference_percent": "4.643",
+      "components": [
+        {"component": "Energy", "declared": "75 kcal/100 mL", "predicted": "71.518 kcal/100 mL", "difference_percent": "4.643"},
+        {"component": "Protein", "declared": "0.9 g/100 mL", "predicted": "0.8775 g/100 mL", "difference_percent": "2.500"}
+      ],
       "source": "WHO",
       "source_url": "https://iris.who.int/bitstream/handle/10665/41999/9241545312.pdf?sequence=1"
     },
@@ -101,6 +150,10 @@
       "declared": "100 kcal/100 mL",
       "predicted": "101.03 kcal/100 mL",
       "difference_percent": "1.030",
+      "components": [
+        {"component": "Energy", "declared": "100 kcal/100 mL", "predicted": "101.03 kcal/100 mL", "difference_percent": "1.030"},
+        {"component": "Protein", "declared": "2.9 g/100 mL", "predicted": "2.808 g/100 mL", "difference_percent": "3.172"}
+      ],
       "source": "WHO",
       "source_url": "https://iris.who.int/bitstream/handle/10665/41999/9241545312.pdf?sequence=1"
     },
@@ -209,6 +262,10 @@
       "declared": "170 mg/mL",
       "predicted": "170.3091 mg/mL",
       "difference_percent": "0.182",
+      "components": [
+        {"component": "Elemental potassium", "declared": "170 mg/mL", "predicted": "170.3091 mg/mL", "difference_percent": "0.182"},
+        {"component": "Phosphorus", "declared": "3 mmol/mL", "predicted": "3.0010 mmol/mL", "difference_percent": "0.032"}
+      ],
       "source": "DailyMed",
       "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=52f07402-1869-4a97-9c92-9729dc611f85"
     },
@@ -218,6 +275,10 @@
       "declared": "4 mEq/mL",
       "predicted": "4.0007 mEq/mL",
       "difference_percent": "0.018",
+      "components": [
+        {"component": "Sodium", "declared": "4 mEq/mL", "predicted": "4.0007 mEq/mL", "difference_percent": "0.018"},
+        {"component": "Phosphorus", "declared": "3 mmol/mL", "predicted": "3.0004 mmol/mL", "difference_percent": "0.014"}
+      ],
       "source": "DailyMed",
       "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e6169d3b-39d2-47f9-8d5b-b53ec069a722"
     },
@@ -245,9 +306,17 @@
       "declared": "77 kcal/recipe",
       "predicted": "74.7608 kcal/recipe",
       "difference_percent": "2.908",
+      "components": [
+        {"component": "Energy", "declared": "77 kcal/recipe", "predicted": "74.7608 kcal/recipe", "difference_percent": "2.908"},
+        {"component": "Protein", "declared": "4 g/recipe", "predicted": "3.8267 g/recipe", "difference_percent": "4.333"},
+        {"component": "Carbohydrate", "declared": "14 g/recipe", "predicted": "13.3681 g/recipe", "difference_percent": "4.513"},
+        {"component": "Calcium", "declared": "127 mg/recipe", "predicted": "129.3642 mg/recipe", "difference_percent": "1.862"},
+        {"component": "Potassium", "declared": "237 mg/recipe", "predicted": "234.0367 mg/recipe", "difference_percent": "1.250"},
+        {"component": "Vitamin C", "declared": "17 mg/recipe", "predicted": "17.1583 mg/recipe", "difference_percent": "0.931"}
+      ],
       "source": "USDA MyPlate",
       "source_url": "https://www.myplate.gov/recipes/yogurt-smoothie-bag",
-      "assumption": "The optional yogurt wording was modeled as USDA FDC 172219 low-fat vanilla yogurt; official FDC portion weights were used for all three ingredients."
+      "assumption": "The recipe allows different kinds of yogurt. We used the USDA low-fat vanilla yogurt record and USDA serving weights for all three ingredients."
     }
   ]
 }

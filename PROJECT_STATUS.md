@@ -51,8 +51,10 @@ perform FSSAI classification, label formatting, or regulatory approval.
   solution, sodium bicarbonate, and fifteen
   marketed-medicine salt-to-active-moiety comparisons
 - Three 1,000 L manufacturing-style reference formulations and regression tests
+- A separate public case-study page showing all 55 supported ingredient and
+  nutrient comparisons across 26 products, with one source link per product
 - A frozen 66-case benchmark: 20 extraction, 20 identity, and 26 calculation cases
-- 83 Python engine/API tests and 32 browser/data tests, plus 220 deterministic
+- 84 Python engine/API tests and 34 browser/data tests, plus 220 deterministic
   generated arithmetic trials and 48 parser-alias combinations
 
 ## Public release
@@ -62,11 +64,12 @@ perform FSSAI classification, label formatting, or regulatory approval.
 - Source state: committed and pushed to `origin/main`; the active Worker version
   receives 100% of traffic and is tagged with the same full Git SHA
 - Validation-suite state: the release contains the frozen 66-case benchmark
-  and 115 automated tests
+  and 118 automated tests
 - Production smoke state: root and health routes, valid sample calculation,
   malformed JSON, local candidate search, browser calculation, D1 save, reload,
   resume, recovery-key import, owner isolation, and reusable-ingredient flow
-  were verified against the public domain
+  were verified against the public domain. The separate case-study page shows
+  26 products and all 55 supported published comparisons.
 - Persistence state: `FORMULA_DB` is migrated and bound; formulas and accepted
   profiles are scoped by a recovery-key-derived opaque owner ID
 

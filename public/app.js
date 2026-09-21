@@ -1,6 +1,5 @@
 import { normalizeText, rowsToTsv } from "./input-normalizer.js";
 import { createAuditLog, sha256 } from "./audit-log.js";
-import caseStudiesData from "./case-studies.json";
 import sampleTsvUrl from "./sample-tonic.tsv?url";
 import {
   appendSessionVersion,
@@ -117,11 +116,11 @@ async function refreshSavedWorkspaceOffer() {
       const server = saved.storage === "server";
       const version = server ? saved.current_version : saved.history.at(-1).version;
       document.querySelector("#saved-workspace strong").textContent = server
-        ? "Saved database workspace available"
-        : "Saved browser workspace available";
+        ? "Saved online work found"
+        : "Saved work found in this browser";
       document.querySelector("#saved-workspace-meta").textContent = server
-        ? `D1 workspace · saved ${new Date(saved.saved_at).toLocaleString()} · latest version ${version}`
-        : `${saved.history.length} retained versions · saved ${new Date(saved.saved_at).toLocaleString()} · latest version ${version}`;
+        ? `Saved ${new Date(saved.saved_at).toLocaleString()} · latest version ${version}`
+        : `${saved.history.length} saved versions · ${new Date(saved.saved_at).toLocaleString()} · latest version ${version}`;
     }
   } catch {
     panel.hidden = true;
@@ -134,7 +133,7 @@ function durationSince(startedAt) {
 
 function recordAudit(type, details = {}) {
   const event = auditLog.record(type, details);
-  auditButton.textContent = `Download audit log (${event.sequence})`;
+  auditButton.textContent = `Download activity log (${event.sequence})`;
   return event;
 }
 
@@ -196,7 +195,7 @@ function renderIngredientLibrary() {
       material_id: profile.id,
       version: profile.version,
       name: profile.name,
-      detail: `${profile.aliases.length} aliases · shared profile ${profile.version}`,
+      detail: `${profile.aliases.length} names · online version ${profile.version}`,
     })),
     ...savedIngredients.map((profile) => ({
       storage: "browser",
@@ -223,7 +222,7 @@ function renderIngredientLibrary() {
         });
         const payload = await response.json();
         if (!response.ok) {
-          setIngredientLibraryStatus(payload.error || "The shared ingredient could not be removed.", true);
+          setIngredientLibraryStatus(payload.error || "The saved ingredient could not be removed.", true);
           return;
         }
       } else {
@@ -233,7 +232,7 @@ function renderIngredientLibrary() {
       if (latestResult) renderFormula(currentRows);
       recordAudit("ingredient_profile_deactivated", { storage: entry.storage });
     });
-    remove.setAttribute("aria-label", `Remove ${entry.name} from the saved ingredient library`);
+    remove.setAttribute("aria-label", `Remove ${entry.name} from saved ingredients`);
     item.append(name, detail, remove);
     list.append(item);
   }
@@ -264,7 +263,7 @@ async function refreshIngredientLibrary() {
 
 async function saveIngredientForReuse(row) {
   if (!row.material_id || !row.reusable_profile) {
-    setIngredientLibraryStatus("This ingredient does not yet have a reusable composition profile.", true);
+    setIngredientLibraryStatus("This ingredient does not have saved details yet.", true);
     return;
   }
   if (sharedIngredientLibraryAvailable) {
@@ -281,7 +280,7 @@ async function saveIngredientForReuse(row) {
     if (response.ok) {
       await refreshIngredientLibrary();
       renderFormula(currentRows);
-      setIngredientLibraryStatus(`${row.item} is saved in the shared ingredient library.`);
+      setIngredientLibraryStatus(`${row.item} is saved for future formulas.`);
       recordAudit("ingredient_profile_saved", { storage: "shared" });
       return;
     }
@@ -296,7 +295,7 @@ async function saveIngredientForReuse(row) {
   renderFormula(currentRows);
   document.querySelector("#ingredient-library").open = true;
   setIngredientLibraryStatus(
-    `${row.item} is saved for every formula in this browser. Shared sync is not configured yet.`,
+    `${row.item} is saved for every formula in this browser. Online save is not available right now.`,
   );
   recordAudit("ingredient_profile_saved", { storage: "browser" });
 }
@@ -332,7 +331,7 @@ function renderRemoteWorkspaces() {
     meta.textContent = `${record.file_name} · version ${record.current_version} · ${new Date(record.created_at).toLocaleString()}`;
     copy.append(title, meta);
     const resume = reviewButton("Resume", () => loadRemoteWorkspace(record.formula_id));
-    resume.setAttribute("aria-label", `Resume ${record.product_name} from database`);
+    resume.setAttribute("aria-label", `Open saved ${record.product_name}`);
     item.append(copy, resume);
     list.append(item);
   }
@@ -344,13 +343,13 @@ async function refreshDatabaseSync() {
     if (!response.ok) throw new Error("D1 unavailable");
     const payload = await response.json();
     remoteWorkspaces = payload.workspaces || [];
-    document.querySelector("#database-sync-status").textContent = "D1 connected · private key active";
+    document.querySelector("#database-sync-status").textContent = "Online save is ready · access key active";
     sharedIngredientLibraryAvailable = true;
     await migrateBrowserIngredients();
     await refreshIngredientLibrary();
   } catch {
     remoteWorkspaces = [];
-    document.querySelector("#database-sync-status").textContent = "Browser fallback · D1 unavailable";
+    document.querySelector("#database-sync-status").textContent = "Using this browser only · online save unavailable";
   }
   renderRemoteWorkspaces();
 }
@@ -360,14 +359,14 @@ async function loadRemoteWorkspace(formulaId) {
     headers: databaseHeaders(),
   });
   const historyPayload = await historyResponse.json();
-  if (!historyResponse.ok) throw new Error(historyPayload.error || "The database workspace could not be loaded.");
+  if (!historyResponse.ok) throw new Error(historyPayload.error || "The saved work could not be opened.");
   const metadata = new Map(historyPayload.versions.map((item) => [item.version, item]));
   const versions = await Promise.all(historyPayload.versions.map(async (item) => {
     const response = await fetch(`/api/formulas/${encodeURIComponent(formulaId)}/versions/${item.version}`, {
       headers: databaseHeaders(),
     });
     const payload = await response.json();
-    if (!response.ok) throw new Error(payload.error || "A database version could not be loaded.");
+    if (!response.ok) throw new Error(payload.error || "A saved version could not be opened.");
     return payload;
   }));
   versions.sort((left, right) => left.version - right.version);
@@ -539,7 +538,7 @@ function renderPreparedFormula(extraction) {
   sourceDetails.hidden = !extraction.rawText;
   formulaReview.hidden = false;
   results.hidden = true;
-  setReviewStatus(`${draftRows.length} rows recovered. Review every value before calculation.`);
+  setReviewStatus(`${draftRows.length} rows found. Check every value before calculation.`);
   formulaReview.scrollIntoView({ behavior: "smooth", block: "start" });
   document.querySelector("#formula-review-title").focus();
 }
@@ -548,8 +547,8 @@ async function prepareInput() {
   const startedAt = performance.now();
   const inputKind = selectedFile ? "file" : "paste";
   prepareButton.disabled = true;
-  prepareButton.textContent = "Preparing…";
-  setStatus("Reading the formula locally in your browser…");
+  prepareButton.textContent = "Reading…";
+  setStatus("Reading the formula in your browser…");
   recordAudit("ingestion_started", {
     input_kind: inputKind,
     extension: selectedFile?.name.split(".").pop()?.toLowerCase() || null,
@@ -580,7 +579,7 @@ async function prepareInput() {
     setStatus(error.message, true);
   } finally {
     prepareButton.disabled = false;
-    prepareButton.textContent = "Prepare formula for review";
+    prepareButton.textContent = "Check formula";
   }
 }
 
@@ -619,11 +618,11 @@ function renderFormula(rows) {
     const tr = document.createElement("tr");
     tr.append(
       cell("Item", row.item),
-      cell("Submitted", `${row.submitted_quantity} ${row.submitted_unit}`),
-      cell("Equivalent", row.normalized_equivalent),
+      cell("Given", `${row.submitted_quantity} ${row.submitted_unit}`),
+      cell("Converted to", row.normalized_equivalent),
     );
     const interpretation = document.createElement("td");
-    interpretation.dataset.label = "Interpretation";
+    interpretation.dataset.label = "Read as";
     const name = document.createElement("div");
     name.textContent = row.interpretation;
     interpretation.append(name);
@@ -691,7 +690,7 @@ function renderIdentityReview(rows) {
     const submitted = document.createElement("strong");
     submitted.textContent = row.item;
     const interpreted = document.createElement("span");
-    interpreted.textContent = `Interpreted as ${row.interpretation} · ${row.confidence} confidence`;
+    interpreted.textContent = `Read as ${row.interpretation} · ${row.confidence} confidence`;
     copy.append(submitted, interpreted);
     const actions = document.createElement("div");
     actions.className = "identity-actions";
@@ -792,7 +791,7 @@ function renderComponents(components, basisLabel) {
       const details = document.createElement("details");
       details.className = "contribution-details";
       const summary = document.createElement("summary");
-      summary.textContent = `How calculated · ${nonZeroContributions.length} contribution${nonZeroContributions.length === 1 ? "" : "s"}`;
+      summary.textContent = `Show calculation · ${nonZeroContributions.length} source${nonZeroContributions.length === 1 ? "" : "s"}`;
       const list = document.createElement("ul");
       for (const contribution of nonZeroContributions) {
         const item = document.createElement("li");
@@ -806,10 +805,10 @@ function renderComponents(components, basisLabel) {
     tr.append(
       componentCell,
       cell("Amount", `${formatNumber(component.value)} ${component.unit.replace("ug", "µg")}`),
-      cell("Plausible range", component.range_label || "—"),
+      cell("Possible range", component.range_label || "—"),
     );
     const evidence = document.createElement("td");
-    evidence.dataset.label = "Evidence";
+    evidence.dataset.label = "Confidence";
     evidence.append(confidenceBadge(`${component.confidence.score} ${component.confidence.band}`));
     tr.append(evidence);
     body.append(tr);
@@ -879,13 +878,13 @@ function renderHistory() {
   }
   document.querySelector("#history-count").textContent = `${sessionHistory.length} version${sessionHistory.length === 1 ? "" : "s"}`;
   document.querySelector("#report-version").textContent = workspace
-    ? `${workspace.mode === "server" ? "Server" : "Browser"} version ${workspace.currentVersion}`
-    : `Session version ${sessionHistory.at(-1)?.version || 1}`;
+    ? `${workspace.mode === "server" ? "Online" : "Browser"} version ${workspace.currentVersion}`
+    : `Current version ${sessionHistory.at(-1)?.version || 1}`;
   document.querySelector("#history-status").textContent = workspace
     ? workspace.mode === "server"
-      ? "This workspace and its immutable history are stored in D1 and available with your recovery key."
-      : "This workspace is stored only in this browser. Server persistence is not configured."
-    : "Versions remain in this browser session until you save a workspace.";
+      ? "This work and all saved versions are available with your access key."
+      : "This work is stored only in this browser. Online save is not available right now."
+    : "Versions stay in this browser until you save your work.";
 }
 
 function renderList(selector, items, fallback) {
@@ -910,23 +909,23 @@ function renderResult(result) {
   document.querySelector("#inference-name").textContent = result.product_inference.name;
   document.querySelector("#inference-reason").textContent = result.product_inference.reason;
   document.querySelector("#inference-boundary").textContent = result.product_inference.boundary;
-  document.querySelector("#inference-confidence").textContent = `Inference confidence: ${result.product_inference.confidence}`;
+  document.querySelector("#inference-confidence").textContent = `Confidence: ${result.product_inference.confidence}`;
   const known = formatNumber(result.coverage.characterized_percent);
   const unknown = formatNumber(result.coverage.uncharacterized_percent);
   document.querySelector("#coverage-known").textContent = known;
   document.querySelector("#coverage-bar").style.width = `${Math.min(100, Number(known))}%`;
-  document.querySelector("#coverage-note").textContent = `${unknown}% of quantified input mass remains uncharacterized. Coverage is not accuracy.`;
-  document.querySelector("#basis-label").textContent = `Theoretical ${result.basis_label}`;
-  document.querySelector("#engine-version").textContent = `Engine ${result.calculation?.engine_version || "unversioned"}`;
+  document.querySelector("#coverage-note").textContent = `${unknown}% of the measured input has not been identified. This is different from accuracy.`;
+  document.querySelector("#basis-label").textContent = `Calculated ${result.basis_label}`;
+  document.querySelector("#engine-version").textContent = `Calculator ${result.calculation?.engine_version || "version not shown"}`;
   document.querySelector("#report-fingerprint").textContent = result.calculation?.nutrition_catalog_fingerprint
-    ? `Catalog ${result.calculation.nutrition_catalog_fingerprint.slice(0, 10)}`
-    : "Catalog fingerprint unavailable";
+    ? `Data set ${result.calculation.nutrition_catalog_fingerprint.slice(0, 10)}`
+    : "Data set ID unavailable";
   renderFormula(result.formula_rows);
   renderIdentityReview(currentRows);
   renderComponents(result.present_components, result.basis_label);
   renderHistory();
-  renderList("#assumptions-list", result.report_assumptions, "No additional assumptions reported.");
-  renderList("#missing-list", result.missing_information, "No missing profile information identified.");
+  renderList("#assumptions-list", result.report_assumptions, "No extra assumptions were used.");
+  renderList("#missing-list", result.missing_information, "No missing ingredient information was found.");
   results.hidden = false;
   results.scrollIntoView({ behavior: "smooth", block: "start" });
   document.querySelector("#results-title").focus();
@@ -941,7 +940,7 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
   latestContents = contents;
   calculateButton.disabled = true;
   calculateButton.textContent = "Calculating…";
-  setReviewStatus("Checking units, identities, ranges, and nutrient totals…");
+  setReviewStatus("Checking units, ingredient names, ranges, and totals…");
   recordAudit("calculation_started", {
     trigger,
     row_count: contents.split("\n").filter(Boolean).length - 1,
@@ -1042,7 +1041,7 @@ document.querySelector("#save-workspace").addEventListener("click", async () => 
     });
     const payload = await response.json();
     if (!response.ok && payload.code !== "persistence_unavailable") {
-      throw new Error(payload.error || "The workspace could not be saved.");
+      throw new Error(payload.error || "Your work could not be saved.");
     }
     if (payload.code === "persistence_unavailable") {
       workspace = {
@@ -1068,14 +1067,14 @@ document.querySelector("#save-workspace").addEventListener("click", async () => 
     };
     if (sessionHistory.length) sessionHistory.at(-1).server_version = payload.version.version;
     await persistBrowserWorkspace();
-    button.textContent = "Workspace saved";
+    button.textContent = "Saved online";
     renderHistory();
     await refreshSavedWorkspaceOffer();
     await refreshDatabaseSync();
     recordAudit("workspace_saved", { version: workspace.currentVersion });
   } catch (error) {
     button.disabled = false;
-    button.textContent = "Save versioned workspace";
+    button.textContent = "Save this version";
     updateStatus(document.querySelector("#history-status"), error.message, true);
     recordAudit("workspace_save_failed", { error_type: error?.constructor?.name || "Error" });
   }
@@ -1117,7 +1116,7 @@ document.querySelector("#discard-workspace").addEventListener("click", async () 
 
 document.querySelector("#copy-sync-key").addEventListener("click", async () => {
   await navigator.clipboard.writeText(getSyncKey());
-  document.querySelector("#database-sync-status").textContent = "Recovery key copied · keep it private";
+  document.querySelector("#database-sync-status").textContent = "Access key copied · keep it private";
   recordAudit("database_sync_key_copied");
 });
 
@@ -1126,7 +1125,7 @@ document.querySelector("#import-sync-key-form").addEventListener("submit", async
   const input = document.querySelector("#import-sync-key");
   const value = input.value.trim();
   if (!/^[A-Za-z0-9_-]{32,200}$/.test(value)) {
-    document.querySelector("#database-sync-status").textContent = "Enter a valid recovery key";
+    document.querySelector("#database-sync-status").textContent = "Enter a valid access key";
     input.focus();
     return;
   }
@@ -1190,7 +1189,7 @@ document.querySelector("#start-over").addEventListener("click", () => {
   formulaReview.hidden = true;
   results.hidden = true;
   document.querySelector("#save-workspace").disabled = false;
-  document.querySelector("#save-workspace").textContent = "Save versioned workspace";
+  document.querySelector("#save-workspace").textContent = "Save this version";
   setStatus("");
   setReviewStatus("");
   uploadPanel.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1231,36 +1230,6 @@ addIngredientForm.addEventListener("submit", async (event) => {
   }
 });
 
-function renderCaseStudies(data) {
-  const body = document.querySelector("#case-study-body");
-  body.replaceChildren();
-  for (const [index, study] of data.cases.entries()) {
-    const tr = document.createElement("tr");
-    tr.append(
-      cell("Public product", study.product),
-      cell("Compared component", study.component),
-      cell("Declared", study.declared),
-      cell("Predicted", study.predicted),
-      cell("Difference", `${study.difference_percent}%`),
-    );
-    const source = document.createElement("td");
-    source.dataset.label = "Source";
-    const link = document.createElement("a");
-    link.href = study.source_url;
-    link.target = "_blank";
-    link.rel = "noreferrer";
-    link.textContent = study.source;
-    link.addEventListener("click", () => recordAudit("validation_source_opened", {
-      case_index: index + 1,
-      source_domain: new URL(study.source_url).hostname,
-    }));
-    source.append(link);
-    tr.append(source);
-    body.append(tr);
-  }
-}
-
-renderCaseStudies(caseStudiesData);
 refreshSavedWorkspaceOffer();
 refreshIngredientLibrary().then(refreshDatabaseSync);
 

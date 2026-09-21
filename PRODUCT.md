@@ -72,8 +72,8 @@ concise report.
 
 - A Decimal-based formulation engine with 83 passing Python engine/API tests
   and 32 passing browser/data tests.
-- Twenty-six public-product checks against WHO, USDA MyPlate, and DailyMed
-  compositions.
+- Twenty-six public-product checks against WHO, USDA MyPlate, and DailyMed,
+  shown on a separate page with all 55 supported published comparisons.
 - A frozen 66-case benchmark split across extraction, identity ranking, and
   independently published calculation targets.
 - Fifteen marketed-medicine salt-to-active-moiety comparisons with 0.226% mean

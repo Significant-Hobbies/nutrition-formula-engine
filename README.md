@@ -187,7 +187,7 @@ label set IDs and exact basis assumptions.
 
 The frozen pilot benchmark contains 66 stage-specific cases: 20 extraction
 cases, 20 identity-ranking cases, and the 26 public calculation cases. The
-current local suite contains 83 Python engine/API tests and 32 browser/data
+current local suite contains 84 Python engine/API tests and 34 browser/data
 tests. Thresholds and fixtures are recorded in `benchmarks/manifest.json`.
 
 ## Versioned workspace status

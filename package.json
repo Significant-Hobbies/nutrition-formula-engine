@@ -5,9 +5,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build public --outDir ../dist --emptyOutDir",
+    "build": "vite build",
     "test": "node --test tests-web/*.test.js",
-    "check": "pnpm test && node --check public/app.js"
+    "check": "pnpm test && node --check public/app.js && node --check public/case-studies.js && node --check vite.config.js"
   },
   "license": "UNLICENSED",
   "packageManager": "pnpm@10.33.2",

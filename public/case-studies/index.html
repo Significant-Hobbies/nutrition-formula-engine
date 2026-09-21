@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="See how the formula calculator compares with published food and medicine values."
+    />
+    <link rel="canonical" href="https://formula.significanthobbies.com/case-studies/" />
+    <title>Case Studies | Formula Calculator</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/case-studies.js" type="module"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Formula Calculator home">
+        <span class="brand-mark" aria-hidden="true">FC</span>
+        <span>Formula Calculator</span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="/">Calculator</a>
+        <a class="is-active" href="/case-studies/" aria-current="page">Case studies</a>
+      </nav>
+    </header>
+
+    <main class="case-study-page">
+      <section class="intro case-study-intro" aria-labelledby="page-title">
+        <p class="eyebrow">Public checks</p>
+        <h1 id="page-title">How our results compare</h1>
+        <p class="lede">
+          We entered 26 public food and medicine formulas into the calculator. Below are all
+          55 ingredient and nutrient values that the public sources gave us enough information
+          to check.
+        </p>
+      </section>
+
+      <section class="case-study-summary" aria-label="Case study summary">
+        <dl>
+          <div><dt id="product-count">26</dt><dd>products</dd></div>
+          <div><dt id="comparison-count">55</dt><dd>values compared</dd></div>
+          <div><dt id="source-count">3</dt><dd>public sources</dd></div>
+        </dl>
+        <div>
+          <h2>How to read this page</h2>
+          <p>
+            <strong>Published</strong> is the value shown by WHO, USDA, or DailyMed.
+            <strong>Calculated</strong> is our result from the product formula.
+            <strong>Difference</strong> shows how far apart they are.
+          </p>
+        </div>
+      </section>
+
+      <div class="case-study-boundary" role="note">
+        We compare every ingredient and nutrient amount supported by these checks. We do not
+        compare acidity, tablet weight, or ingredients whose amounts were not published. We
+        never guess a missing amount. These checks do not replace a laboratory test or show
+        government approval.
+      </div>
+
+      <section aria-labelledby="results-title">
+        <div class="case-study-list-heading">
+          <div>
+            <p class="eyebrow">Full results</p>
+            <h2 id="results-title">Every product and value</h2>
+          </div>
+          <a class="secondary-button" href="/">Try the calculator</a>
+        </div>
+        <div id="case-study-list" class="case-study-list"></div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -2,7 +2,7 @@
   "$schema": "fleet.design-review.v1",
   "version": 1,
   "project": "nutrition-formula-engine",
-  "target": "simple database-backed formula composition workspace",
+  "target": "simple formula calculator and separate case-study page",
   "surfaceMode": "operate",
   "mode": "overhaul",
   "register": "product",
@@ -95,6 +95,8 @@
       "posture": "advisory",
       "findings": [
         "The owner selected the simple workbench direction and explicitly rejected additional product-shell complexity.",
+        "The case-study page reuses the approved workbench system and adds only a two-link header; no new product shell or dependency was added.",
+        "Browser checks at 390, 768, and 1440 pixels found 26 product cards, 55 comparison rows, and no horizontal overflow.",
         "Responsive screenshots at 390, 768, and 1440 pixels retain the single-column formula workflow and compact database disclosure.",
         "Formula history and reusable ingredient profiles use the same recovery-key-scoped D1 workspace without adding account navigation.",
         "The 517.57 kB lazy ingestion chunk remains a build warning; PDF, spreadsheet, and OCR code is loaded only when needed."
