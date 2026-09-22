@@ -127,6 +127,11 @@ class UploadWorkflowTests(unittest.TestCase):
         self.assertEqual(result["product_inference"]["name"], "Food or beverage formulation")
         self.assertEqual(present["protein"]["value"], "9.8")
         self.assertEqual(present["carbohydrate"]["value"], "78.94")
+        self.assertEqual(
+            [ingredient["name"] for ingredient in result["label_ingredients"]],
+            ["Unsweetened cocoa powder", "Granulated sugar"],
+        )
+        self.assertEqual(result["label_ingredients"][0]["input_mass_percent"], "50")
 
     def test_saved_alias_reuses_a_profile_without_identity_review(self) -> None:
         text = (

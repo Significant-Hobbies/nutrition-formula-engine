@@ -52,7 +52,7 @@ test("case studies have a separate plain-English page", async () => {
   assert.match(html, /Every product and value/);
   assert.match(html, /never guess a missing amount/);
   assert.match(home, /href="\/case-studies\/"/);
-  assert.match(home, /<dt>122<\/dt><dd>tests<\/dd>/);
+  assert.match(home, /<dt>125<\/dt><dd>tests<\/dd>/);
   assert.doesNotMatch(home, /id="case-study-body"/);
 });
 

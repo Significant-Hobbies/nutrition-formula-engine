@@ -110,7 +110,7 @@
           <dl>
             <div><dt>26</dt><dd>products</dd></div>
             <div><dt>55</dt><dd>values</dd></div>
-            <div><dt>122</dt><dd>tests</dd></div>
+            <div><dt>125</dt><dd>tests</dd></div>
           </dl>
         </div>
         <a class="validation-link" href="/case-studies/">View all case studies</a>
@@ -296,6 +296,88 @@
               <h4>What we still need</h4>
               <ul id="missing-list" class="review-list"></ul>
             </div>
+          </div>
+        </section>
+
+        <section id="label-builder" class="report-section label-builder" aria-labelledby="label-builder-title">
+          <div class="section-heading">
+            <div>
+              <span class="section-number">05</span>
+              <h3 id="label-builder-title">Create a back label</h3>
+            </div>
+            <p>Retail-style draft using the calculated result.</p>
+          </div>
+
+          <div class="label-workspace">
+            <form id="label-options" class="label-options">
+              <div class="label-options-heading">
+                <strong>Label details</strong>
+                <span>Uses one adult reference, as on typical Indian packs.</span>
+              </div>
+              <label>
+                Product name
+                <input id="label-product-name" autocomplete="off" />
+              </label>
+              <div class="label-option-row">
+                <label>
+                  Serving size
+                  <span class="input-with-suffix">
+                    <input id="label-serving-size" value="30" inputmode="decimal" required />
+                    <span id="label-serving-unit">g</span>
+                  </span>
+                </label>
+                <label>
+                  Servings per pack
+                  <input id="label-servings-per-pack" inputmode="decimal" placeholder="Optional" />
+                </label>
+              </div>
+              <div class="label-actions">
+                <button class="primary-button" type="submit">Update label</button>
+                <button id="print-label" class="secondary-button" type="button">Print or save PDF</button>
+              </div>
+              <p id="label-status" class="status label-status" role="status" aria-live="polite"></p>
+              <p class="label-helper">
+                This follows common retail layout conventions. Product category, allergens,
+                additives, licence details, dates, claims, and pack declarations still need regulatory review.
+              </p>
+            </form>
+
+            <article id="nutrition-label" class="nutrition-label" aria-label="Draft product back label">
+              <header class="nutrition-label-header">
+                <p>Nutrition information</p>
+                <h4 id="label-preview-name">Product</h4>
+                <dl>
+                  <div><dt>Serving size</dt><dd id="label-preview-serving"></dd></div>
+                  <div id="label-preview-servings-row" hidden>
+                    <dt>Servings per pack</dt><dd id="label-preview-servings"></dd>
+                  </div>
+                </dl>
+              </header>
+              <div class="nutrition-label-table-wrap">
+                <table class="nutrition-label-table">
+                  <thead>
+                    <tr>
+                      <th>Nutrient</th>
+                      <th id="label-basis-heading">Per 100 g</th>
+                      <th id="label-serving-heading">Per serve</th>
+                      <th>%RDA*</th>
+                    </tr>
+                  </thead>
+                  <tbody id="label-nutrients"></tbody>
+                </table>
+              </div>
+              <div class="nutrition-label-copy">
+                <p><strong>Ingredients:</strong> <span id="label-ingredients"></span></p>
+                <p id="label-data-warning" class="label-warning" hidden></p>
+                <p class="label-footnote">
+                  *Per-serving contribution to adult RDA. FSSAI fixed adult references are used for
+                  energy, total fat, saturated fat, trans fat, added sugar, and sodium; applicable
+                  micronutrients use ICMR-NIN 2020 adult sedentary-man RDA. “—” means no applicable
+                  reference is provided here.
+                </p>
+                <p class="label-footnote">Theoretical formulation calculation — not a laboratory assay or regulatory approval.</p>
+              </div>
+            </article>
           </div>
         </section>
 

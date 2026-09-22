@@ -2,7 +2,7 @@
   "$schema": "fleet.design-review.v1",
   "version": 1,
   "project": "nutrition-formula-engine",
-  "target": "simple formula calculator and separate case-study page",
+  "target": "simple formula calculator, separate case-study page, and retail-style draft back-label generator",
   "surfaceMode": "operate",
   "mode": "overhaul",
   "register": "product",
@@ -13,8 +13,8 @@
   "direction": {
     "references": [
       "laboratory instrument bench",
-      "regulatory case file",
-      "controlled composition register"
+      "FSSAI retail nutrition panel",
+      "current Indian nutrition-powder back labels"
     ],
     "probes": [
       {
@@ -31,7 +31,7 @@
       }
     ],
     "selected": "simple-laboratory-workbench",
-    "approval": "approved",
+    "approval": "delegated",
     "before": "artifacts/design/direction-options.svg.png",
     "library": {
       "strategy": "upstream-first",
@@ -53,10 +53,10 @@
       "purposeAlignment": "match",
       "driftNote": "",
       "audience": "Formulators and product teams reviewing food, nutraceutical, supplement, or medicinal batch formulas.",
-      "job": "Submit one formula, correct only material ambiguities, and export a traceable composition report.",
-      "thesis": "The formula is the work surface; uncertainty belongs visibly at the edge of each result rather than in a separate compliance dashboard.",
-      "system": "Simple Laboratory Workbench: one restrained professional workspace with a single input, visible database state, and inline corrections.",
-      "signature": "Every uncertain value carries a visible evidence band linked to the ingredient assumption that created it.",
+      "job": "Submit one formula, correct only material ambiguities, export a traceable composition report, and prepare a conventional draft back label from the result.",
+      "thesis": "The formula is the work surface; uncertainty stays visible in the result and the draft label uses familiar Indian retail hierarchy instead of a novel demographic dashboard.",
+      "system": "Simple Laboratory Workbench with a monochrome retail-label module: editable serving details beside a printable nutrition panel.",
+      "signature": "Every incomplete label value remains visibly marked as a lower bound and linked to the calculation's evidence boundary.",
       "risk": "A visually expressive evidence system could distract from high-density review; the selected direction must preserve familiar table scanning and keyboard correction."
     }
   },
@@ -76,7 +76,7 @@
       }
     ],
     "projectCheck": {
-      "command": "pnpm check && pnpm build",
+      "command": "pnpm check && pnpm build && PYTHONPATH=src uv run python -m unittest discover -s tests -v",
       "status": "pass"
     },
     "critique": {
@@ -99,6 +99,9 @@
         "Browser checks at 390, 768, and 1440 pixels found 26 product cards, 55 comparison rows, and no horizontal overflow.",
         "Responsive screenshots at 390, 768, and 1440 pixels retain the single-column formula workflow and compact database disclosure.",
         "Formula history and reusable ingredient profiles use the same recovery-key-scoped D1 workspace without adding account navigation.",
+        "The owner delegated the label direction and asked for conventions found on actual products; the selected module uses one adult RDA column rather than separate child versions.",
+        "The label remains visibly theoretical, marks partial values as lower bounds, and retains the existing regulatory-review boundary.",
+        "Responsive label evidence at 390, 768, and 1440 pixels keeps all four nutrition columns visible without horizontal overflow.",
         "The 517.57 kB lazy ingestion chunk remains a build warning; PDF, spreadsheet, and OCR code is loaded only when needed."
       ]
     },
@@ -126,7 +129,7 @@
     }
   },
   "ownerFeedback": {
-    "decision": "keep",
-    "note": "Keep it nice and simple; use the restrained workbench direction without overengineering the product shell."
+    "decision": "delegated",
+    "note": "The owner said separate child versions were unnecessary, delegated the direction choice, and asked to follow what is available on actual products."
   }
 }

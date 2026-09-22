@@ -7,8 +7,10 @@ chemical-composition ledger for medicinal formulas.
 The public app is available at <https://formula.significanthobbies.com>. The browser
 accepts pasted text, TSV, CSV, TXT, JSON, XLSX, images, and PDFs.
 OCR and document parsing happen locally in the browser and always produce an
-editable draft for review before calculation. FSSAI rules, label formatting,
-accounts, and regulatory workflow remain outside this version.
+editable draft for review before calculation. Results can produce a printable,
+retail-style draft back label with ingredients, per-100 and per-serving values,
+and an adult `%RDA` column. Regulatory classification, mandatory pack declarations,
+claims review, laboratory validation, and approval remain outside this version.
 
 ## Run the upload app locally
 
@@ -187,7 +189,7 @@ label set IDs and exact basis assumptions.
 
 The frozen pilot benchmark contains 66 stage-specific cases: 20 extraction
 cases, 20 identity-ranking cases, and the 26 public calculation cases. The
-current local suite contains 84 Python engine/API tests and 38 browser/data
+current local suite contains 84 Python engine/API tests and 41 browser/data
 tests. Thresholds and fixtures are recorded in `benchmarks/manifest.json`.
 
 ## Versioned workspace status

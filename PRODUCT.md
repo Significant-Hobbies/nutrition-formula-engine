@@ -62,6 +62,10 @@ concise report.
 - Support food/nutraceutical and medicinal composition workflows, while
   keeping regulatory classification and label formatting outside the first
   calculation step.
+- Generate a printable, retail-style draft back label after calculation with an
+  ingredient statement, per-100 and per-serving amounts, and one clearly
+  footnoted adult `%RDA` column. Keep incomplete values marked as lower bounds
+  and keep compliance review outside the calculator.
 - Theoretical calculations do not replace supplier specifications, lot CoAs,
   finished-product assays, stability studies, or regulatory review.
 - Additional OCR languages, handwriting support, proprietary spreadsheet
@@ -70,8 +74,8 @@ concise report.
 
 ## Evidence on Hand
 
-- A Decimal-based formulation engine with 83 passing Python engine/API tests
-  and 32 passing browser/data tests.
+- A Decimal-based formulation engine with 84 passing Python engine/API tests
+  and 41 passing browser/data tests.
 - Twenty-six public-product checks against WHO, USDA MyPlate, and DailyMed,
   shown on a separate page with all 55 supported published comparisons.
 - A frozen 66-case benchmark split across extraction, identity ranking, and

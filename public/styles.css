@@ -1360,6 +1360,232 @@ td[data-label="Converted to"] {
   content: "";
 }
 
+.label-builder {
+  background: #f8faf9;
+}
+
+.label-workspace {
+  display: grid;
+  grid-template-columns: minmax(250px, 0.72fr) minmax(0, 1.28fr);
+  align-items: start;
+  gap: 24px;
+}
+
+.label-options {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.label-options-heading {
+  display: grid;
+  gap: 3px;
+}
+
+.label-options-heading span,
+.label-helper {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.label-options > label,
+.label-option-row label {
+  display: grid;
+  gap: 5px;
+  color: #475467;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.label-options input {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 10px;
+  border: 1px solid #98a2b3;
+  border-radius: 7px;
+  background: white;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.label-option-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.input-with-suffix {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
+
+.input-with-suffix input {
+  padding-right: 44px;
+  grid-area: 1 / 1;
+}
+
+.input-with-suffix span {
+  z-index: 1;
+  padding-right: 11px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  grid-area: 1 / 1;
+  justify-self: end;
+  text-transform: none;
+}
+
+.label-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.label-status {
+  min-height: 0;
+  margin: -4px 0 0;
+  text-align: left;
+}
+
+.label-helper {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.nutrition-label {
+  overflow: hidden;
+  border: 2px solid #111;
+  background: white;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.25;
+}
+
+.nutrition-label-header {
+  padding: 16px 18px 12px;
+  border-bottom: 8px solid #111;
+}
+
+.nutrition-label-header > p {
+  margin: 0 0 3px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.nutrition-label-header h4 {
+  margin: 0 0 10px;
+  font-size: 24px;
+  line-height: 1.05;
+}
+
+.nutrition-label-header dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 18px;
+  margin: 0;
+  font-size: 12px;
+}
+
+.nutrition-label-header dl div {
+  display: flex;
+  gap: 5px;
+}
+
+.nutrition-label-header dt {
+  font-weight: 700;
+}
+
+.nutrition-label-header dd {
+  margin: 0;
+}
+
+.nutrition-label-table-wrap {
+  overflow-x: auto;
+}
+
+.nutrition-label-table {
+  min-width: 0;
+  color: #111;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  table-layout: fixed;
+}
+
+.nutrition-label-table th:first-child {
+  width: 30%;
+}
+
+.nutrition-label-table th,
+.nutrition-label-table td {
+  padding: 7px 9px;
+  border-color: #444;
+}
+
+.nutrition-label-table thead th {
+  background: #111;
+  color: white;
+  font-size: 9px;
+  letter-spacing: 0.02em;
+}
+
+.nutrition-label-table tbody th {
+  background: white;
+  text-align: left;
+}
+
+.nutrition-label-table td,
+.nutrition-label-table thead th:not(:first-child) {
+  text-align: right;
+}
+
+.nutrition-label-table td {
+  white-space: nowrap;
+}
+
+.nutrition-label-table tr.is-partial th,
+.nutrition-label-table tr.is-partial td {
+  background: #fff8e7;
+}
+
+.nutrition-label-copy {
+  display: grid;
+  gap: 9px;
+  padding: 13px 18px 16px;
+  border-top: 4px solid #111;
+}
+
+.nutrition-label-copy p {
+  margin: 0;
+  font-size: 10px;
+}
+
+.nutrition-label-copy > p:first-child {
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.nutrition-label-copy .label-warning {
+  padding: 7px 8px;
+  border: 1px solid #111;
+  font-weight: 700;
+}
+
+.label-footnote {
+  color: #333;
+  line-height: 1.35;
+}
+
 .disclaimer {
   margin: 0;
   padding: 18px 30px;
@@ -1624,6 +1850,54 @@ td[data-label="Converted to"] {
     text-transform: uppercase;
   }
 
+  .label-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .label-option-row {
+    grid-template-columns: 1fr;
+  }
+
+  .label-actions,
+  .label-actions button {
+    width: 100%;
+  }
+
+  .nutrition-label-table {
+    display: table;
+    font-size: 9px;
+  }
+
+  .nutrition-label-table thead {
+    position: static;
+    display: table-header-group;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+  }
+
+  .nutrition-label-table tbody {
+    display: table-row-group;
+  }
+
+  .nutrition-label-table tr {
+    display: table-row;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .nutrition-label-table th,
+  .nutrition-label-table td {
+    display: table-cell;
+    padding: 6px 5px;
+  }
+
+  .nutrition-label-table td::before {
+    display: none;
+  }
+
   .history-list li {
     grid-template-columns: 1fr;
   }
@@ -1658,5 +1932,36 @@ td[data-label="Converted to"] {
   *::after {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  body.printing-label {
+    background: white;
+  }
+
+  body.printing-label * {
+    visibility: hidden;
+  }
+
+  body.printing-label #nutrition-label,
+  body.printing-label #nutrition-label * {
+    visibility: visible;
+  }
+
+  body.printing-label #nutrition-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    break-inside: avoid;
+  }
+
+  body.printing-label .nutrition-label-table-wrap {
+    overflow: visible;
+  }
+
+  body.printing-label .nutrition-label-table {
+    min-width: 0;
   }
 }

@@ -528,6 +528,7 @@ def analyze_formula_upload(
         "product_inference": _product_inference(present, material_ids),
         "coverage": coverage,
         "formula_rows": formula_rows,
+        "label_ingredients": nutrition["leaf_ingredients"],
         "present_components": present,
         "screened_components": screened,
         "ingredient_assumptions": ingredient_assumptions,

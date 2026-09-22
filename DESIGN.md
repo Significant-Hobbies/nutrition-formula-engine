@@ -15,6 +15,7 @@ composition report without decorative interface complexity.
 5. Confirm, reject, or search for another identity.
 6. See the present-components result update immediately on the same page.
 7. Save the result when it should appear on the separate **Recent formulas** page.
+8. At the end of Results, set serving details and print a conventional draft back label.
 
 There are no upload tabs, input-mode selectors, dashboards, or setup wizard.
 Recent formulas and public case studies each live on a separate page so the
@@ -28,6 +29,8 @@ opened. The saved list is public and identical on every device.
 - A single large paste area is the dominant control above the fold.
 - The editable recovered formula appears before calculation.
 - The macro/micronutrient result follows, then assumptions and missing evidence.
+- A compact label builder follows the evidence review and pairs editable serving
+  details with a monochrome, printable nutrition panel.
 - Uncertain rows expand inline; corrections do not open a separate workflow.
 - On narrow screens, tables become labelled stacked rows without hiding units,
   ranges, source status, or decision actions.

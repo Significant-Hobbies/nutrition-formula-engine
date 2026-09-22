@@ -1,5 +1,6 @@
 import { normalizeText, rowsToTsv } from "./input-normalizer.js";
 import { createAuditLog, sha256 } from "./audit-log.js";
+import { buildNutritionLabel } from "./nutrition-label.js";
 import sampleTsvUrl from "./sample-tonic.tsv?url";
 import {
   appendSessionVersion,
@@ -834,6 +835,71 @@ function renderList(selector, items, fallback) {
   }
 }
 
+function renderNutritionLabel() {
+  if (!latestResult) return;
+  const labelStatus = document.querySelector("#label-status");
+  try {
+    const label = buildNutritionLabel(latestResult, {
+      productName: document.querySelector("#label-product-name").value,
+      servingSize: document.querySelector("#label-serving-size").value,
+      servingsPerPack: document.querySelector("#label-servings-per-pack").value,
+    });
+    document.querySelector("#label-preview-name").textContent = label.productName;
+    document.querySelector("#label-preview-serving").textContent = `${label.servingSize} ${label.servingUnit}`;
+    document.querySelector("#label-basis-heading").textContent = label.basisLabel;
+    document.querySelector("#label-serving-heading").textContent = label.servingLabel;
+    document.querySelector("#label-serving-unit").textContent = label.servingUnit;
+    document.querySelector("#label-ingredients").textContent = label.ingredients.join(", ") || "Not established";
+
+    const servingsRow = document.querySelector("#label-preview-servings-row");
+    servingsRow.hidden = !label.servingsPerPack;
+    document.querySelector("#label-preview-servings").textContent = label.servingsPerPack;
+
+    const nutrientBody = document.querySelector("#label-nutrients");
+    nutrientBody.replaceChildren();
+    for (const nutrient of label.nutrients) {
+      const row = document.createElement("tr");
+      if (nutrient.status === "partial") row.className = "is-partial";
+      const name = document.createElement("th");
+      name.scope = "row";
+      name.textContent = nutrient.name;
+      const basis = document.createElement("td");
+      basis.dataset.label = label.basisLabel;
+      basis.textContent = `${nutrient.perBasis} ${nutrient.unit}`;
+      const serving = document.createElement("td");
+      serving.dataset.label = label.servingLabel;
+      serving.textContent = `${nutrient.perServing} ${nutrient.unit}`;
+      const rda = document.createElement("td");
+      rda.dataset.label = "%RDA";
+      rda.textContent = nutrient.rdaPercent;
+      row.append(name, basis, serving, rda);
+      nutrientBody.append(row);
+    }
+
+    const warnings = [];
+    if (label.hasIncompleteData) {
+      warnings.push("≥ marks a lower bound because one or more ingredient profiles are incomplete.");
+    }
+    if (label.hasIdentityReview) {
+      warnings.push("Resolve the flagged ingredient identities before using this draft externally.");
+    }
+    const warning = document.querySelector("#label-data-warning");
+    warning.hidden = warnings.length === 0;
+    warning.textContent = warnings.join(" ");
+    updateStatus(labelStatus, "Label preview updated.");
+    recordAudit("label_preview_updated", {
+      serving_size: label.servingSize,
+      serving_unit: label.servingUnit,
+      nutrient_count: label.nutrients.length,
+      incomplete_data: label.hasIncompleteData,
+    });
+    return true;
+  } catch (error) {
+    updateStatus(labelStatus, error.message, true);
+    return false;
+  }
+}
+
 function renderResult(result) {
   latestResult = result;
   currentRows = result.formula_rows.map((row) => ({ ...row }));
@@ -857,6 +923,14 @@ function renderResult(result) {
   renderHistory();
   renderList("#assumptions-list", result.report_assumptions, "No extra assumptions were used.");
   renderList("#missing-list", result.missing_information, "No missing ingredient information was found.");
+  const labelUnit = result.basis_label === "per 100 mL" ? "mL" : "g";
+  const labelUnitElement = document.querySelector("#label-serving-unit");
+  if (labelUnitElement.textContent !== labelUnit) {
+    document.querySelector("#label-serving-size").value = labelUnit === "mL" ? "200" : "30";
+  }
+  labelUnitElement.textContent = labelUnit;
+  document.querySelector("#label-product-name").value = result.product_name;
+  renderNutritionLabel();
   const saveButton = document.querySelector("#save-workspace");
   saveButton.disabled = Boolean(workspace);
   saveButton.textContent = workspace ? "Saved" : "Save formula";
@@ -1030,6 +1104,23 @@ document.querySelector("#download-json").addEventListener("click", () => {
   delete exportResult.markdown;
   const blob = new Blob([`${JSON.stringify(exportResult, null, 2)}\n`], { type: "application/json;charset=utf-8" });
   downloadBlob(blob, `${latestResult.product_name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.json`);
+});
+
+document.querySelector("#label-options").addEventListener("submit", (event) => {
+  event.preventDefault();
+  renderNutritionLabel();
+});
+
+document.querySelector("#print-label").addEventListener("click", () => {
+  if (!latestResult) return;
+  if (!renderNutritionLabel()) return;
+  document.body.classList.add("printing-label");
+  recordAudit("label_print_opened", { format: "browser_print" });
+  window.print();
+});
+
+window.addEventListener("afterprint", () => {
+  document.body.classList.remove("printing-label");
 });
 
 auditButton.addEventListener("click", () => {
