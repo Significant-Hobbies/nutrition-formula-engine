@@ -25,8 +25,14 @@
       data-identity="persistent"
       data-endpoint="https://ingest.sassmaker.com/v1/browser"
     ></script>
+    <script>
+      if (location.hostname === "formula.significanthobbies.com") {
+        (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","ymdun3nwyi");
+        window.clarity("set","project_id","nutrition-formula-engine");
+      }
+    </script>
   </head>
-  <body>
+  <body id="root" data-clarity-mask="true">
     <header class="site-header">
       <a class="brand" href="/" aria-label="Formula Calculator home">
         <span class="brand-mark" aria-hidden="true">FC</span>
@@ -102,7 +108,7 @@
           Check formula
         </button>
         <p id="status" class="status" role="status" aria-live="polite"></p>
-        <p class="audit-note">The activity log records actions and times. It does not include formula text.</p>
+        <p class="audit-note">The activity log records actions and times. It does not include formula text. On the public site, Microsoft Clarity measures visits and interactions with the entire application root masked.</p>
       </section>
 
       <section class="validation-panel" aria-labelledby="validation-title">
@@ -395,5 +401,7 @@
         </p>
       </section>
     </main>
-  </body>
+    <script src="https://sassmaker.com/project-strip.js" data-project="nutrition-formula-engine" defer></script>
+  <script src="https://sassmaker.com/ai-chat-footer.js" data-name="Formula Composition Engine" defer></script>
+</body>
 </html>
