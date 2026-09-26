@@ -7,7 +7,8 @@
   "scripts": {
     "build": "vite build && cp public/robots.txt public/sitemap.xml public/llms.txt dist/",
     "test": "node --test tests-web/*.test.js",
-    "check": "pnpm test && node --check public/app.js && node --check public/recent-formulas.js && node --check public/case-studies.js && node --check vite.config.js"
+    "check": "pnpm test && node --check public/app.js && node --check public/recent-formulas.js && node --check public/case-studies.js && node --check vite.config.js",
+    "deploy": "pnpm build && npx wrangler deploy --tag $(git rev-parse HEAD)"
   },
   "license": "UNLICENSED",
   "packageManager": "pnpm@10.33.2",
