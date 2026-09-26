@@ -5,7 +5,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && cp public/robots.txt public/sitemap.xml public/bdeaa89dd1f1f7869584f50121c6e7da.txt dist/",
     "test": "node --test tests-web/*.test.js",
     "check": "pnpm test && node --check public/app.js && node --check public/recent-formulas.js && node --check public/case-studies.js && node --check vite.config.js"
   },
