@@ -1,0 +1,17 @@
+# Nutrition Formula Engine
+
+> A formulation calculator for nutrition products — decimal arithmetic, source-provenanced nutrient data, and explicit handling of missing values.
+
+Site: https://formula.significanthobbies.com
+
+## Pages
+
+- `/` — the formula calculator
+- `/case-studies/` — worked formulation examples
+
+## Notes for agents
+
+Missing nutrient data is never treated as zero; calculations preserve
+source values and provenance. The engine is a local-first prototype.
+
+Maintained by Sarthak Agrawal: https://sarthakagrawal.dev

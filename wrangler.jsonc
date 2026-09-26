@@ -27,7 +27,7 @@
     {
       "binding": "FORMULA_DB",
       "database_name": "nutrition-formula-engine",
-      "database_id": "f26fe712-fb44-4626-a1d8-6a9095512b0e",
+      "database_id": "865a701f-416d-44c5-ad0f-cc929ca195dd",
       "migrations_dir": "migrations"
     }
   ],
