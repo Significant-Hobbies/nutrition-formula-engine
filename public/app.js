@@ -992,6 +992,7 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
     await persistBrowserWorkspace();
     formulaReview.hidden = true;
     renderResult(data);
+    window.appHealth?.track('formula_checked');
     const resultForHash = { ...data };
     delete resultForHash.markdown;
     recordAudit("calculation_completed", {
@@ -1092,6 +1093,7 @@ calculateButton.addEventListener("click", async () => {
 
 document.querySelector("#download-report").addEventListener("click", () => {
   if (!latestResult) return;
+  window.appHealth?.track('report_downloaded');
   recordAudit("report_downloaded", { format: "markdown" });
   const blob = new Blob([latestResult.markdown], { type: "text/markdown;charset=utf-8" });
   downloadBlob(blob, `${latestResult.product_name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-report.md`);
