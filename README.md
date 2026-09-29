@@ -66,6 +66,13 @@ formula. Cloudflare may attach its standard request/network metadata to a trace.
 Cloudflare Traces provide the authoritative wall and CPU durations;
 runtime clocks are intentionally unsuitable for timing CPU-only Worker work.
 
+Optional App Health endpoint summaries are sent in the background when the
+Worker has an `APP_HEALTH_INGEST_KEY` secret. Each summary contains only an
+allowlisted API route template, HTTP method, status, duration, and timestamp.
+Formula contents, identifiers from paths, query values, headers, and response
+bodies are not sent. Missing configuration or ingest failures do not change the
+app response; each delivery has a 1.5-second timeout.
+
 ## What it calculates
 
 - Total nutrients in the batch

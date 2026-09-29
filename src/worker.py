@@ -2,14 +2,19 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import re
+import time
 import uuid
 from urllib.parse import parse_qs, urlparse
 
 from js import console
+from pyodide.ffi import create_proxy
 from workers import Response, WorkerEntrypoint
+from workers import fetch as worker_fetch
 
+from nutrition_formula.app_health_telemetry import build_event, deliver_event
 from nutrition_formula.http_api import (
     PUBLIC_OWNER_ID,
     validate_accepted_aliases,
@@ -33,6 +38,7 @@ from nutrition_formula.versioning import (
 
 MAX_REQUEST_BYTES = MAX_UPLOAD_BYTES + 4096
 JSON_HEADERS = {"Cache-Control": "no-store"}
+_APP_HEALTH_TASKS: set[asyncio.Task] = set()
 
 
 def _json(data, status=200, request_id=None):
@@ -48,9 +54,19 @@ def _log(event, request_id, **details):
 
 class Default(WorkerEntrypoint):
     async def fetch(self, request):
+        started = time.perf_counter()
         parsed_url = urlparse(request.url)
         path = parsed_url.path
         method = request.method.value
+        try:
+            response = await self._fetch(request, parsed_url, path, method)
+        except Exception:
+            self._record_app_health(method, path, 500, started)
+            raise
+        self._record_app_health(method, path, response.status, started)
+        return response
+
+    async def _fetch(self, request, parsed_url, path, method):
 
         if path == "/api/health" and method == "GET":
             return _json(
@@ -396,3 +412,38 @@ class Default(WorkerEntrypoint):
         if path.startswith("/api/"):
             return _json({"error": "API route not found"}, status=404)
         return await self.env.ASSETS.fetch(request)
+
+    def _record_app_health(self, method, path, status_code, started):
+        try:
+            event = build_event(
+                method,
+                path,
+                status_code,
+                (time.perf_counter() - started) * 1000,
+            )
+        except Exception:  # noqa: BLE001 - metric construction must never affect the app response.
+            return
+        if event is None:
+            return
+        try:
+            key = getattr(self.env, "APP_HEALTH_INGEST_KEY", None)
+            environment = getattr(self.env, "APP_HEALTH_ENVIRONMENT", None)
+        except Exception:  # noqa: BLE001 - missing optional telemetry binding is a no-op.
+            return
+        if not isinstance(key, str) or not key:
+            return
+        if not isinstance(environment, str):
+            environment = None
+
+        try:
+            task = asyncio.create_task(
+                deliver_event(event, key, worker_fetch, environment=environment)
+            )
+            _APP_HEALTH_TASKS.add(task)
+            task.add_done_callback(_APP_HEALTH_TASKS.discard)
+            task_proxy = create_proxy(task)
+            task.add_done_callback(lambda _completed: task_proxy.destroy())
+            self.ctx.waitUntil(task_proxy)
+        except Exception:  # noqa: BLE001, S110 - best-effort delivery never changes the app response.
+            # Telemetry must never alter the app response if the runtime context is absent.
+            pass
