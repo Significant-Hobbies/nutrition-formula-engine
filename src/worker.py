@@ -192,9 +192,6 @@ class Default(WorkerEntrypoint):
                 repository = D1FormulaRepository(
                     self.env.FORMULA_DB, owner_id=PUBLIC_OWNER_ID
                 )
-                profiles = await D1MaterialProfileRepository(
-                    self.env.FORMULA_DB, owner_id=PUBLIC_OWNER_ID
-                ).list_active()
                 if path == "/api/formulas" and method == "GET":
                     return _json(
                         {"workspaces": await repository.list_workspaces()},
@@ -203,6 +200,9 @@ class Default(WorkerEntrypoint):
                 if path == "/api/formulas" and method == "POST":
                     body = await request.json()
                     file_name, contents = validate_analysis_body(body)
+                    profiles = await D1MaterialProfileRepository(
+                        self.env.FORMULA_DB, owner_id=PUBLIC_OWNER_ID
+                    ).list_active()
                     report = analyze_formula_upload(
                         contents,
                         file_name,
@@ -243,6 +243,9 @@ class Default(WorkerEntrypoint):
                 if append_match and method == "POST":
                     body = await request.json()
                     file_name, contents, expected, cause, decisions = validate_version_body(body)
+                    profiles = await D1MaterialProfileRepository(
+                        self.env.FORMULA_DB, owner_id=PUBLIC_OWNER_ID
+                    ).list_active()
                     report = analyze_formula_upload(
                         contents,
                         file_name,
