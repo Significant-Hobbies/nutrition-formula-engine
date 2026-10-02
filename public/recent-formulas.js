@@ -64,7 +64,10 @@ async function refresh() {
     const response = await fetch("/api/formulas");
     if (!response.ok) throw new Error("Online formulas are unavailable.");
     const payload = await response.json();
-    if (!Array.isArray(payload.workspaces)) throw new Error("Online formula list is invalid.");
+    if (!Array.isArray(payload.workspaces) || payload.workspaces.some(record =>
+      !record || typeof record.formula_id !== "string" || !record.formula_id.trim())) {
+      throw new Error("Online formula list is invalid.");
+    }
     remoteWorkspaces = payload.workspaces;
     onlineAvailable = true;
   } catch {
