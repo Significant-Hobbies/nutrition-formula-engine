@@ -4,6 +4,7 @@ import { loadBrowserWorkspace } from "./workspace-store.js";
 const list = document.querySelector("#recent-formulas-list");
 const empty = document.querySelector("#recent-formulas-empty");
 const status = document.querySelector("#recent-formulas-status");
+const retry = document.querySelector("#recent-formulas-retry");
 
 function formatSavedAt(value) {
   const date = new Date(value);
@@ -11,14 +12,16 @@ function formatSavedAt(value) {
   return `Saved ${date.toLocaleString()}`;
 }
 
-function render(items, onlineAvailable) {
+function render(items, onlineAvailable, browserAvailable) {
   list.replaceChildren();
-  empty.hidden = items.length !== 0;
-  status.textContent = items.length
-    ? `${items.length} saved formula${items.length === 1 ? "" : "s"}`
-    : onlineAvailable
-      ? "Nothing has been saved yet."
-      : "Online formulas could not be checked.";
+  empty.hidden = items.length !== 0 || !onlineAvailable || !browserAvailable;
+  retry.hidden = onlineAvailable && browserAvailable;
+  const messages = [];
+  if (items.length) messages.push(`${items.length} saved formula${items.length === 1 ? "" : "s"}`);
+  if (!onlineAvailable) messages.push("Online formulas could not be checked.");
+  if (!browserAvailable) messages.push("Formulas saved in this browser could not be checked.");
+  if (!messages.length) messages.push("Nothing has been saved yet.");
+  status.textContent = messages.join(" ");
 
   for (const item of items) {
     const card = document.createElement("article");
@@ -45,11 +48,15 @@ function render(items, onlineAvailable) {
 }
 
 async function refresh() {
+  retry.disabled = true;
+  status.textContent = "Loading saved formulas…";
   let remoteWorkspaces = [];
   let onlineAvailable = false;
+  let browserAvailable = false;
   let browserWorkspace = null;
   try {
     browserWorkspace = await loadBrowserWorkspace();
+    browserAvailable = true;
   } catch {
     // The online list can still be shown when browser storage is unavailable.
   }
@@ -57,12 +64,15 @@ async function refresh() {
     const response = await fetch("/api/formulas");
     if (!response.ok) throw new Error("Online formulas are unavailable.");
     const payload = await response.json();
-    remoteWorkspaces = payload.workspaces || [];
+    if (!Array.isArray(payload.workspaces)) throw new Error("Online formula list is invalid.");
+    remoteWorkspaces = payload.workspaces;
     onlineAvailable = true;
   } catch {
     onlineAvailable = false;
   }
-  render(recentFormulaItems(remoteWorkspaces, browserWorkspace), onlineAvailable);
+  render(recentFormulaItems(remoteWorkspaces, browserWorkspace), onlineAvailable, browserAvailable);
+  retry.disabled = false;
 }
 
+retry.addEventListener("click", refresh);
 refresh();
