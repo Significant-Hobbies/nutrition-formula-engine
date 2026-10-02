@@ -1801,6 +1801,14 @@ td[data-label="Converted to"] {
     border: 0;
   }
 
+  .draft-table-wrap {
+    max-height: none;
+  }
+
+  .draft-table td:first-child {
+    width: auto;
+  }
+
   table,
   thead,
   tbody,

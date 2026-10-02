@@ -65,10 +65,11 @@ test("an online browser pointer is not shown as a duplicate formula", () => {
   assert.deepEqual(items, []);
 });
 
-test("the recent formulas page describes one public list without access keys", async () => {
+test("the recent formulas page distinguishes public and browser-only storage without access keys", async () => {
   const html = await import("node:fs/promises").then(({ readFile }) =>
     readFile(new URL("../public/recent-formulas/index.html", import.meta.url), "utf8"));
 
-  assert.match(html, /Saved formulas are public and appear here on every device/);
+  assert.match(html, /Online formulas are public and appear here on every device/);
+  assert.match(html, /only in this browser stay here/);
   assert.doesNotMatch(html, /access key/i);
 });
