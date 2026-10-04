@@ -1973,3 +1973,11 @@ td[data-label="Converted to"] {
     min-width: 0;
   }
 }
+
+/* Footer-only Precise composition preserves the calculator's neutral workspace. */
+fleet-footer-extension { --fleet-footer-canvas: #f4f7f6; --fleet-footer-lower: #f4f7f6; --fleet-footer-max-width: 1120px; --fleet-footer-app-mobile-signature-size: 2rem; color: var(--ink); }
+fleet-footer-extension > .footer-routes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+fleet-footer-extension .footer-routes section { min-width: 0; }
+fleet-footer-extension .footer-routes h2 { margin: 0 0 .5rem; color: var(--muted); }
+fleet-footer-extension .footer-routes a { display: flex; text-decoration: none; }
+@media print { fleet-footer-extension { display: none; } }
