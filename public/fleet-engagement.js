@@ -9,6 +9,8 @@ if (location.origin === 'https://formula.significanthobbies.com' && !document.qu
     'product-name': 'Formula Composition Engine',
     kind: 'newsletter',
     'allow-kind-selection': '',
+    layout: 'compact',
+    integrated: '',
     source: 'fleet-footer',
     'privacy-url': 'https://sassmaker.com/privacy',
     theme: 'light',
@@ -17,6 +19,6 @@ if (location.origin === 'https://formula.significanthobbies.com' && !document.qu
   if (!extension.isConnected) document.body.append(extension);
   const loader = document.createElement('script');
   loader.type = 'module';
-  loader.src = 'https://sassmaker.com/newsletter-capture.js';
+  loader.src = 'https://sassmaker.com/newsletter-capture.js?v=precise-b0adaa67';
   document.head.append(loader);
 }
