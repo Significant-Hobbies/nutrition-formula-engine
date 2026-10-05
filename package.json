@@ -5,9 +5,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build && cp public/robots.txt public/sitemap.xml public/llms.txt dist/",
+    "build": "vite build && cp public/robots.txt public/sitemap.xml public/llms.txt dist/ && cp -R public/footer-art public/fonts dist/ && node scripts/check-deploy-assets.js",
     "test": "node --test tests-web/*.test.js",
-    "check": "pnpm test && node --check public/app.js && node --check public/recent-formulas.js && node --check public/case-studies.js && node --check vite.config.js",
+    "check": "pnpm test && node --check public/app.js && node --check public/recent-formulas.js && node --check public/case-studies.js && node --check vite.config.js && pnpm build",
     "deploy": "pnpm build && uv run pywrangler deploy --tag \"$(git rev-parse HEAD)\""
   },
   "license": "UNLICENSED",
