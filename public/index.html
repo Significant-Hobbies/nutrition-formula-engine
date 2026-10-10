@@ -25,7 +25,6 @@
     <title>Formula Calculator</title>
     <link rel="stylesheet" href="/styles.css" />
     <script src="/app.js" type="module"></script>
-    <script src="/fleet-engagement.js" type="module"></script>
     <script
       defer
       src="https://health.sassmaker.com/tracker.js"
@@ -411,15 +410,12 @@
         </p>
       </section>
     </main>
-    <footer aria-label="Formula Calculator footer">
-    <fleet-footer-extension data-fleet-footer-project="nutrition-formula-engine" product-name="Formula Calculator" art-src="/footer-art/nutrition-formula-review-original-v1.webp" art-alt="An ingredient-review workbench with grouped bowls and blank evidence cards, a separate unresolved tray and precision scale beside a forest window." art-width="2171" art-height="724" art-position="50% 50%" art-credit="Original illustration for Formula Calculator" surface="app" theme="light" font-base="/fonts/fleet-footer-precise-v1/">
-      <nav slot="navigation" data-fleet-footer-navigation class="footer-routes" aria-label="Formula Calculator links">
-        <section><h2 data-fleet-footer-group-label>Workspace</h2><a data-fleet-footer-primary href="/">Calculator</a><a href="/recent-formulas/">Recent formulas</a></section>
-        <section><h2 data-fleet-footer-group-label>Evidence</h2><a href="/case-studies/">Case studies</a></section>
-      </nav>
-    </fleet-footer-extension>
-    </footer>
-    <script src="https://sassmaker.com/project-strip.js?v=precise-b0adaa67" data-project="nutrition-formula-engine" data-theme="light" data-host-only="true" defer></script>
-    <script src="https://sassmaker.com/ai-chat-footer.js?v=precise-b0adaa67" data-name="Formula Calculator" data-project="nutrition-formula-engine" data-theme="light" data-surface="app" data-host-only="true" defer></script>
+    <link rel="stylesheet" href="/footer.css" />
+    <script type="module" src="/footer.js"></script>
+    <studio-footer product="Formula Calculator" url="https://formula.significanthobbies.com" catalog-id="nutrition-formula-engine" capture="newsletter" variant="studio" art-mode="panel" wordmark="poster">
+      <script type="application/json">
+        {"summary":"Upload a batch formula and see calculated ingredients and nutrients from your source data.","art":{"src":"/footer-art/nutrition-formula-review-original-v1.webp","alt":"An ingredient-review workbench with grouped bowls and blank evidence cards, a separate unresolved tray and precision scale beside a forest window.","position":"50% 50%"},"groups":[{"title":"workspace","links":[{"label":"Calculator","href":"/"},{"label":"Recent formulas","href":"/recent-formulas/"}]},{"title":"evidence","links":[{"label":"Case studies","href":"/case-studies/"}]}]}
+      </script>
+    </studio-footer>
   </body>
 </html>
