@@ -24,7 +24,11 @@ class Request:
 class Response:
     @staticmethod
     def json(data: object, status: int = 200, headers: dict[str, str] | None = None):
-        return types.SimpleNamespace(data=data, status=status, headers=headers or {})
+        headers = headers or {}
+        return types.SimpleNamespace(
+            data=data, status=status, headers=headers,
+            js_object=types.SimpleNamespace(headers=types.SimpleNamespace(set=headers.__setitem__)),
+        )
 
 
 def load_worker_module():
@@ -60,6 +64,55 @@ def load_worker_module():
 
 
 class FormulaWorkerRouteTests(unittest.IsolatedAsyncioTestCase):
+    async def test_timing_preserves_api_response_and_leaves_assets_unchanged(self) -> None:
+        module = load_worker_module()
+        worker = module.Default()
+        worker.env = types.SimpleNamespace()
+        with patch.object(module.time, "perf_counter", side_effect=[10, 10.025, 10.025]):
+            result = await worker.fetch(Request("GET", "/api/health"))
+        self.assertEqual(result.status, 200)
+        self.assertEqual(result.data, {"status": "ok", "persistence": "unconfigured"})
+        self.assertEqual(result.headers, {"Cache-Control": "no-store", "Server-Timing": "total;dur=25"})
+
+        asset = types.SimpleNamespace(status=200, headers={"Content-Type": "text/html"})
+        async def fetch_asset(_request):
+            return asset
+        worker.env.ASSETS = types.SimpleNamespace(fetch=fetch_asset)
+        self.assertIs(await worker.fetch(Request("GET", "/")), asset)
+        self.assertEqual(asset.headers, {"Content-Type": "text/html"})
+
+    async def test_stage_logs_scheduled_once_per_sampled_request_with_cold_flag(self) -> None:
+        module = load_worker_module()
+        worker = module.Default()
+        worker.env = types.SimpleNamespace(APP_HEALTH_INGEST_KEY="test-key", APP_HEALTH_STAGE_SAMPLE_RATE="1")
+        scheduled = []
+        with patch.object(worker, "_schedule_app_health", side_effect=lambda event, **kwargs: scheduled.append((event, kwargs))):
+            request = Request("GET", "/api/health")
+            request.cf = types.SimpleNamespace(colo="SIN")
+            await worker.fetch(request)
+            await worker.fetch(request)
+            worker.env.APP_HEALTH_STAGE_SAMPLE_RATE = "0"
+            await worker.fetch(request)
+            worker.env.APP_HEALTH_STAGE_SAMPLE_RATE = "1"
+            worker.env.APP_HEALTH_INGEST_KEY = ""
+            await worker.fetch(request)
+        logs = [event for event, options in scheduled if options.get("is_log")]
+        self.assertEqual(len(logs), 2)
+        self.assertEqual([event["props"]["cold"] for event in logs], [1, 0])
+        self.assertEqual([event["props"]["colo"] for event in logs], ["SIN", "SIN"])
+
+    async def test_stage_construction_failure_preserves_response(self) -> None:
+        module = load_worker_module()
+        worker = module.Default()
+        worker.env = types.SimpleNamespace(APP_HEALTH_INGEST_KEY="test-key")
+        with (
+            patch.object(module, "build_stage_timing_event", side_effect=RuntimeError("telemetry")),
+            patch.object(worker, "_schedule_app_health"),
+        ):
+            result = await worker.fetch(Request("GET", "/api/health"))
+        self.assertEqual(result.status, 200)
+        self.assertEqual(result.data["status"], "ok")
+
     async def test_formula_list_does_not_read_unused_material_profiles(self) -> None:
         module = load_worker_module()
         calls = {"workspaces": 0, "profiles": 0}

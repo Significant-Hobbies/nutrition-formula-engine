@@ -5,12 +5,14 @@ from __future__ import annotations
 import asyncio
 import json
 import math
+import random
 import re
 import time
 import uuid
 from collections.abc import Awaitable, Callable
 
 INGEST_URL = "https://ingest.sassmaker.com/v1/ingest"
+LOGS_URL = "https://ingest.sassmaker.com/v1/logs"
 MAX_DURATION_MS = 600_000
 
 _DYNAMIC_API_ROUTES = (
@@ -72,13 +74,60 @@ def build_event(
     }
 
 
-def build_batch(event: dict[str, str | int], environment: str | None = None) -> dict:
-    batch = {
-        "batch_id": str(uuid.uuid4()),
-        "schema_version": "v1",
-        "runtime": "worker",
-        "events": [event],
+def stage_sample_rate(value: str | None) -> float:
+    try:
+        rate = float(value) if isinstance(value, str) else float("nan")
+    except ValueError:
+        return 0.1
+    return rate if math.isfinite(rate) and 0 <= rate <= 1 else 0.1
+
+
+def build_stage_timing_event(
+    path: str,
+    status_code: int,
+    duration_ms: float,
+    *,
+    colo: object = None,
+    cold: bool = False,
+    sample_rate: str | None = None,
+) -> dict | None:
+    """Build one sampled log with only the collector's bounded timing props."""
+    if random.random() >= stage_sample_rate(sample_rate):
+        return None
+    summary = build_event("GET", path, status_code, duration_ms)
+    if summary is None or isinstance(status_code, bool):
+        return None
+    return {
+        "log_id": summary["event_id"],
+        "timestamp": summary["timestamp"],
+        "event": "api.stage_timing",
+        "level": "debug",
+        "props": {
+            "route": summary["route"],
+            "status": status_code,
+            "total_ms": summary["duration_ms"],
+            "edge_cache": "NONE",
+            "inner_cache": "NONE",
+            "colo": (
+                colo
+                if isinstance(colo, str) and re.fullmatch(r"[A-Za-z0-9]{1,8}", colo)
+                else "unknown"
+            ),
+            "cold": int(bool(cold)),
+        },
     }
+
+
+def build_batch(event: dict, environment: str | None = None, *, is_log: bool = False) -> dict:
+    if is_log:
+        batch = {"schema_version": "v1", "logs": [event]}
+    else:
+        batch = {
+            "batch_id": str(uuid.uuid4()),
+            "schema_version": "v1",
+            "runtime": "worker",
+            "events": [event],
+        }
     if (
         isinstance(environment, str)
         and len(environment) <= 64
@@ -93,11 +142,13 @@ Fetch = Callable[..., Awaitable[object]]
 
 
 async def deliver_event(
-    event: dict[str, str | int],
+    event: dict,
     key: str,
     fetch: Fetch,
     environment: str | None = None,
     timeout_seconds: float = 1.5,
+    *,
+    is_log: bool = False,
 ) -> bool:
     """Send one summary; network, timeout, and response failures never escape."""
     if not key:
@@ -105,13 +156,15 @@ async def deliver_event(
     try:
         response = await asyncio.wait_for(
             fetch(
-                INGEST_URL,
+                LOGS_URL if is_log else INGEST_URL,
                 method="POST",
                 headers={
                     "content-type": "application/json",
                     "authorization": f"Bearer {key}",
                 },
-                body=json.dumps(build_batch(event, environment), separators=(",", ":")),
+                body=json.dumps(
+                    build_batch(event, environment, is_log=is_log), separators=(",", ":")
+                ),
             ),
             timeout=timeout_seconds,
         )
