@@ -14,7 +14,7 @@ from pyodide.ffi import create_proxy
 from workers import Response, WorkerEntrypoint
 from workers import fetch as worker_fetch
 
-from nutrition_formula.app_health_telemetry import build_event, deliver_event
+from nutrition_formula.app_health_telemetry import build_event, build_stage_timing_event, deliver_event
 from nutrition_formula.http_api import (
     PUBLIC_OWNER_ID,
     validate_accepted_aliases,
@@ -39,6 +39,7 @@ from nutrition_formula.versioning import (
 MAX_REQUEST_BYTES = MAX_UPLOAD_BYTES + 4096
 JSON_HEADERS = {"Cache-Control": "no-store"}
 _APP_HEALTH_TASKS: set[asyncio.Task] = set()
+_APP_HEALTH_COLD = True
 
 
 def _json(data, status=200, request_id=None):
@@ -54,6 +55,9 @@ def _log(event, request_id, **details):
 
 class Default(WorkerEntrypoint):
     async def fetch(self, request):
+        global _APP_HEALTH_COLD
+        cold = _APP_HEALTH_COLD
+        _APP_HEALTH_COLD = False
         started = time.perf_counter()
         parsed_url = urlparse(request.url)
         path = parsed_url.path
@@ -62,8 +66,16 @@ class Default(WorkerEntrypoint):
             response = await self._fetch(request, parsed_url, path, method)
         except Exception:
             self._record_app_health(method, path, 500, started)
+            self._record_stage_timing(request, path, 500, started, cold)
             raise
+        duration_ms = (time.perf_counter() - started) * 1000
+        if path.startswith("/api/"):
+            try:
+                response.js_object.headers.set("Server-Timing", f"total;dur={int(duration_ms)}")
+            except Exception:  # noqa: BLE001 - timing headers must never fail a response.
+                pass
         self._record_app_health(method, path, response.status, started)
+        self._record_stage_timing(request, path, response.status, started, cold, duration_ms)
         return response
 
     async def _fetch(self, request, parsed_url, path, method):
@@ -416,6 +428,24 @@ class Default(WorkerEntrypoint):
             return _json({"error": "API route not found"}, status=404)
         return await self.env.ASSETS.fetch(request)
 
+    def _record_stage_timing(self, request, path, status_code, started, cold, duration_ms=None):
+        try:
+            key = getattr(self.env, "APP_HEALTH_INGEST_KEY", None)
+            if not isinstance(key, str) or not key:
+                return
+            cf = getattr(request, "cf", None)
+            colo = cf.get("colo") if isinstance(cf, dict) else getattr(cf, "colo", None)
+            event = build_stage_timing_event(
+                path, status_code,
+                duration_ms if duration_ms is not None else (time.perf_counter() - started) * 1000,
+                colo=colo, cold=cold,
+                sample_rate=getattr(self.env, "APP_HEALTH_STAGE_SAMPLE_RATE", None),
+            )
+            if event is not None:
+                self._schedule_app_health(event, is_log=True)
+        except Exception:  # noqa: BLE001 - optional timing telemetry must fail open.
+            pass
+
     def _record_app_health(self, method, path, status_code, started):
         try:
             event = build_event(
@@ -428,6 +458,9 @@ class Default(WorkerEntrypoint):
             return
         if event is None:
             return
+        self._schedule_app_health(event)
+
+    def _schedule_app_health(self, event, *, is_log=False):
         try:
             key = getattr(self.env, "APP_HEALTH_INGEST_KEY", None)
             environment = getattr(self.env, "APP_HEALTH_ENVIRONMENT", None)
@@ -440,7 +473,7 @@ class Default(WorkerEntrypoint):
 
         try:
             task = asyncio.create_task(
-                deliver_event(event, key, worker_fetch, environment=environment)
+                deliver_event(event, key, worker_fetch, environment=environment, is_log=is_log)
             )
             _APP_HEALTH_TASKS.add(task)
             task.add_done_callback(_APP_HEALTH_TASKS.discard)
