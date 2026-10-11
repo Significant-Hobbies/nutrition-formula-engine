@@ -1,10 +1,42 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { caseStudyCounts, renderCaseStudyCards } from "../public/case-studies-render.js";
 
 const data = JSON.parse(
   await readFile(new URL("../public/case-studies.json", import.meta.url), "utf8"),
 );
+
+test("case-study HTML contains every comparison and retains source assumptions", () => {
+  const html = renderCaseStudyCards(data);
+  assert.deepEqual(caseStudyCounts(data), { products: 26, comparisons: 55, sources: 3 });
+  assert.equal((html.match(/class="case-study-card"/g) || []).length, 26);
+  assert.equal((html.match(/data-label="Published"/g) || []).length, 55);
+  assert.equal((html.match(/What we assumed:/g) || []).length, data.cases.filter((study) => study.assumption).length);
+  const links = new Set([...html.matchAll(/<a href="([^"]+)"/g)].map((match) =>
+    new URL(match[1].replaceAll("&amp;", "&")).href));
+  for (const study of data.cases) assert.ok(links.has(new URL(study.source_url).href));
+});
+
+test("case-study HTML treats source text as text and rejects executable source URLs", () => {
+  const study = {
+    product: '<img src=x onerror="alert(1)">',
+    source: 'Source "quoted"',
+    source_url: "https://example.com/?a=1&b=2",
+    component: "<script>bad()</script>",
+    declared: "unknown",
+    predicted: "unknown",
+    difference_percent: "unavailable",
+    assumption: "A < B & C",
+  };
+  const html = renderCaseStudyCards({ cases: [study] });
+  assert.doesNotMatch(html, /<img|<script>/);
+  assert.match(html, /&lt;script&gt;bad\(\)&lt;\/script&gt;/);
+  assert.match(html, /A &lt; B &amp; C/);
+  assert.match(html, /a=1&amp;b=2/);
+  assert.match(html, /data-label="Published">unknown/);
+  assert.throws(() => renderCaseStudyCards({ cases: [{ ...study, source_url: "javascript:alert(1)" }] }), /HTTP or HTTPS/);
+});
 
 test("publishes all twenty-six public validation cases", () => {
   assert.equal(data.cases.length, 26);
