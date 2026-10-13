@@ -85,6 +85,85 @@ class ProviderTests(unittest.IsolatedAsyncioTestCase):
         data = fixture('fdc'); data['foods'][0]['foodNutrients'][0]['unitName'] = 'MG'
         with self.assertRaises(ValueError): parse_candidates('fdc', data, 'now')
 
+class ProviderBodyBoundTests(unittest.IsolatedAsyncioTestCase):
+    class Chunk:
+        def __init__(self, data, *, fail_conversion=False): self.data = data; self.byteLength = len(data); self.conversions = 0; self.fail_conversion = fail_conversion
+        def to_bytes(self):
+            self.conversions += 1
+            if self.fail_conversion: raise AssertionError('oversized chunk must not be converted')
+            return self.data
+
+    class Reader:
+        def __init__(self, chunks, error=None): self.chunks = iter(chunks); self.error = error; self.cancelled = False; self.released = False; self.reads = 0
+        async def read(self):
+            self.reads += 1
+            if self.error: raise self.error
+            try: return type('Read', (), {'done': False, 'value': next(self.chunks)})()
+            except StopIteration: return type('Read', (), {'done': True, 'value': None})()
+        async def cancel(self): self.cancelled = True
+        def releaseLock(self): self.released = True
+
+    class Response:
+        status = 200
+        def __init__(self, reader, length=None):
+            self.body = type('Body', (), {'getReader': lambda _self: reader})()
+            self.headers = type('Headers', (), {'get': lambda _self, key: length if key == 'content-length' else None})()
+
+    async def transport_result(self, reader, length=None, status=200):
+        from test_worker_routes import load_worker_module
+        module = load_worker_module(); worker = module.Default()
+        response = self.Response(reader, length); response.status = status
+        async def fetch(_url): return response
+        module.worker_fetch = fetch
+        worker.env = type('Env', (), {'FDC_API_KEY': 'synthetic'})()
+        try:
+            return await worker._provider_transport('fdc', 'synthetic', 3)
+        except Exception as exc:
+            return exc
+
+    async def test_short_chunked_json_and_utf8(self):
+        raw = '{"label":"café"}'.encode()
+        reader = self.Reader([self.Chunk(raw[:10]), self.Chunk(raw[10:])])
+        status, value = await self.transport_result(reader, str(len(raw)))
+        self.assertEqual((status, value['label']), (200, 'café'))
+        self.assertTrue(reader.released); self.assertFalse(reader.cancelled)
+
+    async def test_declared_oversize_is_rejected_before_read_and_cancelled(self):
+        reader = self.Reader([self.Chunk(b'{}')])
+        error = await self.transport_result(reader, '262145')
+        self.assertIsInstance(error, ValueError); self.assertEqual(reader.reads, 0)
+        self.assertTrue(reader.cancelled); self.assertTrue(reader.released)
+
+    async def test_chunked_oversize_rejected_before_conversion_and_cancelled(self):
+        first = self.Chunk(b'{}'); too_large = self.Chunk(b' ' * 262143, fail_conversion=True)
+        reader = self.Reader([first, too_large])
+        error = await self.transport_result(reader)
+        self.assertIsInstance(error, ValueError)
+        self.assertEqual((first.conversions, too_large.conversions), (1, 0))
+        self.assertTrue(reader.cancelled); self.assertTrue(reader.released)
+
+    async def test_read_error_and_non_200_release_body(self):
+        broken = self.Reader([], error=ConnectionError('synthetic read failure'))
+        result = await self.transport_result(broken)
+        self.assertIsInstance(result, ConnectionError); self.assertTrue(broken.cancelled); self.assertTrue(broken.released)
+        not_found = self.Reader([self.Chunk(b'not needed')])
+        result = await self.transport_result(not_found, status=404)
+        self.assertEqual(result, (404, None)); self.assertEqual(not_found.reads, 0)
+        self.assertTrue(not_found.cancelled); self.assertTrue(not_found.released)
+
+    async def test_transport_timeout_cancels_and_releases_reader(self):
+        from test_worker_routes import load_worker_module
+        module = load_worker_module(); worker = module.Default()
+        reader = self.Reader([])
+        async def blocked_read(): await asyncio.sleep(1)
+        reader.read = blocked_read
+        response = self.Response(reader)
+        async def fetch(_url): return response
+        module.worker_fetch = fetch; worker.env = type('Env', (), {'FDC_API_KEY': 'synthetic'})()
+        with self.assertRaises(asyncio.TimeoutError):
+            await asyncio.wait_for(worker._provider_transport('fdc', 'synthetic', 3), .01)
+        self.assertTrue(reader.cancelled); self.assertTrue(reader.released)
+
 class LineTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.db = FakeD1()

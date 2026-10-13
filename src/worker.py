@@ -40,8 +40,64 @@ from nutrition_formula.provider_search import ProviderSearch
 from nutrition_formula.line_review import D1LineReviewRepository, source_rows
 
 MAX_REQUEST_BYTES = MAX_UPLOAD_BYTES + 4096
+MAX_PROVIDER_RESPONSE_BYTES = 262144
 JSON_HEADERS = {"Cache-Control": "no-store"}
 _APP_HEALTH_TASKS: set[asyncio.Task] = set()
+
+
+async def _release_provider_reader(reader, *, cancel):
+    if cancel:
+        try:
+            await reader.cancel()
+        except BaseException:  # Keep the original read error or timeout.
+            pass
+    try:
+        reader.releaseLock()
+    except Exception:  # noqa: BLE001 - cleanup must not mask the request result.
+        pass
+
+
+async def _provider_json_response(response):
+    body = response.body
+    if body is None:
+        return json.loads(b"")
+    reader = body.getReader()
+    complete = False
+    try:
+        declared_length = response.headers.get("content-length")
+        if declared_length is not None:
+            try:
+                declared_length = int(declared_length)
+            except (TypeError, ValueError) as exc:
+                raise ValueError("Invalid provider Content-Length") from exc
+            if declared_length < 0 or declared_length > MAX_PROVIDER_RESPONSE_BYTES:
+                raise ValueError("Provider response exceeds size bound")
+
+        chunks = []
+        total_bytes = 0
+        while True:
+            result = await reader.read()
+            if result.done:
+                complete = True
+                break
+            chunk = result.value
+            chunk_length = getattr(chunk, "byteLength", None)
+            if chunk_length is None:
+                chunk_length = len(chunk)
+            try:
+                chunk_length = int(chunk_length)
+            except (TypeError, ValueError) as exc:
+                raise ValueError("Invalid provider response chunk") from exc
+            if chunk_length < 0 or total_bytes + chunk_length > MAX_PROVIDER_RESPONSE_BYTES:
+                raise ValueError("Provider response exceeds size bound")
+            chunk_bytes = chunk.to_bytes() if hasattr(chunk, "to_bytes") else bytes(chunk)
+            if len(chunk_bytes) != chunk_length:
+                raise ValueError("Invalid provider response chunk")
+            chunks.append(chunk_bytes)
+            total_bytes += chunk_length
+        return json.loads(b"".join(chunks).decode("utf-8"))
+    finally:
+        await _release_provider_reader(reader, cancel=not complete)
 _APP_HEALTH_COLD = True
 
 
@@ -93,11 +149,11 @@ class Default(WorkerEntrypoint):
                    + "&pageSize=" + str(limit) + "&api_key=" + quote(str(key), safe=""))
         response = await worker_fetch(url)
         if response.status != 200:
+            if response.body is not None:
+                reader = response.body.getReader()
+                await _release_provider_reader(reader, cancel=True)
             return response.status, None
-        raw = await response.text()
-        if len(raw.encode()) > 262144:
-            raise ValueError("Provider response exceeds size bound")
-        return 200, json.loads(raw)
+        return 200, await _provider_json_response(response)
 
     def _provider_service(self):
         if not hasattr(self, "_provider_search"):
