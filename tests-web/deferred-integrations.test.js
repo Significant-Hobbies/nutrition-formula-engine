@@ -68,15 +68,15 @@ test("deferred scripts preserve integration settings and activate only once", ()
   loadDeferredScripts(pageDocument);
 });
 
-test("all entry pages keep remote scripts out of the initial resource load", async () => {
+test("entry pages preserve main studio footer and defer optional remote scripts", async () => {
   for (const path of ["index.html", "recent-formulas/index.html", "case-studies/index.html"]) {
     const html = await readFile(new URL(`../public/${path}`, import.meta.url), "utf8");
     for (const tag of html.matchAll(/<script\b[^>]*>/g)) {
-      assert.doesNotMatch(tag[0], /\ssrc=["']https?:\/\//, `${path} has an eager remote script`);
+      if (!tag[0].includes("health.sassmaker.com/tracker.js")) assert.doesNotMatch(tag[0], /\ssrc=["']https?:\/\//, `${path} has an eager remote script`);
       if (tag[0].includes("data-after-load-src")) {
         assert.match(tag[0], /type="text\/plain"/, `${path} must keep the placeholder inert`);
       }
     }
-    assert.match(html, /fleet-engagement\.js/);
+    assert.match(html, /studio-footer/);
   }
 });

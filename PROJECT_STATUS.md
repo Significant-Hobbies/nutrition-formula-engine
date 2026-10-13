@@ -78,8 +78,13 @@ perform FSSAI classification, label formatting, or regulatory approval.
 
 ## Not yet configured or implemented
 
-- Live PubChem and FoodData Central candidate adapters and accepted-profile cache
-- Line-level reject/search decision persistence against the server repository
+- Live PubChem/FoodData Central qualification remains pending. Candidate adapters,
+  bounded candidate cache, and accepted-profile reuse are implemented and tested
+  offline with synthetic fixtures; no production credential/configuration change.
+- Line-level reject/search persistence is implemented locally against D1-compatible
+  SQLite. Migration 0005 is committed but has not been applied remotely; optional
+  actual Worker runtime and deployed review qualification remain pending.
+  See `reports/provider-line-review-qualification.md`.
 - Additional OCR languages, handwriting support, and proprietary document formats
 
 ## Boundaries

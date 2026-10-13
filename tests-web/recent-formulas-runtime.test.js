@@ -28,6 +28,7 @@ function fixture({ browserWorkspace = null, browserError = false } = {}) {
       createElement: element,
     },
     recentFormulaItems,
+    savedProducts: [],
     loadBrowserWorkspace: async () => {
       if (browserError) throw new Error("Fixture storage failure");
       return browserWorkspace;

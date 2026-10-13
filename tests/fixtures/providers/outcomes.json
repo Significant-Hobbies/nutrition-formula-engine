@@ -1,0 +1,1 @@
+{"no_result":{"foods":[]},"malformed":{"foods":[{"description":"Missing identifier"}]},"unavailable":{"status":503,"payload":null},"pubchem_not_found":{"Fault":{"Code":"PUGREST.NotFound"}}}

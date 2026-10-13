@@ -1,3 +1,4 @@
+import { lineReviewPanel } from "./line-review.js";
 import { normalizeText, rowsToTsv } from "./input-normalizer.js";
 import { createAuditLog, sha256 } from "./audit-log.js";
 import { buildNutritionLabel, identityReviewKey, multiplyDivideDecimal, pendingIdentityRows } from "./nutrition-label.js";
@@ -706,6 +707,10 @@ function renderFormula(rows) {
       }
       interpretation.append(save);
     }
+    if (index > 0 && workspace?.mode === "server") {
+      interpretation.append(lineReviewPanel({formulaId: workspace.formulaId,
+        version: workspace.currentVersion, ordinal: index, item: row.item}));
+    }
     tr.append(interpretation);
     body.append(tr);
   }
@@ -1410,6 +1415,7 @@ document.querySelector("#save-workspace").addEventListener("click", async () => 
     if (sessionHistory.length) sessionHistory.at(-1).server_version = payload.version.version;
     await persistBrowserWorkspace();
     button.textContent = "Saved";
+    renderFormula(currentRows);
     renderHistory();
     await refreshDatabaseSync();
     recordAudit("workspace_saved", { version: workspace.currentVersion });

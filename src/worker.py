@@ -7,7 +7,7 @@ import json
 import re
 import time
 import uuid
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, urlparse, quote
 
 from js import console
 from pyodide.ffi import create_proxy
@@ -35,6 +35,9 @@ from nutrition_formula.versioning import (
     FormulaAccessError,
     VersionConflictError,
 )
+
+from nutrition_formula.provider_search import ProviderSearch
+from nutrition_formula.line_review import D1LineReviewRepository, source_rows
 
 MAX_REQUEST_BYTES = MAX_UPLOAD_BYTES + 4096
 JSON_HEADERS = {"Cache-Control": "no-store"}
@@ -78,6 +81,29 @@ class Default(WorkerEntrypoint):
         self._record_stage_timing(request, path, response.status, started, cold, duration_ms)
         return response
 
+    async def _provider_transport(self, provider, query, limit):
+        if provider == "pubchem":
+            url = ("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/"
+                   + quote(query, safe="") + "/property/Title,MolecularFormula,MolecularWeight/JSON")
+        else:
+            key = getattr(self.env, "FDC_API_KEY", None)
+            if not key:
+                return 503, None
+            url = ("https://api.nal.usda.gov/fdc/v1/foods/search?query=" + quote(query, safe="")
+                   + "&pageSize=" + str(limit) + "&api_key=" + quote(str(key), safe=""))
+        response = await worker_fetch(url)
+        if response.status != 200:
+            return response.status, None
+        raw = await response.text()
+        if len(raw.encode()) > 262144:
+            raise ValueError("Provider response exceeds size bound")
+        return 200, json.loads(raw)
+
+    def _provider_service(self):
+        if not hasattr(self, "_provider_search"):
+            self._provider_search = ProviderSearch(self._provider_transport)
+        return self._provider_search
+
     async def _fetch(self, request, parsed_url, path, method):
 
         if path == "/api/health" and method == "GET":
@@ -91,6 +117,12 @@ class Default(WorkerEntrypoint):
         if path == "/api/ingredients/search" and method == "GET":
             params = parse_qs(parsed_url.query)
             try:
+                provider = params.get("provider", ["local"])[0]
+                if provider != "local":
+                    return _json(await self._provider_service().search(
+                        provider, params.get("q", [""])[0],
+                        refresh=params.get("refresh", ["false"])[0] == "true"
+                    ))
                 result = search_local_ingredients(
                     params.get("q", [""])[0], params.get("kind", ["all"])[0]
                 )
@@ -137,6 +169,13 @@ class Default(WorkerEntrypoint):
                     return _json({"profiles": profiles}, request_id=request_id)
                 if path == "/api/ingredients" and method == "POST":
                     body = await request.json()
+                    if body.get("provider"):
+                        profile = await self._provider_service().accept(
+                            repository, provider=body.get("provider"), query=body.get("query"),
+                            candidate_id=body.get("candidate_id"), evidence_id=body.get("evidence_id"),
+                            submitted_alias=body.get("submitted_alias"),
+                        )
+                        return _json({"profile": profile}, status=201, request_id=request_id)
                     material_id, submitted_alias, kind = validate_material_save_body(body)
                     material = local_material(material_id, kind)
                     if material is None:
@@ -204,6 +243,18 @@ class Default(WorkerEntrypoint):
                 repository = D1FormulaRepository(
                     self.env.FORMULA_DB, owner_id=PUBLIC_OWNER_ID
                 )
+                review_match = re.fullmatch(r"/api/formulas/([^/]+)/versions/(\d+)/review", path)
+                if review_match and method in {"GET", "POST"}:
+                    version = await repository.get_version(review_match.group(1), None, int(review_match.group(2)))
+                    reviews = D1LineReviewRepository(self.env.FORMULA_DB, owner_id=PUBLIC_OWNER_ID)
+                    if method == "POST":
+                        decision = await reviews.save(version, await request.json())
+                        return _json({"decision": decision}, request_id=request_id)
+                    rows = source_rows(version)
+                    identities = {r["source_row_id"] for r in rows}
+                    decisions = [d for d in await reviews.list(version["formula_id"])
+                                 if d["source_row_id"] in identities]
+                    return _json({"rows": rows, "decisions": decisions}, request_id=request_id)
                 if path == "/api/formulas" and method == "GET":
                     return _json(
                         {"workspaces": await repository.list_workspaces()},
@@ -298,7 +349,7 @@ class Default(WorkerEntrypoint):
                 return _json({"error": "Formula history route not found"}, status=404)
             except VersionConflictError as exc:
                 return _json({"error": str(exc)}, status=409, request_id=request_id)
-            except (FormulaAccessError, FormulaUploadError) as exc:
+            except (FormulaAccessError, FormulaUploadError, ValueError) as exc:
                 return _json({"error": str(exc)}, status=400, request_id=request_id)
             except Exception as exc:  # noqa: BLE001 - runtime JSON and D1 errors vary
                 console.error(
