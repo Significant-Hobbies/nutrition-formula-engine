@@ -221,6 +221,7 @@ class Default(WorkerEntrypoint):
                         accepted_profiles=profiles,
                         accepted_aliases=validate_accepted_aliases(body),
                     )
+                    report["input_basis"] = "dose" if body.get("input_basis") == "dose" else "batch"
                     record = await repository.create(
                         file_name=file_name,
                         contents=contents,
@@ -264,6 +265,7 @@ class Default(WorkerEntrypoint):
                         accepted_profiles=profiles,
                         accepted_aliases=validate_accepted_aliases(body),
                     )
+                    report["input_basis"] = "dose" if body.get("input_basis") == "dose" else "batch"
                     version = await repository.append(
                         formula_id=append_match.group(1),
                         access_token=None,
@@ -383,6 +385,7 @@ class Default(WorkerEntrypoint):
                     accepted_profiles=profiles,
                     accepted_aliases=validate_accepted_aliases(body),
                 )
+                result["input_basis"] = "dose" if body.get("input_basis") == "dose" else "batch"
                 _log(
                     "formula_analysis_completed",
                     request_id,

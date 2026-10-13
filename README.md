@@ -9,7 +9,7 @@ accepts pasted text, TSV, CSV, TXT, JSON, XLSX, images, and PDFs.
 OCR and document parsing happen locally in the browser and always produce an
 editable draft for review before calculation. Results can produce a printable,
 retail-style draft back label with ingredients, per-100 and per-serving values,
-and an adult `%RDA` column. Regulatory classification, mandatory pack declarations,
+and three `%RDA` columns (men, women, and one boys 10–12 reference). Regulatory classification, mandatory pack declarations,
 claims review, laboratory validation, and approval remain outside this version.
 
 ## Run the upload app locally

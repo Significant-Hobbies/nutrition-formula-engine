@@ -12,8 +12,9 @@ from .confidence import evidence_confidence
 from .engine import CalculationError, calculate, decimal_string
 from .material_profiles import merge_material_profiles
 from .product_report import build_product_report
-from .resolver import normalize_name
+from .resolver import normalize_name, resolve_material
 from .tsv import FormulaUploadError, parse_formula_tsv
+from .units import to_mass_g
 from .versioning import ENGINE_VERSION, fingerprint
 
 DATA_ROOT = Path(__file__).resolve().parent / "data"
@@ -121,6 +122,54 @@ def _apply_accepted_aliases(
     return resolved
 
 
+def _retain_unresolved_ingredients(
+    formula: dict[str, Any], catalog: dict[str, Any]
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Retain unidentified mass inputs as unknown composition, never a substitute."""
+    unresolved = []
+    for index, line in enumerate(formula["ingredients"]):
+        query = line.get("ingredient")
+        if not query:
+            material = catalog["materials"].get(line.get("material_id"), {})
+            if line["quantity"]["unit"] in {"l", "ml"} and not material.get("density_g_per_ml"):
+                raise FormulaUploadError(
+                    f"{material.get('name', line.get('material_id'))}: supplier density in g/mL "
+                    "or a measured mass is required to convert this ingredient volume."
+                )
+            continue
+        try:
+            resolved_id, _ = resolve_material(catalog, query)
+        except ValueError:
+            material_id = f"unresolved_input_{index}"
+            catalog["materials"][material_id] = {
+                "name": query,
+                "nutrients": {},
+                "identity_status": "unresolved",
+                "source": {"kind": "unresolved_input", "reference": "Submitted name; no catalog identity selected"},
+                "missing_information": "Provide the exact ingredient identity, supplier grade, full nutrient/carrier composition and lot CoA. Unreported nutrients remain unknown.",
+            }
+            if line["quantity"]["unit"] in {"l", "ml"}:
+                raise FormulaUploadError(
+                    f"{query}: identity and density are missing. Request the supplier density in g/mL "
+                    "or enter its measured mass before calculating; volume cannot be assumed to equal mass."
+                )
+            line.pop("ingredient")
+            line["material_id"] = material_id
+            unresolved.append({
+                "line_index": index, "query": query,
+                "selected_material_id": material_id, "selected_name": query,
+                "confidence": "low", "score": "0", "alternatives": [],
+                "reason": "No catalog identity selected; all nutrient composition remains unknown",
+            })
+        else:
+            if line["quantity"]["unit"] in {"l", "ml"} and not catalog["materials"][resolved_id].get("density_g_per_ml"):
+                raise FormulaUploadError(
+                    f"{query}: supplier density in g/mL or a measured mass is required "
+                    "to convert this ingredient volume."
+                )
+    return formula, unresolved
+
+
 def _overall_confidence(assumptions: list[dict[str, Any]]) -> dict[str, Any]:
     levels = {item["confidence"] for item in assumptions}
     identity = "scenario" if "low" in levels else "reference" if "medium" in levels else "specified"
@@ -169,7 +218,11 @@ def _generic_metrics(
     confidence = _overall_confidence(assumptions)
     range_key = f"{basis_key}_range"
     screened: list[dict[str, Any]] = []
-    for metric_id in STANDARD_METRIC_IDS:
+    # Keep the standard screen, and retain calculated actives outside that list.
+    extra_ids = [item['id'] for item in nutrition['nutrients']
+                 if item['id'] not in STANDARD_METRIC_IDS
+                 and item[basis_key] is not None and Decimal(item[basis_key]) != 0]
+    for metric_id in [*STANDARD_METRIC_IDS, *extra_ids]:
         original = by_id[metric_id]
         value = original[basis_key]
         if value is None:
@@ -193,6 +246,7 @@ def _generic_metrics(
             "id": metric_id,
             "name": original["name"],
             "value": value,
+            "total_batch": original["total_batch"],
             "unit": original["unit"],
             "range": normalized_range,
             "range_label": _range_label({"range": normalized_range}),
@@ -308,9 +362,11 @@ def _interpretations(
                 "material_id": material_id,
                 "confidence": assumption["confidence"] if assumption else "exact",
                 "source": source.get("reference", "Local accepted profile"),
+                "identity_note": material.get("identity_note"),
                 "profile_version": source.get("accepted_profile_version"),
                 "reusable_profile": bool(material.get("nutrients") or material.get("components")),
                 "needs_review": bool(assumption and assumption["confidence"] != "exact"),
+                "unresolved": source.get("kind") == "unresolved_input",
                 "alternatives": alternative_names(assumption),
             }
         )
@@ -392,7 +448,7 @@ def _markdown(result: dict[str, Any]) -> str:
         lines.append(
             "| {name} | {value} {unit} | {range_} | {score} {band} |".format(
                 name=_escape(metric["name"]),
-                value=_escape(metric["value"]),
+                value=_escape(("≥" if metric["status"] == "partial" else "") + metric["value"]),
                 unit=_escape(metric["unit"]),
                 range_=_escape(metric["range_label"] or "—"),
                 score=_escape(metric["confidence"]["score"]),
@@ -463,6 +519,8 @@ def analyze_formula_upload(
         {**requested_aliases, **profile_aliases},
     )
     formula, visible_assumptions = _apply_visible_assumptions(formula_with_aliases)
+    formula, unresolved_assumptions = _retain_unresolved_ingredients(formula, nutrition_catalog)
+    visible_assumptions.extend(unresolved_assumptions)
 
     try:
         nutrition = calculate(nutrition_catalog, formula)
@@ -513,6 +571,26 @@ def analyze_formula_upload(
         warnings.insert(0, f"{review_count} ingredient identities require review")
 
     material_ids = {row.get("material_id") for row in formula_rows if row.get("material_id")}
+    # Retain weighed non-nutrient ingredients without inventing active equivalents.
+    label_entries = []
+    declared_nutrient_ids = set()
+    for row in formula_rows[1:]:
+        material = nutrition_catalog["materials"].get(row.get("material_id"), {})
+        declared_nutrient_ids.update(material.get("nutrients", {}))
+        if material.get("label_category"):
+            label_entries.append({
+                "name": row["item"],
+                "interpretation": row["interpretation"],
+                "category": material["label_category"],
+                "batch_amount": decimal_string(to_mass_g(
+                    Decimal(row["quantity"]), row["unit"],
+                    Decimal(material["density_g_per_ml"]) if material.get("density_g_per_ml") else None,
+                ) * Decimal(1000)),
+                "unit": "mg",
+                "source": material.get("source", {}),
+                "identity_note": material.get("identity_note"),
+                "needs_review": row["needs_review"],
+            })
     result = {
         "schema_version": 1,
         "calculation": {
@@ -525,10 +603,14 @@ def analyze_formula_upload(
         "product_name": submitted_formula["batch"]["name"],
         "file_name": parsed["file_name"],
         "basis_label": basis_label,
+        "label_batch_quantity": nutrition["final_volume_ml"] if basis_key == "per_100_ml" else nutrition["final_mass_g"],
+        "declared_nutrient_ids": sorted(declared_nutrient_ids),
+        "label_entries": label_entries,
         "product_inference": _product_inference(present, material_ids),
         "coverage": coverage,
         "formula_rows": formula_rows,
-        "label_ingredients": nutrition["leaf_ingredients"],
+        "label_ingredients": [{**leaf, "label_name": nutrition_catalog["materials"][leaf["material_id"]].get("label_name", leaf["name"])}
+                              for leaf in nutrition["leaf_ingredients"]],
         "present_components": present,
         "screened_components": screened,
         "ingredient_assumptions": ingredient_assumptions,

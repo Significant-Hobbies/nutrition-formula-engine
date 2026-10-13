@@ -1,0 +1,1924 @@
+{
+  "id": "papain-lysine",
+  "name": "Papain, lysine & B vitamins",
+  "summary": "15 mL · Papain 60 mg, lysine 15 mg and B vitamins · assumption estimate",
+  "savedAt": "2026-10-12T00:00:00Z",
+  "contents": "Item\tQuantity\tUnit\nFINISHED BATCH\t15\tmL\nPAPAIN\t60\tmg\nLYSINE\t15\tmg\nNIACINAMIDE\t3\tmg\nVITAMIN B1\t1\tmg\nVITAMIN B6\t0.75\tmg\n",
+  "fileName": "papain-lysine.tsv",
+  "report": {
+    "schema_version": 1,
+    "calculation": {
+      "engine_version": "2.0.0-pilot",
+      "nutrition_catalog_fingerprint": "15a9377a6ef9bf9e12cb0673857d1ac9ce717dcfa6dbb48d066a9b55eea10c67",
+      "chemical_catalog_fingerprint": "a53c0ce426a12e22882754af48fa5d19e57cea0de42c7fe0d8ba2a1d1422eacc",
+      "accepted_profile_count": 0,
+      "arithmetic": "Python Decimal"
+    },
+    "product_name": "papain lysine",
+    "file_name": "papain-lysine.tsv",
+    "basis_label": "per 100 mL",
+    "label_batch_quantity": "15",
+    "declared_nutrient_ids": [
+      "lysine",
+      "niacin",
+      "thiamin",
+      "vitamin_b6"
+    ],
+    "label_entries": [
+      {
+        "name": "PAPAIN",
+        "interpretation": "Papain",
+        "category": "Enzymes",
+        "batch_amount": "60",
+        "unit": "mg",
+        "source": {
+          "kind": "operator_assumption",
+          "reference": "Entered papain mass retained without a supplier composition or activity assay. Pure enzyme protein is available only as an explicit working-estimate scenario.",
+          "url": "https://www.worthingtonweb.com/PAP/default.html"
+        },
+        "identity_note": "Papain supplier specification: activity units and assay, enzyme protein content, carriers, sugars, fat and sodium. 60 mg is ingredient weight, not measured enzyme activity.",
+        "needs_review": true
+      }
+    ],
+    "product_inference": {
+      "name": "Nutrient or medicinal formulation",
+      "confidence": "low",
+      "reason": "The detected profile is led by isolated nutrients or chemical ingredients.",
+      "boundary": "Intended use, dose and label claims are needed for a narrower classification."
+    },
+    "coverage": {
+      "characterized_percent": "24.76489028213166144200626959247648902821",
+      "uncharacterized_percent": "75.23510971786833855799373040752351097179",
+      "uncharacterized_mass_g": "0.06",
+      "uncharacterized_materials": [
+        {
+          "name": "Papain",
+          "mass_g": "0.06",
+          "percent": "75.23510971786833855799373040752351097179"
+        }
+      ],
+      "basis": "explicitly quantified formula input mass"
+    },
+    "formula_rows": [
+      {
+        "source_row": 2,
+        "item": "FINISHED BATCH",
+        "submitted_quantity": "15",
+        "submitted_unit": "mL",
+        "quantity": "15",
+        "unit": "ml",
+        "normalized_equivalent": "15 mL",
+        "interpretation": "Final batch basis",
+        "confidence": "exact",
+        "needs_review": false,
+        "alternatives": []
+      },
+      {
+        "source_row": 3,
+        "item": "PAPAIN",
+        "submitted_quantity": "60",
+        "submitted_unit": "mg",
+        "quantity": "60",
+        "unit": "mg",
+        "normalized_equivalent": "0.06 g",
+        "interpretation": "Papain",
+        "material_id": "papain_pure_assumed",
+        "confidence": "low",
+        "source": "Entered papain mass retained without a supplier composition or activity assay. Pure enzyme protein is available only as an explicit working-estimate scenario.",
+        "identity_note": "Papain supplier specification: activity units and assay, enzyme protein content, carriers, sugars, fat and sodium. 60 mg is ingredient weight, not measured enzyme activity.",
+        "profile_version": null,
+        "reusable_profile": false,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Nepazene (likely Nipazine), identity not confirmed",
+          "Sodium methylparaben, assumed from Nepazene",
+          "Saccharin, salt form unspecified"
+        ]
+      },
+      {
+        "source_row": 4,
+        "item": "LYSINE",
+        "submitted_quantity": "15",
+        "submitted_unit": "mg",
+        "quantity": "15",
+        "unit": "mg",
+        "normalized_equivalent": "0.015 g",
+        "interpretation": "Lysine, free active amount assumed",
+        "material_id": "lysine_free_pure_assumed",
+        "confidence": "low",
+        "source": "Entered lysine amount treated as free active L-lysine for the working draft; salt form, purity and supplier assay not verified.",
+        "identity_note": "Confirm free L-lysine versus a hydrochloride salt, hydrate, purity/assay and carriers. 15 mg is treated as active free lysine in this draft; a salt would require a different conversion.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Lysine hydrochloride",
+          "Saccharin, salt form unspecified"
+        ]
+      },
+      {
+        "source_row": 5,
+        "item": "NIACINAMIDE",
+        "submitted_quantity": "3",
+        "submitted_unit": "mg",
+        "quantity": "3",
+        "unit": "mg",
+        "normalized_equivalent": "0.003 g",
+        "interpretation": "Niacinamide, pure active basis",
+        "material_id": "niacinamide_pure",
+        "confidence": "low",
+        "source": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.",
+        "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Nepazene (likely Nipazine), identity not confirmed",
+          "Sodium methylparaben, assumed from Nepazene",
+          "Benzoic acid"
+        ]
+      },
+      {
+        "source_row": 6,
+        "item": "VITAMIN B1",
+        "submitted_quantity": "1",
+        "submitted_unit": "mg",
+        "quantity": "1",
+        "unit": "mg",
+        "normalized_equivalent": "0.001 g",
+        "interpretation": "Vitamin B1, declared active amount",
+        "material_id": "vitamin_b1_declared",
+        "confidence": "low",
+        "source": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.",
+        "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Vitamin B12, declared active amount",
+          "Vitamin B2, declared active amount",
+          "Vitamin B6, declared active amount"
+        ]
+      },
+      {
+        "source_row": 7,
+        "item": "VITAMIN B6",
+        "submitted_quantity": "0.75",
+        "submitted_unit": "mg",
+        "quantity": "0.75",
+        "unit": "mg",
+        "normalized_equivalent": "0.00075 g",
+        "interpretation": "Vitamin B6, declared active amount",
+        "material_id": "vitamin_b6_declared",
+        "confidence": "low",
+        "source": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.",
+        "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Vitamin B1, declared active amount",
+          "Vitamin B2, declared active amount",
+          "Vitamin B12, declared active amount"
+        ]
+      }
+    ],
+    "label_ingredients": [
+      {
+        "material_id": "papain_pure_assumed",
+        "name": "Papain",
+        "mass_g": "0.06",
+        "minimum_mass_g": "0.06",
+        "maximum_mass_g": "0.06",
+        "input_mass_percent": "75.23510971786833855799373040752351097179",
+        "label_name": "Papain"
+      },
+      {
+        "material_id": "lysine_free_pure_assumed",
+        "name": "Lysine, free active amount assumed",
+        "mass_g": "0.015",
+        "minimum_mass_g": "0.015",
+        "maximum_mass_g": "0.015",
+        "input_mass_percent": "18.80877742946708463949843260188087774295",
+        "label_name": "Lysine"
+      },
+      {
+        "material_id": "niacinamide_pure",
+        "name": "Niacinamide, pure active basis",
+        "mass_g": "0.003",
+        "minimum_mass_g": "0.003",
+        "maximum_mass_g": "0.003",
+        "input_mass_percent": "3.761755485893416927899686520376175548589",
+        "label_name": "Niacinamide"
+      },
+      {
+        "material_id": "vitamin_b1_declared",
+        "name": "Vitamin B1, declared active amount",
+        "mass_g": "0.001",
+        "minimum_mass_g": "0.001",
+        "maximum_mass_g": "0.001",
+        "input_mass_percent": "1.25391849529780564263322884012539184953",
+        "label_name": "Vitamin B1"
+      },
+      {
+        "material_id": "vitamin_b6_declared",
+        "name": "Vitamin B6, declared active amount",
+        "mass_g": "0.00075",
+        "minimum_mass_g": "0.00075",
+        "maximum_mass_g": "0.00075",
+        "input_mass_percent": "0.9404388714733542319749216300940438871473",
+        "label_name": "Vitamin B6"
+      }
+    ],
+    "present_components": [
+      {
+        "id": "thiamin",
+        "name": "Vitamin B1 (thiamin)",
+        "value": "6.666666666666666666666666666666666666667",
+        "total_batch": "1",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "6.666666666666666666666666666666666666667",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 6.666666666666666666666666666666666666667 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": [
+          {
+            "line_index": 3,
+            "input_material_id": "vitamin_b1_declared",
+            "input_material_name": "Vitamin B1, declared active amount",
+            "material_id": "vitamin_b1_declared",
+            "material_name": "Vitamin B1, declared active amount",
+            "material_path": [
+              "vitamin_b1_declared"
+            ],
+            "input_mass_g": "0.001",
+            "minimum_input_mass_g": "0.001",
+            "maximum_input_mass_g": "0.001",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "1",
+            "minimum_total_batch": "1",
+            "maximum_total_batch": "1",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+            },
+            "per_100_g": null,
+            "per_100_ml": "6.666666666666666666666666666666666666667",
+            "per_serving": "6.666666666666666666666666666666666666667",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "niacin",
+        "name": "Vitamin B3 (niacin)",
+        "value": "20",
+        "total_batch": "3",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "20",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 20 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": [
+          {
+            "line_index": 2,
+            "input_material_id": "niacinamide_pure",
+            "input_material_name": "Niacinamide, pure active basis",
+            "material_id": "niacinamide_pure",
+            "material_name": "Niacinamide, pure active basis",
+            "material_path": [
+              "niacinamide_pure"
+            ],
+            "input_mass_g": "0.003",
+            "minimum_input_mass_g": "0.003",
+            "maximum_input_mass_g": "0.003",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "3",
+            "minimum_total_batch": "3",
+            "maximum_total_batch": "3",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+            },
+            "per_100_g": null,
+            "per_100_ml": "20",
+            "per_serving": "20",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "vitamin_b6",
+        "name": "Vitamin B6",
+        "value": "5",
+        "total_batch": "0.75",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "5",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 5 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": [
+          {
+            "line_index": 4,
+            "input_material_id": "vitamin_b6_declared",
+            "input_material_name": "Vitamin B6, declared active amount",
+            "material_id": "vitamin_b6_declared",
+            "material_name": "Vitamin B6, declared active amount",
+            "material_path": [
+              "vitamin_b6_declared"
+            ],
+            "input_mass_g": "0.00075",
+            "minimum_input_mass_g": "0.00075",
+            "maximum_input_mass_g": "0.00075",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "0.75",
+            "minimum_total_batch": "0.75",
+            "maximum_total_batch": "0.75",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+            },
+            "per_100_g": null,
+            "per_100_ml": "5",
+            "per_serving": "5",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "lysine",
+        "name": "Lysine",
+        "value": "100",
+        "total_batch": "15",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "100",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 100 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "papain_pure_assumed"
+        ],
+        "contributions": [
+          {
+            "line_index": 1,
+            "input_material_id": "lysine_free_pure_assumed",
+            "input_material_name": "Lysine, free active amount assumed",
+            "material_id": "lysine_free_pure_assumed",
+            "material_name": "Lysine, free active amount assumed",
+            "material_path": [
+              "lysine_free_pure_assumed"
+            ],
+            "input_mass_g": "0.015",
+            "minimum_input_mass_g": "0.015",
+            "maximum_input_mass_g": "0.015",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "15",
+            "minimum_total_batch": "15",
+            "maximum_total_batch": "15",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered lysine amount treated as free active L-lysine for the working draft; salt form, purity and supplier assay not verified."
+            },
+            "per_100_g": null,
+            "per_100_ml": "100",
+            "per_serving": "100",
+            "retention_factor": "1"
+          }
+        ]
+      }
+    ],
+    "screened_components": [
+      {
+        "id": "energy",
+        "name": "Energy",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "kcal",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "kcal",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 kcal",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "protein",
+        "name": "Protein",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "carbohydrate",
+        "name": "Carbohydrate",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "total_sugars",
+        "name": "Total sugars",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "added_sugars",
+        "name": "Added sugars",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "dietary_fibre",
+        "name": "Dietary fibre",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "total_fat",
+        "name": "Total fat",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "saturated_fat",
+        "name": "Saturated fat",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "trans_fat",
+        "name": "Trans fat",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "sodium",
+        "name": "Sodium",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "iron",
+        "name": "Iron",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "zinc",
+        "name": "Zinc",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "calcium",
+        "name": "Calcium",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "magnesium",
+        "name": "Magnesium",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "potassium",
+        "name": "Potassium",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "phosphorus",
+        "name": "Phosphorus",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "copper",
+        "name": "Copper",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "manganese",
+        "name": "Manganese",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "selenium",
+        "name": "Selenium",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "vitamin_a_rae",
+        "name": "Vitamin A",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "vitamin_c",
+        "name": "Vitamin C",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "vitamin_d",
+        "name": "Vitamin D",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "vitamin_e",
+        "name": "Vitamin E",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "vitamin_k",
+        "name": "Vitamin K",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "thiamin",
+        "name": "Vitamin B1 (thiamin)",
+        "value": "6.666666666666666666666666666666666666667",
+        "total_batch": "1",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "6.666666666666666666666666666666666666667",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 6.666666666666666666666666666666666666667 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": [
+          {
+            "line_index": 3,
+            "input_material_id": "vitamin_b1_declared",
+            "input_material_name": "Vitamin B1, declared active amount",
+            "material_id": "vitamin_b1_declared",
+            "material_name": "Vitamin B1, declared active amount",
+            "material_path": [
+              "vitamin_b1_declared"
+            ],
+            "input_mass_g": "0.001",
+            "minimum_input_mass_g": "0.001",
+            "maximum_input_mass_g": "0.001",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "1",
+            "minimum_total_batch": "1",
+            "maximum_total_batch": "1",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+            },
+            "per_100_g": null,
+            "per_100_ml": "6.666666666666666666666666666666666666667",
+            "per_serving": "6.666666666666666666666666666666666666667",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "riboflavin",
+        "name": "Vitamin B2 (riboflavin)",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "niacin",
+        "name": "Vitamin B3 (niacin)",
+        "value": "20",
+        "total_batch": "3",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "20",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 20 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": [
+          {
+            "line_index": 2,
+            "input_material_id": "niacinamide_pure",
+            "input_material_name": "Niacinamide, pure active basis",
+            "material_id": "niacinamide_pure",
+            "material_name": "Niacinamide, pure active basis",
+            "material_path": [
+              "niacinamide_pure"
+            ],
+            "input_mass_g": "0.003",
+            "minimum_input_mass_g": "0.003",
+            "maximum_input_mass_g": "0.003",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "3",
+            "minimum_total_batch": "3",
+            "maximum_total_batch": "3",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+            },
+            "per_100_g": null,
+            "per_100_ml": "20",
+            "per_serving": "20",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "vitamin_b6",
+        "name": "Vitamin B6",
+        "value": "5",
+        "total_batch": "0.75",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "5",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 5 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": [
+          {
+            "line_index": 4,
+            "input_material_id": "vitamin_b6_declared",
+            "input_material_name": "Vitamin B6, declared active amount",
+            "material_id": "vitamin_b6_declared",
+            "material_name": "Vitamin B6, declared active amount",
+            "material_path": [
+              "vitamin_b6_declared"
+            ],
+            "input_mass_g": "0.00075",
+            "minimum_input_mass_g": "0.00075",
+            "maximum_input_mass_g": "0.00075",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "0.75",
+            "minimum_total_batch": "0.75",
+            "maximum_total_batch": "0.75",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+            },
+            "per_100_g": null,
+            "per_100_ml": "5",
+            "per_serving": "5",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "folic_acid",
+        "name": "Folic acid",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "vitamin_b12",
+        "name": "Vitamin B12",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "lysine_free_pure_assumed",
+          "papain_pure_assumed"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "lysine",
+        "name": "Lysine",
+        "value": "100",
+        "total_batch": "15",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "100",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 100 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "papain_pure_assumed"
+        ],
+        "contributions": [
+          {
+            "line_index": 1,
+            "input_material_id": "lysine_free_pure_assumed",
+            "input_material_name": "Lysine, free active amount assumed",
+            "material_id": "lysine_free_pure_assumed",
+            "material_name": "Lysine, free active amount assumed",
+            "material_path": [
+              "lysine_free_pure_assumed"
+            ],
+            "input_mass_g": "0.015",
+            "minimum_input_mass_g": "0.015",
+            "maximum_input_mass_g": "0.015",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "15",
+            "minimum_total_batch": "15",
+            "maximum_total_batch": "15",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered lysine amount treated as free active L-lysine for the working draft; salt form, purity and supplier assay not verified."
+            },
+            "per_100_g": null,
+            "per_100_ml": "100",
+            "per_serving": "100",
+            "retention_factor": "1"
+          }
+        ]
+      }
+    ],
+    "ingredient_assumptions": [
+      {
+        "query": "PAPAIN",
+        "selected_material_id": "papain_pure_assumed",
+        "selected_name": "Papain",
+        "matched_term": "Papain",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "Papain supplier specification: activity units and assay, enzyme protein content, carriers, sugars, fat and sodium. 60 mg is ingredient weight, not measured enzyme activity.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='PAPAIN'",
+        "alternatives": [
+          {
+            "material_id": "nepazene_unresolved",
+            "name": "Nepazene (likely Nipazine), identity not confirmed",
+            "matched_term": "Nipazine",
+            "score": 0.571429,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "sodium_methylparaben_assumed",
+            "name": "Sodium methylparaben, assumed from Nepazene",
+            "matched_term": "Nipazine",
+            "score": 0.571429,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "saccharin_unspecified",
+            "name": "Saccharin, salt form unspecified",
+            "matched_term": "saccharin",
+            "score": 0.533333,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 0
+      },
+      {
+        "query": "LYSINE",
+        "selected_material_id": "lysine_free_pure_assumed",
+        "selected_name": "Lysine, free active amount assumed",
+        "matched_term": "lysine",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "Confirm free L-lysine versus a hydrochloride salt, hydrate, purity/assay and carriers. 15 mg is treated as active free lysine in this draft; a salt would require a different conversion.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='LYSINE'",
+        "alternatives": [
+          {
+            "material_id": "lysine_hcl_pure_assumed",
+            "name": "Lysine hydrochloride",
+            "matched_term": "lysine HCl",
+            "score": 0.75,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "lysine_hcl_unassayed",
+            "name": "Lysine hydrochloride",
+            "matched_term": "Lysine hydrochloride",
+            "score": 0.582692,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "saccharin_unspecified",
+            "name": "Saccharin, salt form unspecified",
+            "matched_term": "sacchrine",
+            "score": 0.533333,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 1
+      },
+      {
+        "query": "NIACINAMIDE",
+        "selected_material_id": "niacinamide_pure",
+        "selected_name": "Niacinamide, pure active basis",
+        "matched_term": "niacinamide",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='NIACINAMIDE'",
+        "alternatives": [
+          {
+            "material_id": "nepazene_unresolved",
+            "name": "Nepazene (likely Nipazine), identity not confirmed",
+            "matched_term": "Nipazine",
+            "score": 0.631579,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "sodium_methylparaben_assumed",
+            "name": "Sodium methylparaben, assumed from Nepazene",
+            "matched_term": "Nipazine",
+            "score": 0.631579,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "benzoic_acid",
+            "name": "Benzoic acid",
+            "matched_term": "Benzoic acid",
+            "score": 0.521739,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 2
+      },
+      {
+        "query": "VITAMIN B1",
+        "selected_material_id": "vitamin_b1_declared",
+        "selected_name": "Vitamin B1, declared active amount",
+        "matched_term": "vitamin B1",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='VITAMIN B1'",
+        "alternatives": [
+          {
+            "material_id": "vitamin_b12_declared",
+            "name": "Vitamin B12, declared active amount",
+            "matched_term": "vitamin B12",
+            "score": 0.952381,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "vitamin_b2_declared",
+            "name": "Vitamin B2, declared active amount",
+            "matched_term": "vitamin B2",
+            "score": 0.9,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "vitamin_b6_declared",
+            "name": "Vitamin B6, declared active amount",
+            "matched_term": "vitamin B6",
+            "score": 0.9,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 3
+      },
+      {
+        "query": "VITAMIN B6",
+        "selected_material_id": "vitamin_b6_declared",
+        "selected_name": "Vitamin B6, declared active amount",
+        "matched_term": "vitamin B6",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='VITAMIN B6'",
+        "alternatives": [
+          {
+            "material_id": "vitamin_b1_declared",
+            "name": "Vitamin B1, declared active amount",
+            "matched_term": "vitamin B1",
+            "score": 0.9,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "vitamin_b2_declared",
+            "name": "Vitamin B2, declared active amount",
+            "matched_term": "vitamin B2",
+            "score": 0.9,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "vitamin_b12_declared",
+            "name": "Vitamin B12, declared active amount",
+            "matched_term": "vitamin B12",
+            "score": 0.857143,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 4
+      }
+    ],
+    "report_assumptions": [
+      "Values are theoretical per 100 mL from the uploaded final-batch quantity.",
+      "Ingredient identities are selected from the current local catalog; review every non-exact match.",
+      "Only non-zero components are shown; screened zero fields remain in the analysis data.",
+      "Supplier specifications, lot assays, actual yield and process retention were not supplied unless stated."
+    ],
+    "missing_information": [
+      {
+        "item": "Lysine, free active amount assumed",
+        "needed": "Confirm free L-lysine versus a hydrochloride salt, hydrate, purity/assay and carriers. 15 mg is treated as active free lysine in this draft; a salt would require a different conversion.",
+        "affects": [
+          "Added sugars",
+          "Calcium",
+          "Carbohydrate",
+          "Copper",
+          "Dietary fibre",
+          "Energy",
+          "Folic acid",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Phosphorus",
+          "Potassium",
+          "Protein",
+          "Saturated fat",
+          "Selenium",
+          "Sodium",
+          "Total fat",
+          "Total sugars",
+          "Trans fat",
+          "Vitamin A",
+          "Vitamin B1 (thiamin)",
+          "Vitamin B12",
+          "Vitamin B2 (riboflavin)",
+          "Vitamin B3 (niacin)",
+          "Vitamin B6",
+          "Vitamin C",
+          "Vitamin D",
+          "Vitamin E",
+          "Vitamin K",
+          "Zinc"
+        ]
+      },
+      {
+        "item": "Papain",
+        "needed": "Papain supplier specification: activity units and assay, enzyme protein content, carriers, sugars, fat and sodium. 60 mg is ingredient weight, not measured enzyme activity.",
+        "affects": [
+          "Added sugars",
+          "Calcium",
+          "Carbohydrate",
+          "Copper",
+          "Dietary fibre",
+          "Energy",
+          "Folic acid",
+          "Iron",
+          "Lysine",
+          "Magnesium",
+          "Manganese",
+          "Phosphorus",
+          "Potassium",
+          "Protein",
+          "Saturated fat",
+          "Selenium",
+          "Sodium",
+          "Total fat",
+          "Total sugars",
+          "Trans fat",
+          "Vitamin A",
+          "Vitamin B1 (thiamin)",
+          "Vitamin B12",
+          "Vitamin B2 (riboflavin)",
+          "Vitamin B3 (niacin)",
+          "Vitamin B6",
+          "Vitamin C",
+          "Vitamin D",
+          "Vitamin E",
+          "Vitamin K",
+          "Zinc"
+        ]
+      }
+    ],
+    "warnings": [
+      "5 ingredient identities require review",
+      "5 ingredient match(es) have low confidence; review assumptions",
+      "Per-100-g and mass-yield values are unavailable without final density"
+    ],
+    "markdown": "# papain lysine\n\n## Likely product\n\n**Nutrient or medicinal formulation** (confidence: low). The detected profile is led by isolated nutrients or chemical ingredients. Intended use, dose and label claims are needed for a narrower classification.\n\n## Submitted formula and interpretation\n\n| Item | Submitted | Normalized equivalent | Interpretation |\n|---|---:|---:|---|\n| FINISHED BATCH | 15 mL | 15 mL | Final batch basis |\n| PAPAIN | 60 mg | 0.06 g | Papain |\n| LYSINE | 15 mg | 0.015 g | Lysine, free active amount assumed |\n| NIACINAMIDE | 3 mg | 0.003 g | Niacinamide, pure active basis |\n| VITAMIN B1 | 1 mg | 0.001 g | Vitamin B1, declared active amount |\n| VITAMIN B6 | 0.75 mg | 0.00075 g | Vitamin B6, declared active amount |\n\n## Present macro- and micronutrients\n\nValues are theoretical per 100 mL.\n\n| Component | Amount | Plausible range | Evidence |\n|---|---:|---|---|\n| Vitamin B1 (thiamin) | ≥6.666666666666666666666666666666666666667 mg | at least 6.666666666666666666666666666666666666667 mg | 0.67 medium |\n| Vitamin B3 (niacin) | ≥20 mg | at least 20 mg | 0.67 medium |\n| Vitamin B6 | ≥5 mg | at least 5 mg | 0.67 medium |\n| Lysine | ≥100 mg | at least 100 mg | 0.67 medium |\n\n## Calculation contributions\n\n### Vitamin B1 (thiamin)\n\n- Vitamin B1, declared active amount: 6.666666666666666666666666666666666666667 mg (Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.)\n### Vitamin B3 (niacin)\n\n- Niacinamide, pure active basis: 20 mg (Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.)\n### Vitamin B6\n\n- Vitamin B6, declared active amount: 5 mg (Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.)\n### Lysine\n\n- Lysine, free active amount assumed: 100 mg (Entered lysine amount treated as free active L-lysine for the working draft; salt form, purity and supplier assay not verified.)\n\n## Assumptions\n\n- Values are theoretical per 100 mL from the uploaded final-batch quantity.\n- Ingredient identities are selected from the current local catalog; review every non-exact match.\n- Only non-zero components are shown; screened zero fields remain in the analysis data.\n- Supplier specifications, lot assays, actual yield and process retention were not supplied unless stated.\n\n## Information still needed\n\n- **Lysine, free active amount assumed:** Confirm free L-lysine versus a hydrochloride salt, hydrate, purity/assay and carriers. 15 mg is treated as active free lysine in this draft; a salt would require a different conversion.\n- **Papain:** Papain supplier specification: activity units and assay, enzyme protein content, carriers, sugars, fat and sodium. 60 mg is ingredient weight, not measured enzyme activity.\n\nThis is a theoretical composition calculation, not a laboratory assay or regulatory approval.\n",
+    "label_draft_note": "Working estimate assumes water to 15 mL, pure papain as 60 mg enzyme protein and lysine as 15 mg free active L-lysine. No sugar, oil or nutritive carriers. Papain activity, grade, assay, formulation stability and finished-product composition need supplier confirmation.",
+    "input_basis": "dose"
+  },
+  "labelReview": {
+    "signature": "[\"per 100 mL\",\"15\",\"15a9377a6ef9bf9e12cb0673857d1ac9ce717dcfa6dbb48d066a9b55eea10c67\",[\"[\\\"finished batch\\\",null,\\\"Final batch basis\\\",\\\"15\\\",\\\"mL\\\",null,null,null]\",\"[\\\"papain\\\",\\\"papain_pure_assumed\\\",\\\"Papain\\\",\\\"60\\\",\\\"mg\\\",null,\\\"Entered papain mass retained without a supplier composition or activity assay. Pure enzyme protein is available only as an explicit working-estimate scenario.\\\",\\\"Papain supplier specification: activity units and assay, enzyme protein content, carriers, sugars, fat and sodium. 60 mg is ingredient weight, not measured enzyme activity.\\\"]\",\"[\\\"lysine\\\",\\\"lysine_free_pure_assumed\\\",\\\"Lysine, free active amount assumed\\\",\\\"15\\\",\\\"mg\\\",null,\\\"Entered lysine amount treated as free active L-lysine for the working draft; salt form, purity and supplier assay not verified.\\\",\\\"Confirm free L-lysine versus a hydrochloride salt, hydrate, purity/assay and carriers. 15 mg is treated as active free lysine in this draft; a salt would require a different conversion.\\\"]\",\"[\\\"niacinamide\\\",\\\"niacinamide_pure\\\",\\\"Niacinamide, pure active basis\\\",\\\"3\\\",\\\"mg\\\",null,\\\"Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.\\\",\\\"The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.\\\"]\",\"[\\\"vitamin b1\\\",\\\"vitamin_b1_declared\\\",\\\"Vitamin B1, declared active amount\\\",\\\"1\\\",\\\"mg\\\",null,\\\"Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.\\\",\\\"The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.\\\"]\",\"[\\\"vitamin b6\\\",\\\"vitamin_b6_declared\\\",\\\"Vitamin B6, declared active amount\\\",\\\"0.75\\\",\\\"mg\\\",null,\\\"Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.\\\",\\\"The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.\\\"]\"]]",
+    "productName": "Papain, lysine & B vitamins",
+    "servingSize": "15",
+    "servingsPerPack": "",
+    "amountBasis": "serving",
+    "waterBase": true,
+    "assumptionEstimate": true,
+    "productDetails": {
+      "description": "Papain, lysine and B vitamins · 15 mL dose"
+    },
+    "confirmedIdentities": [
+      "[\"papain\",\"papain_pure_assumed\",\"Papain\",\"60\",\"mg\",null,\"Entered papain mass retained without a supplier composition or activity assay. Pure enzyme protein is available only as an explicit working-estimate scenario.\",\"Papain supplier specification: activity units and assay, enzyme protein content, carriers, sugars, fat and sodium. 60 mg is ingredient weight, not measured enzyme activity.\"]",
+      "[\"lysine\",\"lysine_free_pure_assumed\",\"Lysine, free active amount assumed\",\"15\",\"mg\",null,\"Entered lysine amount treated as free active L-lysine for the working draft; salt form, purity and supplier assay not verified.\",\"Confirm free L-lysine versus a hydrochloride salt, hydrate, purity/assay and carriers. 15 mg is treated as active free lysine in this draft; a salt would require a different conversion.\"]",
+      "[\"niacinamide\",\"niacinamide_pure\",\"Niacinamide, pure active basis\",\"3\",\"mg\",null,\"Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.\",\"The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.\"]",
+      "[\"vitamin b1\",\"vitamin_b1_declared\",\"Vitamin B1, declared active amount\",\"1\",\"mg\",null,\"Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.\",\"The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.\"]",
+      "[\"vitamin b6\",\"vitamin_b6_declared\",\"Vitamin B6, declared active amount\",\"0.75\",\"mg\",null,\"Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.\",\"The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.\"]"
+    ],
+    "inputBasis": "dose"
+  }
+}

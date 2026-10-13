@@ -112,6 +112,31 @@ class UploadWorkflowTests(unittest.TestCase):
         self.assertIn("Present macro- and micronutrients", result["markdown"])
         self.assertIn("Calculation contributions", result["markdown"])
 
+    def test_fifteen_ml_b_complex_formula_preserves_declarations_and_unknowns(self) -> None:
+        text = "Item\tQuantity\tUnit\nFINISHED BATCH\t15\tmL\n" + "\n".join([
+            "LYSINE HCL\t25\tMG", "VITAMIN B1\t1\tMG", "VITAMIN B2\t1\tMG",
+            "VITAMIN B6\t1\tMG", "VITAMIN B12\t1\tMCG", "NIACINAMIDE\t13\tMG",
+            "D-PANTHENOL\t2.5\tMG", "NEPAZENE\t15\tMG", "NEPASOL\t6\tMG",
+            "BRONOPAL\t1.5\tMG", "SOD BENZ\t45\tMG", "BENZOIC ACID\t15\tMG",
+            "SACCHRINE\t7.5\tMG", "ASPARTUM\t3\tMG", "MIXED FRUIT ESSENCE\t7.5\tMG",
+        ])
+        result = analyze_formula_upload(text, "15ml-formula.tsv")
+        nutrients = {item["id"]: item for item in result["screened_components"]}
+        rows = {item["item"]: item for item in result["formula_rows"]}
+        self.assertEqual(result["label_batch_quantity"], "15")
+        for nutrient in ["thiamin", "riboflavin", "vitamin_b6", "vitamin_b12"]:
+            self.assertEqual(nutrients[nutrient]["total_batch"], "1")
+        self.assertEqual(nutrients["niacin"]["total_batch"], "13")
+        self.assertEqual(nutrients["energy"]["status"], "partial")
+        self.assertTrue(rows["VITAMIN B1"]["needs_review"])
+        self.assertNotEqual(rows["LYSINE HCL"]["material_id"], "pyridoxine_hydrochloride")
+        self.assertEqual(rows["VITAMIN B12"]["material_id"], "vitamin_b12_declared")
+        entries = {item["name"]: item for item in result["label_entries"]}
+        self.assertEqual(entries["LYSINE HCL"]["batch_amount"], "25")
+        self.assertEqual(entries["D-PANTHENOL"]["batch_amount"], "2.5")
+        self.assertEqual(entries["SOD BENZ"]["category"], "Preservatives")
+        self.assertEqual(len(entries), 10)
+
     def test_mass_batch_uses_generic_per_100_g_result(self) -> None:
         text = (
             "Item\tQuantity\tUnit\n"
