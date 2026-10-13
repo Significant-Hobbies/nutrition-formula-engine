@@ -63,8 +63,13 @@ concise report.
   keeping regulatory classification and label formatting outside the first
   calculation step.
 - Generate a printable, retail-style draft back label after calculation with an
-  ingredient statement, per-100 and per-serving amounts, and one clearly
-  footnoted adult `%RDA` column. Keep incomplete values marked as lower bounds
+  ingredient statement, a selectable per-serving/per-100 amount column, and
+  clearly footnoted RDA columns for men, women (moderate work) and one boys
+  10–12 reference. Group main nutrients, vitamins and minerals; show mineral
+  forms from actual nonzero ledger contributions. Group weighed amino acids,
+  preservatives, sweeteners and flavour separately from nutrient equivalents.
+  Declared vitamin quantities remain explicit active-amount assumptions until
+  chemical forms, dilutions and supplier assays are confirmed. Keep incomplete values marked as lower bounds
   and keep compliance review outside the calculator.
 - Theoretical calculations do not replace supplier specifications, lot CoAs,
   finished-product assays, stability studies, or regulatory review.

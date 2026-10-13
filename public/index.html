@@ -27,18 +27,20 @@
     <script src="/app.js" type="module"></script>
     <script src="/fleet-engagement.js" type="module"></script>
     <script
-      defer
-      src="https://health.sassmaker.com/tracker.js"
+      type="text/plain"
+      data-after-load-src="https://health.sassmaker.com/tracker.js"
       data-key="ahk_pub_4ecc68a6c4627e5f69fabfd57fc37d72adaccc6b5a15e0d1c57047a194adfd0a"
       data-project="app-ec98e406-d4b2-4c9d-920a-6c9576896fa9"
       data-identity="persistent"
       data-endpoint="https://ingest.sassmaker.com/v1/browser"
     ></script>
     <script>
+      window.addEventListener("load", () => {
       if (location.hostname === "formula.significanthobbies.com") {
         (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","ymdun3nwyi");
         window.clarity("set","project_id","nutrition-formula-engine");
       }
+      }, { once: true });
     </script>
   </head>
   <body id="root" data-clarity-mask="true">
@@ -57,9 +59,9 @@
     <main>
       <section class="intro" aria-labelledby="page-title">
         <p class="eyebrow">Formula calculator</p>
-        <h1 id="page-title">Calculate what is in a batch</h1>
+        <h1 id="page-title">Turn a formula into a printable label</h1>
         <p class="lede">
-          Paste a formula or upload a file. Check the rows, then see the ingredients and nutrients.
+          Paste your formula or upload a file. Generate the printable label with the best supported estimates.
         </p>
       </section>
 
@@ -69,22 +71,23 @@
             <p class="step">Formula input</p>
             <h2 id="upload-title">Start with one formula</h2>
           </div>
-          <div class="source-actions">
-            <a class="sample-link" href="/sample-tonic.tsv" download>Download sample</a>
-            <button id="download-audit" class="text-button compact-button" type="button">
-              Download activity log
-            </button>
-          </div>
+
         </div>
 
+        <div class="input-basis-controls">
+          <label>Ingredient quantities are for<select id="input-basis"><option value="dose">One dose / serving</option><option value="batch">A finished production batch</option></select></label>
+          <label id="dose-volume-field">Dose volume (mL)<input id="dose-volume" inputmode="decimal" value="15" /></label>
+        </div>
+        <p id="input-basis-note" class="quiet">Enter amounts per dose. A dose-volume line is optional; this is not a production batch.</p>
         <label class="paste-label" for="formula-text">Paste text, a table, or JSON</label>
         <textarea
           id="formula-text"
           rows="8"
-          placeholder="1000 LITRE&#10;FERRIC AMMONIUM CITRATE 13.4 KG&#10;CYANCOBALAMIN 0.085 GM"
+          placeholder="PAPAIN 60 MG&#10;LYSINE 15 MG&#10;NIACINAMIDE 3 MG&#10;VITAMIN B1 1 MG&#10;VITAMIN B6 .75 MG"
         ></textarea>
 
-        <div class="input-divider"><span>or choose one file</span></div>
+        <details class="input-extras">
+          <summary>Upload a file instead</summary>
 
         <label id="drop-zone" class="drop-zone" for="formula-file">
           <input
@@ -100,12 +103,7 @@
           <strong>Drop a formula here or choose a file</strong>
           <span>Text, CSV, JSON, XLSX, image, or PDF · Maximum 12 MB</span>
         </label>
-
-        <div class="format-example" aria-label="Formula structure the app will recover">
-          <div class="format-head"><span>Item</span><span>Quantity</span><span>Unit</span></div>
-          <div><span>FINISHED BATCH</span><span>1000</span><span>L</span></div>
-          <div><span>Ferric ammonium citrate</span><span>13.4</span><span>kg</span></div>
-        </div>
+        </details>
 
         <div id="file-summary" class="file-summary" hidden>
           <div>
@@ -114,30 +112,13 @@
           </div>
         </div>
         <button id="prepare-button" class="primary-button wide-button" type="button">
-          Check formula
+          Generate label
         </button>
         <p id="status" class="status" role="status" aria-live="polite"></p>
-        <p class="audit-note">The activity log records actions and times. It does not include formula text. On the public site, Microsoft Clarity measures visits and interactions with the entire application root masked.</p>
+
       </section>
 
-      <section class="validation-panel" aria-labelledby="validation-title">
-        <div class="validation-summary">
-          <div>
-            <p class="eyebrow">Tested with public products</p>
-            <h2 id="validation-title">26 products and 55 published values checked</h2>
-            <p>
-              See every value we compared, what our calculator returned, the difference,
-              and the public source.
-            </p>
-          </div>
-          <dl>
-            <div><dt>26</dt><dd>products</dd></div>
-            <div><dt>55</dt><dd>values</dd></div>
-            <div><dt>125</dt><dd>tests</dd></div>
-          </dl>
-        </div>
-        <a class="validation-link" href="/case-studies/">View all case studies</a>
-      </section>
+
 
       <section id="formula-review" class="upload-panel formula-review" aria-labelledby="formula-review-title" hidden>
         <div class="panel-heading review-heading">
@@ -173,23 +154,180 @@
       <section id="results" class="results" aria-labelledby="results-title" hidden>
         <div class="results-header">
           <div>
-            <p class="eyebrow">Calculation complete</p>
-            <h2 id="results-title" tabindex="-1">Results</h2>
+            <p id="result-state" class="eyebrow">Calculation finished · review required</p>
+            <h2 id="results-title" tabindex="-1">Your final sheet</h2>
           </div>
-          <div class="result-actions">
-            <button id="save-workspace" class="secondary-button" type="button">
-              Save formula
-            </button>
-            <button id="download-report" class="secondary-button" type="button">
+
+        </div>
+
+        <section id="label-builder" class="report-section label-builder" aria-labelledby="label-builder-title">
+          <div class="section-heading">
+            <div>
+              
+              <h3 id="label-builder-title">Printable label</h3>
+            </div>
+            <p>Best supported estimates, with assumptions marked.</p>
+          </div>
+
+          <div class="label-actions label-export-actions">
+            <button id="print-label" class="primary-button" type="button">Download PDF</button>
+            <a id="download-saved-label" hidden download aria-hidden="true" tabindex="-1"></a>
+            <span class="quiet">Current label · A4 format</span>
+          </div>
+          <div class="label-workspace">
+            <details class="label-controls">
+              <summary>Edit label, serving and pack details</summary>
+            <form id="label-options" class="label-options">
+              <div class="label-options-heading">
+                <strong>Label details</strong>
+                <span>Men, women and one child RDA column, grouped by category.</span>
+              </div>
+              <label>
+                Amount column
+                <select id="label-amount-basis">
+                  <option value="serving">Per serving</option>
+                  <option value="100">Per 100 g / mL</option>
+                </select>
+              </label>
+              <label>
+                Product name
+                <input id="label-product-name" autocomplete="off" />
+              </label>
+              <label>
+                Liquid base assumption
+                <select id="label-base">
+                  <option value="unspecified">Not specified</option>
+                  <option value="water">Water to finished volume; no sugar syrup</option>
+                </select>
+              </label>
+              <fieldset class="assumption-options">
+                <legend>Optional macro estimate</legend>
+                <label class="assumption-choice">
+                  <input id="label-assumption-estimate" type="checkbox" disabled />
+                  <span>Use the assumptions below for a working estimate</span>
+                </label>
+                <p id="assumption-estimate-status" class="quiet" role="status"></p>
+                <ul id="assumption-estimate-terms"></ul>
+              </fieldset>
+              <div class="label-option-row">
+                <label>
+                  Serving size
+                  <span class="input-with-suffix">
+                    <input id="label-serving-size" inputmode="decimal" placeholder="Enter serving size" required />
+                    <span id="label-serving-unit">g</span>
+                  </span>
+                </label>
+                <label>
+                  Servings per pack
+                  <input id="label-servings-per-pack" inputmode="decimal" placeholder="Optional" />
+                </label>
+              </div>
+              <details class="label-content-options">
+                <summary>Printable product details <span id="label-detail-count"></span></summary>
+                <p class="label-helper">Enter your approved product facts. A serving size does not establish a daily dose. Empty details stay visibly marked on the draft.</p>
+                <label>Product description<input id="label-detail-description" placeholder="Optional product description" /></label>
+                <label>Product category<select id="label-detail-category"><option value="">To be confirmed</option><option value="food">Food</option><option value="health_supplement">Health supplement</option><option value="nutraceutical">Nutraceutical</option><option value="medicine">Medicine</option></select></label>
+                <label>Net quantity<input id="label-detail-netQuantity" placeholder="Enter pack quantity and unit" /></label>
+                <label>Intended users<input id="label-detail-intendedUsers" placeholder="Enter the intended age / user group" /></label>
+                <label>Recommended usage<textarea id="label-detail-usage" rows="2" placeholder="Enter the approved dose and frequency"></textarea></label>
+                <label>Duration of use<input id="label-detail-duration" placeholder="Enter approved duration / advice" /></label>
+                <label>Directions<textarea id="label-detail-directions" rows="2" placeholder="Enter handling and use instructions"></textarea></label>
+                <label>Storage<textarea id="label-detail-storage" rows="2" placeholder="Enter validated storage instructions"></textarea></label>
+                <label>Cautions<textarea id="label-detail-cautions" rows="3" placeholder="Enter product-specific cautions and statements"></textarea></label>
+                <label>Sweetener declaration<textarea id="label-detail-sweetenerDeclaration" rows="2" placeholder="Enter the approved declaration, if applicable"></textarea></label>
+                <label>Allergen status<select id="label-detail-allergens"><option value="">To be confirmed</option><option value="contains">Contains declarable allergens</option><option value="none">No declarable allergens — confirmed</option></select></label>
+                <label>Allergen declaration<input id="label-detail-allergenText" placeholder="List allergens, if present" /></label>
+                <label>Dietary status<select id="label-detail-dietaryStatus"><option value="">To be confirmed</option><option value="vegetarian">Vegetarian — confirmed</option><option value="nonvegetarian">Non-vegetarian — confirmed</option></select></label>
+                <div class="label-option-row"><label>Batch number<input id="label-detail-batchNumber" placeholder="Enter batch no." /></label><label>Manufacturing date<input id="label-detail-manufactureDate" placeholder="Enter date" /></label></div>
+                <label>Expiry / best-before<input id="label-detail-expiryDate" placeholder="Enter approved date / shelf life" /></label>
+                <div class="label-option-row"><label>MRP ₹<input id="label-detail-mrp" inputmode="decimal" placeholder="Inclusive of taxes" /></label><label>Licence number<input id="label-detail-licenceNumber" placeholder="Enter applicable licence" /></label></div>
+                <label>Barcode (EAN-13)<input id="label-detail-barcode" inputmode="numeric" maxlength="13" placeholder="Enter your assigned 13-digit GTIN" /></label>
+                <p class="label-helper">Only your own allocated GTIN belongs here. The barcode check validates its digits, not ownership.</p>
+              </details>
+              <p class="label-helper">Changes update the preview automatically.</p>
+              <p id="label-status" class="status label-status" role="status" aria-live="polite"></p>
+              <p class="label-helper">
+                Print uses a compact two-column A4 layout. Add the manufacturer / marketer panel separately.
+                Supplier evidence, additive permissions, mandatory declarations and artwork still need category-specific review.
+              </p>
+              <details class="label-evidence">
+                <summary>Calculation assumptions and INS references</summary>
+                <p id="label-data-warning" class="label-warning" hidden></p>
+                <ul id="label-additive-review"></ul>
+                <a id="label-ins-reference" target="_blank" rel="noopener">Food-additive identifier reference</a>
+              </details>
+            </form>
+            </details>
+
+            <article id="nutrition-label" class="nutrition-label" aria-label="Draft product back label">
+              <header class="nutrition-label-header">
+                <p id="label-preview-status">Draft — review required</p>
+                <h4 id="label-preview-name">Product</h4>
+                <p id="label-preview-description" hidden></p>
+                <p id="label-preview-category"></p>
+                <p>Nutritional Information (Approximate Values)</p>
+                <dl>
+                  <div><dt>Serving size</dt><dd id="label-preview-serving"></dd></div>
+                  <div id="label-preview-servings-row" hidden>
+                    <dt>No. of servings</dt><dd id="label-preview-servings"></dd>
+                  </div>
+                </dl>
+              </header>
+              <div class="nutrition-label-panels">
+              <section class="nutrition-label-nutrition" aria-label="Nutrition panel">
+              <p class="label-scroll-hint">Scroll across the table to see all three RDA columns.</p>
+              <div class="nutrition-label-table-wrap" tabindex="0" role="region" aria-label="Nutrition amounts and demographic RDA percentages">
+                <table class="nutrition-label-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Nutrient</th>
+                      <th scope="col" id="label-amount-heading">Per serving</th>
+                      <th scope="col">% RDA<br>Men*</th>
+                      <th scope="col">% RDA<br>Women**</th>
+                      <th scope="col">% RDA<br>10–12 years***</th>
+                    </tr>
+                  </thead>
+                  <tbody id="label-nutrients"></tbody>
+                </table>
+              </div>
+              <div class="nutrition-label-reference">
+                <p class="label-footnote">
+                  * ICMR-NIN 2020: men (moderate work). ** Women (moderate work).
+                  *** One child reference: boys aged 10–12; girls’ requirements differ.
+                  Includes the 2021 corrigendum, as published by FSSAI.
+                </p>
+                <p class="label-footnote">Percentages are per serving, truncated to two decimals. “Known &lt;0.01%” describes only the calculated contribution. “—” means the amount or intake reference is unavailable. Adult energy, added sugar and fat use fixed FSSAI pack-label references. Fibre, biotin and pantothenic acid use adequate intake (AI); vitamin E shows the published 7.5–10 mg range. Molybdenum uses Codex. Folic acid is converted to dietary folate equivalents (×1.7) for its percentage.</p>
+                <p class="label-footnote">Theoretical formulation calculation — not a laboratory assay or regulatory approval.</p>
+              </div>
+              </section>
+              <section class="nutrition-label-copy" aria-label="Product information panel">
+                <p><strong>Ingredients:</strong> <span id="label-ingredients"></span></p>
+                <p id="label-ins-summary" class="label-footnote"></p>
+                <div id="label-product-sections"></div>
+                <p id="label-category-declaration" class="label-declaration" hidden></p>
+                <dl id="label-pack-details" class="label-pack-details"></dl>
+                <div id="label-barcode" class="label-barcode" aria-label="Product barcode"></div>
+                <p id="label-print-review" class="label-footnote"></p>
+                <p class="label-footnote">INS codes identify additives; they do not establish permission for this product or complete nutrient data. Manufacturer / marketer details must be added separately.</p>
+              </section>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <details id="calculation-details" class="calculation-details">
+          <summary>Calculations, ingredient review and information needed</summary>
+          <div class="result-actions secondary-tools">
+            <button id="save-workspace" class="text-button" type="button">Save formula</button>
+            <button id="start-over" class="text-button" type="button">Clear and start again</button>
+          </div>
+          <div class="label-actions">            <button id="download-report" class="secondary-button" type="button">
               Download report
             </button>
             <button id="download-json" class="secondary-button" type="button">
               Download JSON
             </button>
-            <button id="start-over" class="text-button" type="button">Analyze another</button>
-          </div>
-        </div>
-
+</div>
         <div class="report-receipt" aria-label="Calculation details">
           <span id="engine-version"></span>
           <span id="report-version">Session version 1</span>
@@ -198,14 +336,15 @@
 
         <div class="summary-grid">
           <article class="inference-card">
-            <p class="card-label">Likely product</p>
+            <p class="card-label">Result readiness</p>
             <h3 id="inference-name"></h3>
             <p id="inference-reason"></p>
             <p id="inference-boundary" class="quiet"></p>
+            <a class="validation-link" href="#review-title">Review information needed</a>
             <span id="inference-confidence" class="confidence-chip"></span>
           </article>
           <article class="coverage-card">
-            <p class="card-label">Ingredients identified</p>
+            <p class="card-label">Input mass with some composition data</p>
             <div class="coverage-number"><span id="coverage-known"></span>%</div>
             <div class="coverage-track" aria-hidden="true"><span id="coverage-bar"></span></div>
             <p id="coverage-note" class="quiet"></p>
@@ -215,12 +354,13 @@
         <section id="identity-review" class="identity-review" aria-labelledby="identity-title">
           <div class="review-callout-heading">
             <div>
-              <p class="card-label">Review before sharing</p>
+              <p class="card-label">Review before creating a label</p>
               <h3 id="identity-title">Confirm the uncertain ingredients</h3>
             </div>
             <span id="review-count" class="review-count"></span>
           </div>
           <div id="identity-review-list" class="identity-review-list"></div>
+          <p class="table-note">Confirm accepts the ingredient interpretation for this draft. It does not verify purity, assay or complete nutrient composition.</p>
         </section>
 
         <details id="ingredient-library" class="ingredient-library">
@@ -281,11 +421,11 @@
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Component</th><th>Amount</th><th>Possible range</th><th>Confidence</th></tr></thead>
+              <thead><tr><th>Component</th><th>Amount</th><th>Possible range</th><th>Value basis</th></tr></thead>
               <tbody id="components-body"></tbody>
             </table>
           </div>
-          <p class="table-note">Items with a zero amount are not shown here.</p>
+          <p id="component-legend" class="table-note"></p>
         </section>
 
         <details id="history-panel" class="history-panel">
@@ -316,101 +456,51 @@
               <ul id="assumptions-list" class="review-list"></ul>
             </div>
             <div>
-              <h4>What we still need</h4>
+              <h4>Issues to clarify with the sender</h4>
               <ul id="missing-list" class="review-list"></ul>
+              <button id="download-requests" class="secondary-button" type="button">Download sender checklist</button>
             </div>
           </div>
         </section>
 
-        <section id="label-builder" class="report-section label-builder" aria-labelledby="label-builder-title">
-          <div class="section-heading">
-            <div>
-              <span class="section-number">05</span>
-              <h3 id="label-builder-title">Create a back label</h3>
-            </div>
-            <p>Retail-style draft using the calculated result.</p>
-          </div>
-
-          <div class="label-workspace">
-            <form id="label-options" class="label-options">
-              <div class="label-options-heading">
-                <strong>Label details</strong>
-                <span>Uses one adult reference, as on typical Indian packs.</span>
-              </div>
-              <label>
-                Product name
-                <input id="label-product-name" autocomplete="off" />
-              </label>
-              <div class="label-option-row">
-                <label>
-                  Serving size
-                  <span class="input-with-suffix">
-                    <input id="label-serving-size" value="30" inputmode="decimal" required />
-                    <span id="label-serving-unit">g</span>
-                  </span>
-                </label>
-                <label>
-                  Servings per pack
-                  <input id="label-servings-per-pack" inputmode="decimal" placeholder="Optional" />
-                </label>
-              </div>
-              <div class="label-actions">
-                <button class="primary-button" type="submit">Update label</button>
-                <button id="print-label" class="secondary-button" type="button">Print or save PDF</button>
-              </div>
-              <p id="label-status" class="status label-status" role="status" aria-live="polite"></p>
-              <p class="label-helper">
-                This follows common retail layout conventions. Product category, allergens,
-                additives, licence details, dates, claims, and pack declarations still need regulatory review.
-              </p>
-            </form>
-
-            <article id="nutrition-label" class="nutrition-label" aria-label="Draft product back label">
-              <header class="nutrition-label-header">
-                <p>Nutrition information</p>
-                <h4 id="label-preview-name">Product</h4>
-                <dl>
-                  <div><dt>Serving size</dt><dd id="label-preview-serving"></dd></div>
-                  <div id="label-preview-servings-row" hidden>
-                    <dt>Servings per pack</dt><dd id="label-preview-servings"></dd>
-                  </div>
-                </dl>
-              </header>
-              <div class="nutrition-label-table-wrap">
-                <table class="nutrition-label-table">
-                  <thead>
-                    <tr>
-                      <th>Nutrient</th>
-                      <th id="label-basis-heading">Per 100 g</th>
-                      <th id="label-serving-heading">Per serve</th>
-                      <th>%RDA*</th>
-                    </tr>
-                  </thead>
-                  <tbody id="label-nutrients"></tbody>
-                </table>
-              </div>
-              <div class="nutrition-label-copy">
-                <p><strong>Ingredients:</strong> <span id="label-ingredients"></span></p>
-                <p id="label-data-warning" class="label-warning" hidden></p>
-                <p class="label-footnote">
-                  *Per-serving contribution to adult RDA. FSSAI fixed adult references are used for
-                  energy, total fat, saturated fat, trans fat, added sugar, and sodium; applicable
-                  micronutrients use ICMR-NIN 2020 adult sedentary-man RDA. “—” means no applicable
-                  reference is provided here.
-                </p>
-                <p class="label-footnote">Theoretical formulation calculation — not a laboratory assay or regulatory approval.</p>
-              </div>
-            </article>
-          </div>
-        </section>
+        </details>
 
         <p class="disclaimer">
           This is a calculation from the formula and source data. It is not a laboratory test
           or government approval.
         </p>
       </section>
+      <details class="validation-panel"><summary>Examples, references and activity log</summary>
+        <div class="source-actions secondary-tools">
+          <a class="sample-link" href="/sample-tonic.tsv" download>Download sample</a>
+          <button id="download-audit" class="text-button compact-button" type="button">Download activity log</button>
+        </div>
+        <p class="audit-note">The activity log records actions and times without formula text. On the public site, Clarity measures visits and interactions with the application content masked.</p>
+        <div class="validation-summary">
+          <div>
+            <p class="eyebrow">Tested with public products</p>
+            <h2 id="validation-title">26 products and 55 published values checked</h2>
+            <p>
+              See every value we compared, what our calculator returned, the difference,
+              and the public source.
+            </p>
+          </div>
+          <dl>
+            <div><dt>26</dt><dd>products</dd></div>
+            <div><dt>55</dt><dd>values</dd></div>
+            <div><dt>125</dt><dd>tests</dd></div>
+          </dl>
+        </div>
+        <a class="validation-link" href="/case-studies/">View all case studies</a>
+      </details>
     </main>
-    <script src="https://sassmaker.com/project-strip.js" data-project="nutrition-formula-engine" defer></script>
-  <script src="https://sassmaker.com/ai-chat-footer.js" data-name="Formula Composition Engine" defer></script>
+    <details class="support-details">
+      <summary>Help and product information</summary>
+    <fleet-footer-extension data-fleet-footer-project="nutrition-formula-engine" product-name="Formula Calculator" art-src="/footer-art/nutrition-formula-engine.webp" art-alt="Formula Composition Engine: A restrained formula-review bench centers an ingredient identity card and transparent scale. Generic bowls, blank quantity slips and a separate unresolved-identity tray emphasize correction before calculation." art-width="2170" art-height="725" art-position="50% 50%" art-credit="Original illustration for Formula Composition Engine" surface="app" theme="light">
+      <nav slot="navigation" data-fleet-footer-navigation aria-label="Formula Calculator links"><a href="/">Calculator</a> · <a href="/recent-formulas/">Recent formulas</a> · <a href="/case-studies/">Case studies</a></nav>
+    </fleet-footer-extension>
+    </details>
+    <script type="text/plain" data-after-load-src="https://sassmaker.com/project-strip.js" data-project="nutrition-formula-engine"></script>
+  <script type="text/plain" data-after-load-src="https://sassmaker.com/ai-chat-footer.js" data-name="Formula Calculator" data-surface="app"></script>
 </body>
 </html>

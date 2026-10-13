@@ -1,9 +1,43 @@
 import { recentFormulaItems } from "./recent-formulas-model.js";
 import { loadBrowserWorkspace } from "./workspace-store.js";
+import { savedProducts } from "./saved-products.js";
 
 const list = document.querySelector("#recent-formulas-list");
 const empty = document.querySelector("#recent-formulas-empty");
 const status = document.querySelector("#recent-formulas-status");
+
+for (const product of savedProducts) {
+  const card = document.createElement("article");
+  card.className = "recent-formula-card";
+  const copy = document.createElement("div");
+  const title = document.createElement("h3");
+  title.textContent = product.name;
+  const summary = document.createElement("p");
+  summary.textContent = product.summary;
+  const note = document.createElement("span");
+  note.className = "formula-storage-label";
+  note.textContent = "Published draft · available on every device";
+  copy.append(title, summary, note);
+  const actions = document.createElement("div");
+  actions.className = "saved-product-actions";
+  const open = document.createElement("a");
+  open.className = "secondary-button";
+  open.href = product.href;
+  open.textContent = "View label";
+  open.setAttribute("aria-label", `View ${product.name} label`);
+  actions.append(open);
+  if (product.pdfUrl) {
+    const pdf = document.createElement("a");
+    pdf.className = "primary-button";
+    pdf.href = product.pdfUrl;
+    pdf.download = `${product.id}-label.pdf`;
+    pdf.textContent = "Download label PDF";
+    pdf.setAttribute("aria-label", `Download ${product.name} label PDF`);
+    actions.append(pdf);
+  }
+  card.append(copy, actions);
+  document.querySelector("#published-products-list").append(card);
+}
 
 function formatSavedAt(value) {
   const date = new Date(value);

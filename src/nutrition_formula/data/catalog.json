@@ -34,7 +34,10 @@
     "vitamin_a_rae": {"name": "Vitamin A", "class": "micro", "unit": "ug"},
     "vitamin_d": {"name": "Vitamin D", "class": "micro", "unit": "ug"},
     "vitamin_e": {"name": "Vitamin E", "class": "micro", "unit": "mg"},
-    "vitamin_k": {"name": "Vitamin K", "class": "micro", "unit": "ug"}
+    "vitamin_k": {"name": "Vitamin K", "class": "micro", "unit": "ug"},
+    "pantothenic_acid": {"name": "Vitamin B5 (pantothenic acid equivalent)", "class": "micro", "unit": "mg"},
+    "lysine": {"name": "Lysine", "class": "active", "unit": "mg"},
+    "chloride": {"name": "Chloride", "class": "micro", "unit": "mg"}
   },
   "materials": {
     "water": {
@@ -334,6 +337,8 @@
       "source": {"kind": "candidate_identity", "reference": "Nipazine candidate; supplier confirmation required"}
     },
     "sodium_methylparaben_assumed": {
+      "label_name": "Sodium methylparaben",
+      "label_category": "Preservatives",
       "name": "Sodium methylparaben, assumed from Nepazene",
       "aliases": ["sodium methylparaben", "methylparaben sodium", "Nipazine", "Nipagin M Sodium"],
       "identity_status": "assumed",
@@ -349,6 +354,8 @@
       }
     },
     "propylparaben_assumed": {
+      "label_name": "Propylparaben",
+      "label_category": "Preservatives",
       "name": "Propylparaben, assumed from Nepasol",
       "aliases": ["Nepasol", "Nipasol", "propylparaben"],
       "identity_status": "assumed",
@@ -359,6 +366,7 @@
       "source": {"kind": "assumption", "reference": "Non-nutritive propylparaben scenario"}
     },
     "bronopol": {
+      "label_category": "Preservatives",
       "name": "Bronopol",
       "aliases": ["2 bromo 2 nitropropane 1 3 diol"],
       "basis": {"value": "100", "unit": "g"},
@@ -367,6 +375,7 @@
       "source": {"kind": "chemical_identity", "reference": "Bronopol treated as non-nutritive"}
     },
     "sodium_benzoate": {
+      "label_category": "Preservatives",
       "name": "Sodium benzoate",
       "aliases": ["sod benz", "benzoate of soda"],
       "basis": {"value": "100", "unit": "g"},
@@ -375,6 +384,7 @@
       "source": {"kind": "stoichiometric", "reference": "Sodium fraction from sodium benzoate molecular mass"}
     },
     "benzoic_acid": {
+      "label_category": "Preservatives",
       "name": "Benzoic acid",
       "aliases": ["benzoic acid food grade"],
       "basis": {"value": "100", "unit": "g"},
@@ -406,6 +416,436 @@
       },
       "unlisted_nutrients_are_zero": true,
       "source": {"kind": "assumption", "reference": "100% fibre validation scenario"}
+    },
+    "vitamin_b1_declared": {
+      "label_name": "Vitamin B1",
+      "name": "Vitamin B1, declared active amount",
+      "aliases": [
+        "vitamin B1",
+        "B1"
+      ],
+      "identity_status": "assumed",
+      "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "thiamin": {
+          "value": "100000",
+          "unit": "mg"
+        }
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {
+        "kind": "declared_active_assumption",
+        "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+      }
+    },
+    "vitamin_b2_declared": {
+      "label_name": "Vitamin B2",
+      "name": "Vitamin B2, declared active amount",
+      "aliases": [
+        "vitamin B2",
+        "B2"
+      ],
+      "identity_status": "assumed",
+      "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "riboflavin": {
+          "value": "100000",
+          "unit": "mg"
+        }
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {
+        "kind": "declared_active_assumption",
+        "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+      }
+    },
+    "vitamin_b6_declared": {
+      "label_name": "Vitamin B6",
+      "name": "Vitamin B6, declared active amount",
+      "aliases": [
+        "vitamin B6",
+        "B6"
+      ],
+      "identity_status": "assumed",
+      "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "vitamin_b6": {
+          "value": "100000",
+          "unit": "mg"
+        }
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {
+        "kind": "declared_active_assumption",
+        "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+      }
+    },
+    "vitamin_b12_declared": {
+      "label_name": "Vitamin B12",
+      "name": "Vitamin B12, declared active amount",
+      "aliases": [
+        "vitamin B12",
+        "B12"
+      ],
+      "identity_status": "assumed",
+      "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "vitamin_b12": {
+          "value": "100000000",
+          "unit": "ug"
+        }
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {
+        "kind": "declared_active_assumption",
+        "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+      }
+    },
+    "niacinamide_pure": {
+      "label_name": "Niacinamide",
+      "name": "Niacinamide, pure active basis",
+      "aliases": [
+        "niacinamide",
+        "nicotinamide"
+      ],
+      "identity_status": "assumed",
+      "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "niacin": {
+          "value": "100000",
+          "unit": "mg"
+        }
+      },
+      "unlisted_nutrients_are_zero": true,
+      "source": {
+        "kind": "declared_active_assumption",
+        "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+      }
+    },
+    "lysine_hcl_unassayed": {
+      "name": "Lysine hydrochloride",
+      "aliases": [],
+      "label_category": "Amino acids",
+      "identity_status": "unresolved",
+      "identity_note": "Hydrate and supplier assay were not supplied; the weighed salt is not equated with free lysine or protein.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {},
+      "missing_information": "Hydrate and supplier assay were not supplied; the weighed salt is not equated with free lysine or protein.",
+      "source": {
+        "kind": "identity_only",
+        "reference": "Submitted ingredient identity; no supplier nutrient profile supplied. Hydrate and supplier assay were not supplied; the weighed salt is not equated with free lysine or protein."
+      }
+    },
+    "d_panthenol_unassayed": {
+      "name": "D-panthenol",
+      "aliases": [],
+      "label_category": "Vitamins",
+      "identity_status": "verified",
+      "identity_note": "Provitamin B5; pantothenic-acid equivalent and supplier assay are not established.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {},
+      "missing_information": "Provitamin B5; pantothenic-acid equivalent and supplier assay are not established.",
+      "source": {
+        "kind": "identity_only",
+        "reference": "Submitted ingredient identity; no supplier nutrient profile supplied. PubChem CID 131204 identifies D-panthenol as provitamin B5."
+      }
+    },
+    "saccharin_unspecified": {
+      "label_name": "Saccharin",
+      "name": "Saccharin, salt form unspecified",
+      "aliases": [
+        "sacchrine",
+        "saccharin",
+        "saccharine"
+      ],
+      "label_category": "Sweeteners",
+      "identity_status": "unresolved",
+      "identity_note": "Confirm saccharin versus sodium saccharin and supplier composition; sodium is not assumed zero.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {},
+      "missing_information": "Confirm saccharin versus sodium saccharin and supplier composition; sodium is not assumed zero.",
+      "source": {
+        "kind": "identity_only",
+        "reference": "Submitted ingredient identity; no supplier nutrient profile supplied. Confirm saccharin versus sodium saccharin and supplier composition; sodium is not assumed zero."
+      }
+    },
+    "aspartum_unresolved": {
+      "name": "Aspartum, identity unconfirmed",
+      "aliases": [],
+      "label_category": "Sweeteners",
+      "identity_status": "unresolved",
+      "identity_note": "Likely aspartame; confirm identity and supplier composition.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {},
+      "missing_information": "Likely aspartame; confirm identity and supplier composition.",
+      "source": {
+        "kind": "identity_only",
+        "reference": "Submitted ingredient identity; no supplier nutrient profile supplied. Likely aspartame; confirm identity and supplier composition."
+      }
+    },
+    "mixed_fruit_essence": {
+      "name": "Mixed fruit essence",
+      "aliases": [
+        "mixed fruit essence",
+        "mixed fruit flavour",
+        "mixed fruit flavor"
+      ],
+      "label_category": "Flavour",
+      "identity_status": "unresolved",
+      "identity_note": "Flavour mixture and carrier composition were not supplied; sugar, energy and nutrient content remain unknown.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {},
+      "missing_information": "Flavour mixture and carrier composition were not supplied; sugar, energy and nutrient content remain unknown.",
+      "source": {
+        "kind": "identity_only",
+        "reference": "Submitted ingredient identity; no supplier nutrient profile supplied. Flavour mixture and carrier composition were not supplied; sugar, energy and nutrient content remain unknown."
+      }
+    },
+    "lysine_hcl_pure_assumed": {
+      "missing_information": "Confirm anhydrous monohydrochloride versus hydrate, purity/assay and the supplier nutrition profile. The lysine conversion is a pure-ingredient assumption; protein and energy remain unresolved.",
+      "name": "Lysine hydrochloride",
+      "aliases": [
+        "lysine HCl",
+        "L-lysine HCl"
+      ],
+      "label_category": "Amino acids",
+      "identity_status": "assumed",
+      "identity_note": "Calculation scenario: pure anhydrous L-lysine monohydrochloride, 100% assay. Free lysine = salt mass \u00d7 146.19/182.65; chloride = salt mass \u00d7 35.45/182.65. Supplier assay/hydrate not verified; lysine is not equated with protein.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "lysine": {
+          "value": "80038.32466465918423213796879",
+          "unit": "mg"
+        },
+        "chloride": {
+          "value": "19408.70517382972898987133863",
+          "unit": "mg"
+        }
+      },
+      "source": {
+        "kind": "theoretical_conversion_assumption",
+        "reference": "Pure anhydrous scenario, not a supplier assay. PubChem CID 5962: L-lysine MW 146.19; CID 69568: L-lysine monohydrochloride MW 182.65 g/mol. Chloride atomic weight 35.45.",
+        "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Lysine-hydrochloride"
+      }
+    },
+    "d_panthenol_pure_assumed": {
+      "missing_information": "Confirm D-isomer, purity/assay and carrier or dilution. B5 is a theoretical equivalent; request the supplier macro composition.",
+      "name": "D-panthenol",
+      "aliases": [
+        "d panthenol",
+        "dexpanthenol"
+      ],
+      "label_category": "Vitamins",
+      "identity_status": "assumed",
+      "identity_note": "Calculation scenario: pure D-panthenol, 100% assay. Theoretical pantothenic-acid equivalent = mass \u00d7 219.23/205.25 for 1:1 molar oxidation. This is not measured bioavailability or a finished-product assay.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "pantothenic_acid": {
+          "value": "106811.2058465286236297198538",
+          "unit": "mg"
+        }
+      },
+      "source": {
+        "kind": "theoretical_conversion_assumption",
+        "reference": "SCF 2002: panthenol can be oxidised in vivo to pantothenic acid; pantothenic acid MW 219.23. PubChem CID 131204: D-panthenol MW 205.25. Assumes pure D-isomer and complete 1:1 molar conversion; not a bioavailability claim.",
+        "url": "https://food.ec.europa.eu/system/files/2020-12/sci-com_scf_out80k_en.pdf"
+      }
+    },
+    "aspartame_pure_assumed": {
+      "missing_information": "Confirm ASPARTUM means aspartame, its purity and any carrier. Only the pure-aspartame energy contribution is calculated; request the complete nutrition profile.",
+      "name": "Aspartame",
+      "aliases": [
+        "aspartum",
+        "aspartame"
+      ],
+      "label_category": "Sweeteners",
+      "identity_status": "assumed",
+      "identity_note": "Calculation scenario: ASPARTUM is pure aspartame, without a carrier. Energy uses approximately 4 kcal/g. Identity and supplier assay are not independently verified.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "energy": {
+          "value": "400",
+          "unit": "kcal"
+        }
+      },
+      "source": {
+        "kind": "nutrition_reference_assumption",
+        "reference": "FDA Federal Register 1974-07-26, p.27318: aspartame provides approximately 4 calories per gram. Applied to pure-aspartame scenario; other nutrient data not supplied.",
+        "url": "https://www.govinfo.gov/content/pkg/FR-1974-07-26/pdf/FR-1974-07-26.pdf"
+      }
+    },
+    "papain_pure_assumed": {
+      "name": "Papain",
+      "label_name": "Papain",
+      "aliases": [
+        "papain"
+      ],
+      "label_category": "Enzymes",
+      "identity_status": "assumed",
+      "identity_note": "Papain supplier specification: activity units and assay, enzyme protein content, carriers, sugars, fat and sodium. 60 mg is ingredient weight, not measured enzyme activity.",
+      "missing_information": "Papain supplier specification: activity units and assay, enzyme protein content, carriers, sugars, fat and sodium. 60 mg is ingredient weight, not measured enzyme activity.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {},
+      "unlisted_nutrients_are_zero": false,
+      "source": {
+        "kind": "operator_assumption",
+        "reference": "Entered papain mass retained without a supplier composition or activity assay. Pure enzyme protein is available only as an explicit working-estimate scenario.",
+        "url": "https://www.worthingtonweb.com/PAP/default.html"
+      }
+    },
+    "lysine_free_pure_assumed": {
+      "name": "Lysine, free active amount assumed",
+      "label_name": "Lysine",
+      "aliases": [
+        "lysine",
+        "L-lysine",
+        "free lysine"
+      ],
+      "identity_status": "assumed",
+      "identity_note": "Confirm free L-lysine versus a hydrochloride salt, hydrate, purity/assay and carriers. 15 mg is treated as active free lysine in this draft; a salt would require a different conversion.",
+      "missing_information": "Confirm free L-lysine versus a hydrochloride salt, hydrate, purity/assay and carriers. 15 mg is treated as active free lysine in this draft; a salt would require a different conversion.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "lysine": {
+          "value": "100000",
+          "unit": "mg"
+        }
+      },
+      "unlisted_nutrients_are_zero": false,
+      "source": {
+        "kind": "declared_active_assumption",
+        "reference": "Entered lysine amount treated as free active L-lysine for the working draft; salt form, purity and supplier assay not verified."
+      }
+    },
+    "iron_fac_declared": {
+      "name": "Iron (as ferric ammonium citrate), declared elemental basis",
+      "label_name": "Ferric ammonium citrate",
+      "aliases": [
+        "iron (as ferric ammonium citrate)"
+      ],
+      "identity_status": "assumed",
+      "identity_note": "Entered Iron (as Ferric Ammonium Citrate) is treated as elemental iron, not the weighed ferric ammonium citrate mass. Confirm elemental versus salt basis, grade, iron assay, actual salt weight and carrier composition. No salt-weight conversion is assumed.",
+      "missing_information": "Entered Iron (as Ferric Ammonium Citrate) is treated as elemental iron, not the weighed ferric ammonium citrate mass. Confirm elemental versus salt basis, grade, iron assay, actual salt weight and carrier composition. No salt-weight conversion is assumed.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "iron": {
+          "value": "100000",
+          "unit": "mg"
+        }
+      },
+      "unlisted_nutrients_are_zero": false,
+      "source": {
+        "kind": "declared_active_assumption",
+        "reference": "Entered Iron (as Ferric Ammonium Citrate) is treated as elemental iron, not the weighed ferric ammonium citrate mass. Confirm elemental versus salt basis, grade, iron assay, actual salt weight and carrier composition. No salt-weight conversion is assumed.",
+        "url": "https://ods.od.nih.gov/factsheets/Iron-HealthProfessional/",
+        "label_source": "Ferric ammonium citrate"
+      }
+    },
+    "zinc_sulphate_declared": {
+      "name": "Zinc (as zinc sulphate), declared elemental basis",
+      "label_name": "Zinc sulphate",
+      "aliases": [
+        "zinc (as zinc sulphate)",
+        "zinc (as zinc sulfate)"
+      ],
+      "identity_status": "assumed",
+      "identity_note": "Entered Zinc (as Zinc Sulphate) is treated as elemental zinc, not the weighed zinc sulphate mass. Confirm elemental versus salt basis, hydrate, zinc assay, actual salt weight and carriers. No hydrate or salt-weight conversion is assumed.",
+      "missing_information": "Entered Zinc (as Zinc Sulphate) is treated as elemental zinc, not the weighed zinc sulphate mass. Confirm elemental versus salt basis, hydrate, zinc assay, actual salt weight and carriers. No hydrate or salt-weight conversion is assumed.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "zinc": {
+          "value": "100000",
+          "unit": "mg"
+        }
+      },
+      "unlisted_nutrients_are_zero": false,
+      "source": {
+        "kind": "declared_active_assumption",
+        "reference": "Entered Zinc (as Zinc Sulphate) is treated as elemental zinc, not the weighed zinc sulphate mass. Confirm elemental versus salt basis, hydrate, zinc assay, actual salt weight and carriers. No hydrate or salt-weight conversion is assumed.",
+        "url": "https://ods.od.nih.gov/factsheets/Zinc-HealthProfessional/",
+        "label_source": "Zinc sulphate"
+      }
+    },
+    "folic_acid_declared": {
+      "name": "Folic acid, declared active amount",
+      "label_name": "Folic acid",
+      "aliases": [
+        "folic acid declared active"
+      ],
+      "identity_status": "assumed",
+      "identity_note": "Entered folic acid is treated as active folic acid, not a diluted premix weight. Confirm assay and carrier composition. Label RDA uses dietary folate equivalents (1.7 times the folic acid amount); folic acid mass itself is unchanged.",
+      "missing_information": "Entered folic acid is treated as active folic acid, not a diluted premix weight. Confirm assay and carrier composition. Label RDA uses dietary folate equivalents (1.7 times the folic acid amount); folic acid mass itself is unchanged.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "folic_acid": {
+          "value": "100000000",
+          "unit": "ug"
+        }
+      },
+      "unlisted_nutrients_are_zero": false,
+      "source": {
+        "kind": "declared_active_assumption",
+        "reference": "Entered folic acid is treated as active folic acid, not a diluted premix weight. Confirm assay and carrier composition. Label RDA uses dietary folate equivalents (1.7 times the folic acid amount); folic acid mass itself is unchanged."
+      }
     }
   }
 }

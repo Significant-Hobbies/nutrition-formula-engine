@@ -1,3 +1,8 @@
+import { DEMOGRAPHIC_RDA, LABEL_REFERENCE } from "./rda-reference.js";
+import { describeLabelIngredient, ingredientIdentifierSummary, INS_REFERENCE } from "./additive-reference.js";
+import { buildLabelDetails } from "./label-details.js";
+export { DEMOGRAPHIC_RDA, LABEL_REFERENCE } from "./rda-reference.js";
+
 const POWERS_OF_TEN = [1n];
 
 function powerOfTen(exponent) {
@@ -19,13 +24,13 @@ function decimalParts(value) {
   };
 }
 
-function roundedRatio(numerator, denominator, decimalPlaces) {
+function roundedRatio(numerator, denominator, decimalPlaces, rounding) {
   if (denominator <= 0n) throw new Error("The divisor must be greater than zero.");
   const scale = powerOfTen(decimalPlaces);
   const scaled = numerator * scale;
   const quotient = scaled / denominator;
   const remainder = scaled % denominator;
-  const rounded = remainder * 2n >= denominator ? quotient + 1n : quotient;
+  const rounded = (rounding === "up" && remainder > 0n) || (rounding === "half-up" && remainder * 2n >= denominator) ? quotient + 1n : quotient;
   if (decimalPlaces === 0) return rounded.toString();
   const digits = rounded.toString().padStart(decimalPlaces + 1, "0");
   const whole = digits.slice(0, -decimalPlaces);
@@ -33,13 +38,13 @@ function roundedRatio(numerator, denominator, decimalPlaces) {
   return fraction ? `${whole}.${fraction}` : whole;
 }
 
-export function multiplyDivideDecimal(value, multiplier, divisor, decimalPlaces = 2) {
+export function multiplyDivideDecimal(value, multiplier, divisor, decimalPlaces = 2, rounding = "half-up") {
   const left = decimalParts(value);
   const right = decimalParts(multiplier);
   const bottom = decimalParts(divisor);
   const numerator = left.coefficient * right.coefficient * powerOfTen(bottom.scale);
   const denominator = bottom.coefficient * powerOfTen(left.scale + right.scale);
-  return roundedRatio(numerator, denominator, decimalPlaces);
+  return roundedRatio(numerator, denominator, decimalPlaces, rounding);
 }
 
 function isPositiveDecimal(value) {
@@ -58,42 +63,8 @@ function isNonZeroDecimal(value) {
   }
 }
 
-export const LABEL_REFERENCE = Object.freeze({
-  jurisdiction: "India",
-  labelRegulation: "FSSAI Labelling and Display Regulations, 2020 — Version VIII (09.09.2025)",
-  nutrientReference: "ICMR-NIN Nutrient Requirements for Indians, RDA and EAR 2020",
-  audience: "Average adult; micronutrients use the adult sedentary-man reference where applicable",
-});
-
-export const ADULT_RDA = Object.freeze({
-  energy: { value: "2000", unit: "kcal", source: "fssai" },
-  protein: { value: "54", unit: "g", source: "icmr" },
-  added_sugars: { value: "50", unit: "g", source: "fssai" },
-  dietary_fibre: { value: "30", unit: "g", source: "icmr" },
-  total_fat: { value: "67", unit: "g", source: "fssai" },
-  saturated_fat: { value: "22", unit: "g", source: "fssai" },
-  trans_fat: { value: "2", unit: "g", source: "fssai" },
-  calcium: { value: "1000", unit: "mg", source: "icmr" },
-  iron: { value: "19", unit: "mg", source: "icmr" },
-  magnesium: { value: "440", unit: "mg", source: "icmr" },
-  phosphorus: { value: "1000", unit: "mg", source: "icmr" },
-  potassium: { value: "3500", unit: "mg", source: "icmr" },
-  sodium: { value: "2000", unit: "mg", source: "fssai" },
-  zinc: { value: "17", unit: "mg", source: "icmr" },
-  copper: { value: "1.7", unit: "mg", source: "icmr" },
-  manganese: { value: "4", unit: "mg", source: "icmr" },
-  selenium: { value: "40", unit: "ug", source: "icmr" },
-  vitamin_c: { value: "80", unit: "mg", source: "icmr" },
-  thiamin: { value: "1.4", unit: "mg", source: "icmr" },
-  riboflavin: { value: "2", unit: "mg", source: "icmr" },
-  niacin: { value: "14", unit: "mg", source: "icmr" },
-  vitamin_b6: { value: "1.9", unit: "mg", source: "icmr" },
-  folate_dfe: { value: "300", unit: "ug", source: "icmr" },
-  vitamin_b12: { value: "2.2", unit: "ug", source: "icmr" },
-  vitamin_a_rae: { value: "1000", unit: "ug", source: "icmr" },
-  vitamin_d: { value: "15", unit: "ug", source: "icmr" },
-  vitamin_k: { value: "55", unit: "ug", source: "icmr" },
-});
+// Compatibility for callers that used the former single adult reference.
+export const ADULT_RDA = DEMOGRAPHIC_RDA.men;
 
 const REQUIRED_ORDER = [
   "energy",
@@ -108,20 +79,102 @@ const REQUIRED_ORDER = [
   "cholesterol",
   "sodium",
 ];
+const MAIN_ORDER = [...REQUIRED_ORDER, "monounsaturated_fat", "polyunsaturated_fat"];
 
-function componentOrder(component) {
-  const requiredIndex = REQUIRED_ORDER.indexOf(component.id);
-  return requiredIndex === -1 ? REQUIRED_ORDER.length : requiredIndex;
+const VITAMIN_ORDER = ["vitamin_c", "niacin", "vitamin_e", "riboflavin", "vitamin_b6", "thiamin", "vitamin_b12", "vitamin_a_rae", "biotin", "folic_acid", "folate_dfe", "pantothenic_acid", "vitamin_d", "vitamin_k"];
+const MINERAL_ORDER = ["calcium", "iron", "magnesium", "phosphorus", "potassium", "zinc", "manganese", "iodine", "selenium", "molybdenum", "copper", "chromium", "chloride"];
+const CATEGORY_ORDER = ["Main nutrients", "Vitamins", "Minerals", "Amino acids", "Preservatives", "Sweeteners", "Flavour", "Other components"];
+
+function componentCategory(id) {
+  if (MAIN_ORDER.includes(id)) return "Main nutrients";
+  if (VITAMIN_ORDER.includes(id)) return "Vitamins";
+  if (MINERAL_ORDER.includes(id)) return "Minerals";
+  if (id === "lysine") return "Amino acids";
+  return "Other components";
 }
 
-function amountPrecision(unit) {
-  if (unit === "kcal") return 0;
-  if (unit === "g") return 2;
-  return 2;
+function componentOrder(component) {
+  const category = componentCategory(component.id);
+  const order = category === "Main nutrients" ? MAIN_ORDER
+    : category === "Vitamins" ? VITAMIN_ORDER : MINERAL_ORDER;
+  const index = order.indexOf(component.id);
+  return CATEGORY_ORDER.indexOf(category) * 100 + (index === -1 ? 99 : index);
 }
 
 function displayUnit(unit) {
-  return unit === "ug" ? "µg" : unit;
+  return ["ug", "mcg"].includes(unit) ? "µg" : unit;
+}
+
+function exactProduct(value, multiplier) {
+  return multiplyDivideDecimal(value, multiplier, "1", decimalParts(value).scale + decimalParts(multiplier).scale);
+}
+
+function referenceAmount(component) {
+  const units = { g: "1", mg: "1000", ug: "1000000", mcg: "1000000", "µg": "1000000" };
+  const id = component.id === "folic_acid" ? "folate_dfe" : component.id;
+  const referenceUnit = DEMOGRAPHIC_RDA.men[id]?.unit;
+  if (!referenceUnit) return null;
+  let value = component.value;
+  if (component.unit !== referenceUnit) {
+    if (!units[component.unit] || !units[referenceUnit]) return null;
+    // Scaling by powers of ten is exact; retain all input decimal places.
+    value = multiplyDivideDecimal(value, units[referenceUnit], units[component.unit], decimalParts(value).scale + 6);
+  }
+  return component.id === "folic_acid" ? exactProduct(value, "1.7") : value;
+}
+
+function rdaLabel(component, servingSize, demographic, batchQuantity) {
+  const reference = DEMOGRAPHIC_RDA[demographic][component.id === "folic_acid" ? "folate_dfe" : component.id];
+  if (!reference) return "—";
+  if (component.value == null || (component.status === "partial" && !isNonZeroDecimal(component.value))) return "Not established";
+  const fromBatch = isPositiveDecimal(batchQuantity) && component.total_batch != null;
+  const value = referenceAmount(fromBatch ? { ...component, value: component.total_batch } : component);
+  if (value === null) return "—";
+  const format = (divisor) => {
+    // per-100 amount × serving / 100 × 100 / RDA; never round the amount first.
+    // The supplied pack truncates RDA percentages to two decimal places.
+    const percent = multiplyDivideDecimal(value, fromBatch ? exactProduct(servingSize, "100") : servingSize,
+      fromBatch ? exactProduct(batchQuantity, divisor) : divisor, 2, "down");
+    if (percent === "0" && isNonZeroDecimal(value)) {
+      if (component.status === "partial") return "Known <0.01%";
+      return `${component.status === "estimated" ? "≈" : ""}<0.01%`;
+    }
+    if (component.status === "estimated") return `≈${percent}%`;
+    if (component.status === "partial") return `≥${percent}%`;
+    return percent === "0" && isNonZeroDecimal(value) ? "<0.01%" : `${percent}%`;
+  };
+  return reference.value ? format(reference.value) : `${format(reference.maximum)}–${format(reference.minimum)}`;
+}
+
+function amountLabel(component, multiplier, batchQuantity) {
+  if (component.value == null || (component.status === "partial" && !isNonZeroDecimal(component.value))) return "Not established";
+  const precision = component.display_precision ?? 4;
+  const fromBatch = isPositiveDecimal(batchQuantity) && component.total_batch != null;
+  const amount = multiplyDivideDecimal(fromBatch ? component.total_batch : component.value, multiplier,
+    fromBatch ? batchQuantity : "100", precision, component.status === "partial" ? "down" : "half-up");
+  if (amount === "0" && isNonZeroDecimal(component.value)) {
+    const threshold = precision === 0 ? "1" : `0.${"0".repeat(precision - 1)}1`;
+    return component.status === "partial" ? `Known contribution <${threshold}`
+      : `${component.status === "estimated" ? "≈" : ""}<${threshold}`;
+  }
+  return `${component.status === "partial" ? "≥" : component.status === "estimated" ? "≈" : ""}${amount}`;
+}
+
+function mineralSources(component, confirmedMaterialIds) {
+  if (!MINERAL_ORDER.includes(component.id) && component.id !== "sodium") return [];
+  const unique = new Map();
+  for (const contribution of component.contributions || []) {
+    if (!isPositiveDecimal(contribution.total_batch)) continue;
+    const name = contribution.source?.label_source || contribution.material_name || contribution.input_material_name;
+    const identifier = describeLabelIngredient({ name, material_id: contribution.material_id }, confirmedMaterialIds.has(contribution.input_material_id));
+    if (name && !unique.has(name)) unique.set(name, {
+      name,
+      ins: identifier.ins,
+      relation: contribution.source?.kind === "reference_database" ? "from" : "as",
+      provenance: contribution.source,
+    });
+  }
+  return [...unique.values()];
 }
 
 function labelIngredientName(row) {
@@ -129,7 +182,21 @@ function labelIngredientName(row) {
   return row.item;
 }
 
+// A confirmation belongs to this exact row/interpretation, not just its name.
+export function identityReviewKey(row) {
+  return JSON.stringify([row.item?.toLowerCase(), row.material_id, row.interpretation,
+    row.submitted_quantity, row.submitted_unit, row.profile_version, row.source, row.identity_note]);
+}
+
+export function pendingIdentityRows(result, confirmedIdentities = new Set()) {
+  return (result.formula_rows || []).slice(1)
+    .filter((row) => row.unresolved || (row.needs_review && !confirmedIdentities.has(identityReviewKey(row))));
+}
+
 export function buildNutritionLabel(result, options = {}) {
+  const confirmedIdentities = options.confirmedIdentities || new Set();
+  const formulaRows = (result.formula_rows || []).slice(1);
+  const confirmed = (row) => !row.needs_review || confirmedIdentities.has(identityReviewKey(row));
   const servingSize = String(options.servingSize || "30").trim();
   if (!isPositiveDecimal(servingSize)) {
     throw new Error("Serving size must be a number greater than zero.");
@@ -152,49 +219,101 @@ export function buildNutritionLabel(result, options = {}) {
   });
 
   const nutrients = indexed
-    .filter(({ component }) => REQUIRED_ORDER.includes(component.id) || isNonZeroDecimal(component.value))
-    .map(({ component }) => {
-      const precision = amountPrecision(component.unit);
-      const perServing = multiplyDivideDecimal(component.value, servingSize, "100", precision);
-      const reference = ADULT_RDA[component.id];
-      const rdaPercent = reference && reference.unit === component.unit
-        ? multiplyDivideDecimal(component.value, servingSize, reference.value, 0)
-        : null;
-      const qualifier = component.status === "partial" ? "≥" : "";
-      const rdaLabel = rdaPercent === null
-        ? "—"
-        : rdaPercent === "0" && isNonZeroDecimal(component.value)
-          ? "<1%"
-          : `${qualifier}${rdaPercent}%`;
+    .filter(({ component }) => REQUIRED_ORDER.includes(component.id) ||
+      (component.value == null && (!result.declared_nutrient_ids || result.declared_nutrient_ids.includes(component.id))) ||
+      (component.status === "partial" && (!result.declared_nutrient_ids || result.declared_nutrient_ids.includes(component.id))) || isNonZeroDecimal(component.value))
+    .map(({ component: original }) => {
+      // Keep the report's incomplete totals intact. A confirmed declared active
+      // amount is a separate label basis, not a claim of complete assay coverage.
+      const contributions = (original.contributions || []).filter((entry) => isPositiveDecimal(entry.total_batch));
+      const isDeclared = contributions.length > 0 && contributions.every((entry) =>
+        entry.source?.kind === "declared_active_assumption" &&
+        formulaRows.some((row) => row.material_id === entry.input_material_id &&
+          result.formula_rows.indexOf(row) === entry.line_index + 1 && confirmed(row)));
+      const isEstimated = contributions.length > 0 && contributions.every((entry) =>
+        entry.source?.kind === "theoretical_conversion_assumption" &&
+        formulaRows.some((row) => row.material_id === entry.input_material_id &&
+          result.formula_rows.indexOf(row) === entry.line_index + 1 && confirmed(row)));
+      const component = isDeclared ? { ...original, status: "declared" }
+        : isEstimated ? { ...original, status: "estimated" } : original;
+      const sources = mineralSources(component, new Set(formulaRows.filter(confirmed).map((row) => row.material_id)));
+      const rda = Object.fromEntries(Object.keys(DEMOGRAPHIC_RDA).map((demographic) => [demographic, rdaLabel(component, servingSize, demographic, result.label_batch_quantity)]));
       return {
         id: component.id,
         name: component.name,
+        category: componentCategory(component.id),
+        sources,
+        sourceLabel: sources.map((source) => `${source.relation} ${source.name}${source.ins ? `; INS ${source.ins}` : ""}`).join("; "),
         unit: displayUnit(component.unit),
-        perBasis: `${qualifier}${multiplyDivideDecimal(component.value, "1", "1", precision)}`,
-        perServing: `${qualifier}${perServing}`,
-        rdaPercent: rdaLabel,
-        referenceSource: reference?.source || null,
-        status: component.status,
+        perBasis: amountLabel(component, "100"),
+        perServing: amountLabel(component, servingSize, result.label_batch_quantity),
+        rda: result.assumption_scenario?.active && ["energy", "protein"].includes(component.id)
+          ? { men: "—", women: "—", children: "—" } : rda,
+        rdaPercent: rda.men,
+        referenceSource: DEMOGRAPHIC_RDA.men[component.id === "folic_acid" ? "folate_dfe" : component.id]?.source || null,
+        status: component.value == null ? "partial" : component.status,
       };
     });
+  const weighedIngredients = (result.label_entries || []).map((entry, index) => ({
+    id: `weighed-${index}`, name: entry.category === "Enzymes" ? entry.interpretation : entry.name, category: entry.category,
+    sourceLabel: [entry.category !== "Enzymes" && entry.interpretation !== entry.name ? entry.interpretation : "",
+      entry.needs_review && !formulaRows.some((row) => row.item === entry.name && confirmed(row)) ? "identity to confirm" : "",
+      entry.identity_note?.startsWith("Provitamin B5") ? "B5 equivalent not established" : ""].filter(Boolean).join("; "),
+    unit: displayUnit(entry.unit),
+    perBasis: multiplyDivideDecimal(entry.batch_amount, "100", result.label_batch_quantity, 4),
+    perServing: multiplyDivideDecimal(entry.batch_amount, servingSize, result.label_batch_quantity, 4),
+    rda: { men: "—", women: "—", children: "—" },
+    status: "weighed", identityNote: entry.identity_note,
+  }));
+  const unavailableNutrients = nutrients.filter((nutrient) => nutrient.perServing === "Not established");
+  const visibleNutrients = options.includeUnavailable && !result.assumption_scenario?.active ? nutrients
+    : nutrients.filter((nutrient) => nutrient.perServing !== "Not established");
+  // Nutrition rows contain nutrient equivalents only. Raw formulation inputs
+  // remain in the ingredient statement and calculation report.
+  const groups = CATEGORY_ORDER.map((name) => ({ name, nutrients: visibleNutrients.filter((nutrient) => nutrient.category === name) }))
+    .filter((group) => group.nutrients.length);
+  const enzymes = weighedIngredients.filter((item) => item.category === "Enzymes");
+  if (enzymes.length) groups.push({ name: "Enzymes (ingredient weight)", nutrients: enzymes });
 
-  const formulaRows = (result.formula_rows || []).slice(1);
-  const labelIngredients = (result.label_ingredients || []).map((item) => item.name);
-  const ingredients = labelIngredients.length
-    ? labelIngredients
-    : formulaRows.map(labelIngredientName);
+  const ingredientInputs = result.label_ingredients?.length ? result.label_ingredients
+    : formulaRows.map((row) => ({ ...row, name: labelIngredientName(row) }));
+  const ingredientDetails = ingredientInputs.map((item) => {
+    const matchingRows = formulaRows.filter((row) => row.material_id === item.material_id);
+    return describeLabelIngredient(item, matchingRows.length > 0 && matchingRows.every((row) => !row.unresolved && confirmed(row)));
+  });
+  const ingredients = ingredientDetails.map((item) => item.statement);
+  const waterBase = options.waterBase && basisUnit === "mL";
+  if (waterBase) {
+    const water = describeLabelIngredient({ material_id: "water", name: "Water" }, true);
+    water.statement = `Water (q.s. to finished ${result.label_batch_quantity} mL)`;
+    ingredients.push(water.statement);
+    ingredientDetails.push(water);
+  }
 
   return {
     productName,
     basisLabel: `Per 100 ${basisUnit}`,
-    servingLabel: `Per serve (${servingSize} ${basisUnit})`,
+    servingLabel: `Per serving (${servingSize} ${basisUnit})`,
     servingSize,
     servingUnit: basisUnit,
     servingsPerPack,
     ingredients,
+    ingredientDetails,
+    ingredientIdentifierSummary: ingredientIdentifierSummary(ingredientDetails),
+    additiveReference: INS_REFERENCE,
+    additiveIssues: ingredientDetails.filter((item) => item.note).map((item) => ({ ingredient: item.name, needed: item.note })),
+    productDetails: buildLabelDetails(options.productDetails, ingredientDetails),
     nutrients,
+    groups,
+    weighedIngredients,
+    unavailableNutrients,
+    waterBase,
+    hasDeclaredActives: nutrients.some((nutrient) => nutrient.status === "declared"),
+    hasEstimatedActives: nutrients.some((nutrient) => nutrient.status === "estimated"),
     hasIncompleteData: nutrients.some((nutrient) => nutrient.status === "partial"),
-    hasIdentityReview: formulaRows.some((row) => row.needs_review),
+    hasIdentityReview: pendingIdentityRows(result, confirmedIdentities).length > 0,
+    hasDeclaredActiveAssumptions: formulaRows.some((row) =>
+      (row.interpretation?.includes("declared active") || row.interpretation?.includes("pure active basis")) && !confirmed(row)),
     reference: LABEL_REFERENCE,
   };
 }

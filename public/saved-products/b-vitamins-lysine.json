@@ -1,0 +1,3713 @@
+{
+  "id": "b-vitamins-lysine",
+  "name": "B vitamins & lysine",
+  "summary": "15 mL · B vitamins, lysine and reviewed excipients · assumption estimate",
+  "savedAt": "2026-10-12T00:00:00Z",
+  "contents": "Item\tQuantity\tUnit\nFINISHED BATCH\t15\tml\nLYSINE HCL\t25\tmg\nVITAMIN B1\t1\tmg\nVITAMIN B2\t1\tmg\nVITAMIN B6\t1\tmg\nVITAMIN B12\t1\tug\nNIACINAMIDE\t13\tmg\nD-PANTHENOL\t2.5\tmg\nNEPAZENE\t15\tmg\nNEPASOL\t6\tmg\nBRONOPAL\t1.5\tmg\nSOD BENZ\t45\tmg\nBENZOIC ACID\t15\tmg\nSACCHRINE\t7.5\tmg\nASPARTUM\t3\tmg\nMIXED FRUIT ESSENCE\t7.5\tmg\n",
+  "fileName": "b-vitamins-lysine.tsv",
+  "report": {
+    "schema_version": 1,
+    "calculation": {
+      "engine_version": "2.0.0-pilot",
+      "nutrition_catalog_fingerprint": "64595645dbb252cfc291a7ac6935aa10b84af3037b225cd6e69b476648be32ef",
+      "chemical_catalog_fingerprint": "a53c0ce426a12e22882754af48fa5d19e57cea0de42c7fe0d8ba2a1d1422eacc",
+      "accepted_profile_count": 0,
+      "arithmetic": "Python Decimal"
+    },
+    "product_name": "pasted formula",
+    "file_name": "pasted-formula.tsv",
+    "basis_label": "per 100 mL",
+    "label_batch_quantity": "15",
+    "declared_nutrient_ids": [
+      "chloride",
+      "energy",
+      "lysine",
+      "niacin",
+      "pantothenic_acid",
+      "riboflavin",
+      "sodium",
+      "thiamin",
+      "vitamin_b12",
+      "vitamin_b6"
+    ],
+    "label_entries": [
+      {
+        "name": "LYSINE HCL",
+        "interpretation": "Lysine hydrochloride",
+        "category": "Amino acids",
+        "batch_amount": "25",
+        "unit": "mg",
+        "source": {
+          "kind": "theoretical_conversion_assumption",
+          "reference": "Pure anhydrous scenario, not a supplier assay. PubChem CID 5962: L-lysine MW 146.19; CID 69568: L-lysine monohydrochloride MW 182.65 g/mol. Chloride atomic weight 35.45.",
+          "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Lysine-hydrochloride"
+        },
+        "identity_note": "Calculation scenario: pure anhydrous L-lysine monohydrochloride, 100% assay. Free lysine = salt mass × 146.19/182.65; chloride = salt mass × 35.45/182.65. Supplier assay/hydrate not verified; lysine is not equated with protein.",
+        "needs_review": true
+      },
+      {
+        "name": "D-PANTHENOL",
+        "interpretation": "D-panthenol",
+        "category": "Vitamins",
+        "batch_amount": "2.5",
+        "unit": "mg",
+        "source": {
+          "kind": "theoretical_conversion_assumption",
+          "reference": "SCF 2002: panthenol can be oxidised in vivo to pantothenic acid; pantothenic acid MW 219.23. PubChem CID 131204: D-panthenol MW 205.25. Assumes pure D-isomer and complete 1:1 molar conversion; not a bioavailability claim.",
+          "url": "https://food.ec.europa.eu/system/files/2020-12/sci-com_scf_out80k_en.pdf"
+        },
+        "identity_note": "Calculation scenario: pure D-panthenol, 100% assay. Theoretical pantothenic-acid equivalent = mass × 219.23/205.25 for 1:1 molar oxidation. This is not measured bioavailability or a finished-product assay.",
+        "needs_review": true
+      },
+      {
+        "name": "NEPAZENE",
+        "interpretation": "Sodium methylparaben",
+        "category": "Preservatives",
+        "batch_amount": "15",
+        "unit": "mg",
+        "source": {
+          "kind": "stoichiometric_assumption",
+          "reference": "PubChem CID 23663626 molecular formula and molecular weight; identity assumed"
+        },
+        "identity_note": "Leading Nepazene candidate selected for the complete scenario; supplier label or CoA is still required",
+        "needs_review": true
+      },
+      {
+        "name": "NEPASOL",
+        "interpretation": "Propylparaben, assumed from Nepasol",
+        "category": "Preservatives",
+        "batch_amount": "6",
+        "unit": "mg",
+        "source": {
+          "kind": "assumption",
+          "reference": "Non-nutritive propylparaben scenario"
+        },
+        "identity_note": "Nepasol treated as likely Nipasol; public sources conflict between propylparaben and sodium propylparaben, so the sodium salt is not assumed",
+        "needs_review": true
+      },
+      {
+        "name": "BRONOPAL",
+        "interpretation": "Bronopol",
+        "category": "Preservatives",
+        "batch_amount": "1.5",
+        "unit": "mg",
+        "source": {
+          "kind": "chemical_identity",
+          "reference": "Bronopol treated as non-nutritive"
+        },
+        "identity_note": null,
+        "needs_review": true
+      },
+      {
+        "name": "SOD BENZ",
+        "interpretation": "Sodium benzoate",
+        "category": "Preservatives",
+        "batch_amount": "45",
+        "unit": "mg",
+        "source": {
+          "kind": "stoichiometric",
+          "reference": "Sodium fraction from sodium benzoate molecular mass"
+        },
+        "identity_note": null,
+        "needs_review": false
+      },
+      {
+        "name": "BENZOIC ACID",
+        "interpretation": "Benzoic acid",
+        "category": "Preservatives",
+        "batch_amount": "15",
+        "unit": "mg",
+        "source": {
+          "kind": "chemical_identity",
+          "reference": "Benzoic acid treated as non-nutritive"
+        },
+        "identity_note": null,
+        "needs_review": false
+      },
+      {
+        "name": "SACCHRINE",
+        "interpretation": "Saccharin, salt form unspecified",
+        "category": "Sweeteners",
+        "batch_amount": "7.5",
+        "unit": "mg",
+        "source": {
+          "kind": "identity_only",
+          "reference": "Submitted ingredient identity; no supplier nutrient profile supplied. Confirm saccharin versus sodium saccharin and supplier composition; sodium is not assumed zero."
+        },
+        "identity_note": "Confirm saccharin versus sodium saccharin and supplier composition; sodium is not assumed zero.",
+        "needs_review": true
+      },
+      {
+        "name": "ASPARTUM",
+        "interpretation": "Aspartame",
+        "category": "Sweeteners",
+        "batch_amount": "3",
+        "unit": "mg",
+        "source": {
+          "kind": "nutrition_reference_assumption",
+          "reference": "FDA Federal Register 1974-07-26, p.27318: aspartame provides approximately 4 calories per gram. Applied to pure-aspartame scenario; other nutrient data not supplied.",
+          "url": "https://www.govinfo.gov/content/pkg/FR-1974-07-26/pdf/FR-1974-07-26.pdf"
+        },
+        "identity_note": "Calculation scenario: ASPARTUM is pure aspartame, without a carrier. Energy uses approximately 4 kcal/g. Identity and supplier assay are not independently verified.",
+        "needs_review": true
+      },
+      {
+        "name": "MIXED FRUIT ESSENCE",
+        "interpretation": "Mixed fruit essence",
+        "category": "Flavour",
+        "batch_amount": "7.5",
+        "unit": "mg",
+        "source": {
+          "kind": "identity_only",
+          "reference": "Submitted ingredient identity; no supplier nutrient profile supplied. Flavour mixture and carrier composition were not supplied; sugar, energy and nutrient content remain unknown."
+        },
+        "identity_note": "Flavour mixture and carrier composition were not supplied; sugar, energy and nutrient content remain unknown.",
+        "needs_review": true
+      }
+    ],
+    "product_inference": {
+      "name": "Nutrient or medicinal formulation",
+      "confidence": "low",
+      "reason": "The detected profile is led by isolated nutrients or chemical ingredients.",
+      "boundary": "Intended use, dose and label claims are needed for a narrower classification."
+    },
+    "coverage": {
+      "characterized_percent": "89.58340567079395281977208492",
+      "uncharacterized_percent": "10.41659432920604718022791508",
+      "uncharacterized_mass_g": "0.015",
+      "uncharacterized_materials": [
+        {
+          "name": "Mixed fruit essence",
+          "mass_g": "0.0075",
+          "percent": "5.208297164603023590113957542"
+        },
+        {
+          "name": "Saccharin, salt form unspecified",
+          "mass_g": "0.0075",
+          "percent": "5.208297164603023590113957542"
+        }
+      ],
+      "basis": "explicitly quantified formula input mass"
+    },
+    "formula_rows": [
+      {
+        "source_row": 2,
+        "item": "FINISHED BATCH",
+        "submitted_quantity": "15",
+        "submitted_unit": "mL",
+        "quantity": "15",
+        "unit": "ml",
+        "normalized_equivalent": "15 mL",
+        "interpretation": "Final batch basis",
+        "confidence": "exact",
+        "needs_review": false,
+        "alternatives": []
+      },
+      {
+        "source_row": 3,
+        "item": "LYSINE HCL",
+        "submitted_quantity": "25",
+        "submitted_unit": "mg",
+        "quantity": "25",
+        "unit": "mg",
+        "normalized_equivalent": "0.025 g",
+        "interpretation": "Lysine hydrochloride",
+        "material_id": "lysine_hcl_pure_assumed",
+        "confidence": "low",
+        "source": "Pure anhydrous scenario, not a supplier assay. PubChem CID 5962: L-lysine MW 146.19; CID 69568: L-lysine monohydrochloride MW 182.65 g/mol. Chloride atomic weight 35.45.",
+        "identity_note": "Calculation scenario: pure anhydrous L-lysine monohydrochloride, 100% assay. Free lysine = salt mass × 146.19/182.65; chloride = salt mass × 35.45/182.65. Supplier assay/hydrate not verified; lysine is not equated with protein.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Pyridoxine hydrochloride",
+          "Ascorbic acid"
+        ]
+      },
+      {
+        "source_row": 4,
+        "item": "VITAMIN B1",
+        "submitted_quantity": "1",
+        "submitted_unit": "mg",
+        "quantity": "1",
+        "unit": "mg",
+        "normalized_equivalent": "0.001 g",
+        "interpretation": "Vitamin B1, declared active amount",
+        "material_id": "vitamin_b1_declared",
+        "confidence": "low",
+        "source": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.",
+        "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Vitamin B12, declared active amount",
+          "Vitamin B2, declared active amount",
+          "Vitamin B6, declared active amount"
+        ]
+      },
+      {
+        "source_row": 5,
+        "item": "VITAMIN B2",
+        "submitted_quantity": "1",
+        "submitted_unit": "mg",
+        "quantity": "1",
+        "unit": "mg",
+        "normalized_equivalent": "0.001 g",
+        "interpretation": "Vitamin B2, declared active amount",
+        "material_id": "vitamin_b2_declared",
+        "confidence": "low",
+        "source": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.",
+        "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Vitamin B12, declared active amount",
+          "Vitamin B1, declared active amount",
+          "Vitamin B6, declared active amount"
+        ]
+      },
+      {
+        "source_row": 6,
+        "item": "VITAMIN B6",
+        "submitted_quantity": "1",
+        "submitted_unit": "mg",
+        "quantity": "1",
+        "unit": "mg",
+        "normalized_equivalent": "0.001 g",
+        "interpretation": "Vitamin B6, declared active amount",
+        "material_id": "vitamin_b6_declared",
+        "confidence": "low",
+        "source": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.",
+        "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Vitamin B1, declared active amount",
+          "Vitamin B2, declared active amount",
+          "Vitamin B12, declared active amount"
+        ]
+      },
+      {
+        "source_row": 7,
+        "item": "VITAMIN B12",
+        "submitted_quantity": "1",
+        "submitted_unit": "ug",
+        "quantity": "1",
+        "unit": "ug",
+        "normalized_equivalent": "0.000001 g",
+        "interpretation": "Vitamin B12, declared active amount",
+        "material_id": "vitamin_b12_declared",
+        "confidence": "low",
+        "source": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.",
+        "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Vitamin B1, declared active amount",
+          "Vitamin B2, declared active amount",
+          "Vitamin B6, declared active amount"
+        ]
+      },
+      {
+        "source_row": 8,
+        "item": "NIACINAMIDE",
+        "submitted_quantity": "13",
+        "submitted_unit": "mg",
+        "quantity": "13",
+        "unit": "mg",
+        "normalized_equivalent": "0.013 g",
+        "interpretation": "Niacinamide, pure active basis",
+        "material_id": "niacinamide_pure",
+        "confidence": "low",
+        "source": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.",
+        "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Nepazene (likely Nipazine), identity not confirmed",
+          "Sodium methylparaben, assumed from Nepazene",
+          "Benzoic acid"
+        ]
+      },
+      {
+        "source_row": 9,
+        "item": "D-PANTHENOL",
+        "submitted_quantity": "2.5",
+        "submitted_unit": "mg",
+        "quantity": "2.5",
+        "unit": "mg",
+        "normalized_equivalent": "0.0025 g",
+        "interpretation": "D-panthenol",
+        "material_id": "d_panthenol_pure_assumed",
+        "confidence": "low",
+        "source": "SCF 2002: panthenol can be oxidised in vivo to pantothenic acid; pantothenic acid MW 219.23. PubChem CID 131204: D-panthenol MW 205.25. Assumes pure D-isomer and complete 1:1 molar conversion; not a bioavailability claim.",
+        "identity_note": "Calculation scenario: pure D-panthenol, 100% assay. Theoretical pantothenic-acid equivalent = mass × 219.23/205.25 for 1:1 molar oxidation. This is not measured bioavailability or a finished-product assay.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Xanthan gum, assumed 100% dietary fibre",
+          "Propylparaben, assumed from Nepasol"
+        ]
+      },
+      {
+        "source_row": 10,
+        "item": "NEPAZENE",
+        "submitted_quantity": "15",
+        "submitted_unit": "mg",
+        "quantity": "15",
+        "unit": "mg",
+        "normalized_equivalent": "0.015 g",
+        "interpretation": "Sodium methylparaben",
+        "material_id": "sodium_methylparaben_assumed",
+        "confidence": "low",
+        "source": "PubChem CID 23663626 molecular formula and molecular weight; identity assumed",
+        "identity_note": "Leading Nepazene candidate selected for the complete scenario; supplier label or CoA is still required",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Methylparaben",
+          "Paraben preservative blend"
+        ]
+      },
+      {
+        "source_row": 11,
+        "item": "NEPASOL",
+        "submitted_quantity": "6",
+        "submitted_unit": "mg",
+        "quantity": "6",
+        "unit": "mg",
+        "normalized_equivalent": "0.006 g",
+        "interpretation": "Propylparaben, assumed from Nepasol",
+        "material_id": "propylparaben_assumed",
+        "confidence": "low",
+        "source": "Non-nutritive propylparaben scenario",
+        "identity_note": "Nepasol treated as likely Nipasol; public sources conflict between propylparaben and sodium propylparaben, so the sodium salt is not assumed",
+        "profile_version": null,
+        "reusable_profile": false,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Bronopol",
+          "Nepazene (likely Nipazine), identity not confirmed",
+          "D-panthenol"
+        ]
+      },
+      {
+        "source_row": 12,
+        "item": "BRONOPAL",
+        "submitted_quantity": "1.5",
+        "submitted_unit": "mg",
+        "quantity": "1.5",
+        "unit": "mg",
+        "normalized_equivalent": "0.0015 g",
+        "interpretation": "Bronopol",
+        "material_id": "bronopol",
+        "confidence": "medium",
+        "source": "Bronopol treated as non-nutritive",
+        "identity_note": null,
+        "profile_version": null,
+        "reusable_profile": false,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Propylparaben, assumed from Nepasol",
+          "Canola oil",
+          "Food-grade sodium chloride"
+        ]
+      },
+      {
+        "source_row": 13,
+        "item": "SOD BENZ",
+        "submitted_quantity": "45",
+        "submitted_unit": "mg",
+        "quantity": "45",
+        "unit": "mg",
+        "normalized_equivalent": "0.045 g",
+        "interpretation": "Sodium benzoate",
+        "material_id": "sodium_benzoate",
+        "confidence": "exact",
+        "source": "Sodium fraction from sodium benzoate molecular mass",
+        "identity_note": null,
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": false,
+        "unresolved": false,
+        "alternatives": [
+          "Sodium methylparaben, assumed from Nepazene",
+          "Ascorbic acid",
+          "Food-grade sodium chloride"
+        ]
+      },
+      {
+        "source_row": 14,
+        "item": "BENZOIC ACID",
+        "submitted_quantity": "15",
+        "submitted_unit": "mg",
+        "quantity": "15",
+        "unit": "mg",
+        "normalized_equivalent": "0.015 g",
+        "interpretation": "Benzoic acid",
+        "material_id": "benzoic_acid",
+        "confidence": "exact",
+        "source": "Benzoic acid treated as non-nutritive",
+        "identity_note": null,
+        "profile_version": null,
+        "reusable_profile": false,
+        "needs_review": false,
+        "unresolved": false,
+        "alternatives": [
+          "Folic acid, pure",
+          "Ascorbic acid",
+          "Niacinamide, pure active basis"
+        ]
+      },
+      {
+        "source_row": 15,
+        "item": "SACCHRINE",
+        "submitted_quantity": "7.5",
+        "submitted_unit": "mg",
+        "quantity": "7.5",
+        "unit": "mg",
+        "normalized_equivalent": "0.0075 g",
+        "interpretation": "Saccharin, salt form unspecified",
+        "material_id": "saccharin_unspecified",
+        "confidence": "low",
+        "source": "Submitted ingredient identity; no supplier nutrient profile supplied. Confirm saccharin versus sodium saccharin and supplier composition; sodium is not assumed zero.",
+        "identity_note": "Confirm saccharin versus sodium saccharin and supplier composition; sodium is not assumed zero.",
+        "profile_version": null,
+        "reusable_profile": false,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Granulated sugar",
+          "Niacinamide, pure active basis",
+          "Food-grade sodium chloride"
+        ]
+      },
+      {
+        "source_row": 16,
+        "item": "ASPARTUM",
+        "submitted_quantity": "3",
+        "submitted_unit": "mg",
+        "quantity": "3",
+        "unit": "mg",
+        "normalized_equivalent": "0.003 g",
+        "interpretation": "Aspartame",
+        "material_id": "aspartame_pure_assumed",
+        "confidence": "low",
+        "source": "FDA Federal Register 1974-07-26, p.27318: aspartame provides approximately 4 calories per gram. Applied to pure-aspartame scenario; other nutrient data not supplied.",
+        "identity_note": "Calculation scenario: ASPARTUM is pure aspartame, without a carrier. Energy uses approximately 4 kcal/g. Identity and supplier assay are not independently verified.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Aspartum, identity unconfirmed",
+          "Ascorbic acid",
+          "Granulated sugar"
+        ]
+      },
+      {
+        "source_row": 17,
+        "item": "MIXED FRUIT ESSENCE",
+        "submitted_quantity": "7.5",
+        "submitted_unit": "mg",
+        "quantity": "7.5",
+        "unit": "mg",
+        "normalized_equivalent": "0.0075 g",
+        "interpretation": "Mixed fruit essence",
+        "material_id": "mixed_fruit_essence",
+        "confidence": "low",
+        "source": "Submitted ingredient identity; no supplier nutrient profile supplied. Flavour mixture and carrier composition were not supplied; sugar, energy and nutrient content remain unknown.",
+        "identity_note": "Flavour mixture and carrier composition were not supplied; sugar, energy and nutrient content remain unknown.",
+        "profile_version": null,
+        "reusable_profile": false,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Ferric ammonium citrate, brown grade at 19.5% iron",
+          "Niacinamide, pure active basis",
+          "Sodium methylparaben, assumed from Nepazene"
+        ]
+      }
+    ],
+    "label_ingredients": [
+      {
+        "material_id": "sodium_benzoate",
+        "name": "Sodium benzoate",
+        "mass_g": "0.045",
+        "minimum_mass_g": "0.045",
+        "maximum_mass_g": "0.045",
+        "input_mass_percent": "31.24978298761814154068374525",
+        "label_name": "Sodium benzoate"
+      },
+      {
+        "material_id": "lysine_hcl_pure_assumed",
+        "name": "Lysine hydrochloride",
+        "mass_g": "0.025",
+        "minimum_mass_g": "0.025",
+        "maximum_mass_g": "0.025",
+        "input_mass_percent": "17.36099054867674530037985847",
+        "label_name": "Lysine hydrochloride"
+      },
+      {
+        "material_id": "benzoic_acid",
+        "name": "Benzoic acid",
+        "mass_g": "0.015",
+        "minimum_mass_g": "0.015",
+        "maximum_mass_g": "0.015",
+        "input_mass_percent": "10.41659432920604718022791508",
+        "label_name": "Benzoic acid"
+      },
+      {
+        "material_id": "sodium_methylparaben_assumed",
+        "name": "Sodium methylparaben, assumed from Nepazene",
+        "mass_g": "0.015",
+        "minimum_mass_g": "0.015",
+        "maximum_mass_g": "0.015",
+        "input_mass_percent": "10.41659432920604718022791508",
+        "label_name": "Sodium methylparaben"
+      },
+      {
+        "material_id": "niacinamide_pure",
+        "name": "Niacinamide, pure active basis",
+        "mass_g": "0.013",
+        "minimum_mass_g": "0.013",
+        "maximum_mass_g": "0.013",
+        "input_mass_percent": "9.027715085311907556197526406",
+        "label_name": "Niacinamide"
+      },
+      {
+        "material_id": "mixed_fruit_essence",
+        "name": "Mixed fruit essence",
+        "mass_g": "0.0075",
+        "minimum_mass_g": "0.0075",
+        "maximum_mass_g": "0.0075",
+        "input_mass_percent": "5.208297164603023590113957542",
+        "label_name": "Mixed fruit essence"
+      },
+      {
+        "material_id": "saccharin_unspecified",
+        "name": "Saccharin, salt form unspecified",
+        "mass_g": "0.0075",
+        "minimum_mass_g": "0.0075",
+        "maximum_mass_g": "0.0075",
+        "input_mass_percent": "5.208297164603023590113957542",
+        "label_name": "Saccharin"
+      },
+      {
+        "material_id": "propylparaben_assumed",
+        "name": "Propylparaben, assumed from Nepasol",
+        "mass_g": "0.006",
+        "minimum_mass_g": "0.006",
+        "maximum_mass_g": "0.006",
+        "input_mass_percent": "4.166637731682418872091166034",
+        "label_name": "Propylparaben"
+      },
+      {
+        "material_id": "aspartame_pure_assumed",
+        "name": "Aspartame",
+        "mass_g": "0.003",
+        "minimum_mass_g": "0.003",
+        "maximum_mass_g": "0.003",
+        "input_mass_percent": "2.083318865841209436045583017",
+        "label_name": "Aspartame"
+      },
+      {
+        "material_id": "d_panthenol_pure_assumed",
+        "name": "D-panthenol",
+        "mass_g": "0.0025",
+        "minimum_mass_g": "0.0025",
+        "maximum_mass_g": "0.0025",
+        "input_mass_percent": "1.736099054867674530037985847",
+        "label_name": "D-panthenol"
+      },
+      {
+        "material_id": "bronopol",
+        "name": "Bronopol",
+        "mass_g": "0.0015",
+        "minimum_mass_g": "0.0015",
+        "maximum_mass_g": "0.0015",
+        "input_mass_percent": "1.041659432920604718022791508",
+        "label_name": "Bronopol"
+      },
+      {
+        "material_id": "vitamin_b1_declared",
+        "name": "Vitamin B1, declared active amount",
+        "mass_g": "0.001",
+        "minimum_mass_g": "0.001",
+        "maximum_mass_g": "0.001",
+        "input_mass_percent": "0.6944396219470698120151943389",
+        "label_name": "Vitamin B1"
+      },
+      {
+        "material_id": "vitamin_b2_declared",
+        "name": "Vitamin B2, declared active amount",
+        "mass_g": "0.001",
+        "minimum_mass_g": "0.001",
+        "maximum_mass_g": "0.001",
+        "input_mass_percent": "0.6944396219470698120151943389",
+        "label_name": "Vitamin B2"
+      },
+      {
+        "material_id": "vitamin_b6_declared",
+        "name": "Vitamin B6, declared active amount",
+        "mass_g": "0.001",
+        "minimum_mass_g": "0.001",
+        "maximum_mass_g": "0.001",
+        "input_mass_percent": "0.6944396219470698120151943389",
+        "label_name": "Vitamin B6"
+      },
+      {
+        "material_id": "vitamin_b12_declared",
+        "name": "Vitamin B12, declared active amount",
+        "mass_g": "0.000001",
+        "minimum_mass_g": "0.000001",
+        "maximum_mass_g": "0.000001",
+        "input_mass_percent": "0.0006944396219470698120151943389",
+        "label_name": "Vitamin B12"
+      }
+    ],
+    "present_components": [
+      {
+        "id": "energy",
+        "name": "Energy",
+        "value": "0.08",
+        "total_batch": "0.012",
+        "unit": "kcal",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0.08",
+          "upper": null,
+          "unit": "kcal",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0.08 kcal",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 13,
+            "input_material_id": "aspartame_pure_assumed",
+            "input_material_name": "Aspartame",
+            "material_id": "aspartame_pure_assumed",
+            "material_name": "Aspartame",
+            "material_path": [
+              "aspartame_pure_assumed"
+            ],
+            "input_mass_g": "0.003",
+            "minimum_input_mass_g": "0.003",
+            "maximum_input_mass_g": "0.003",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "400",
+            "profile_minimum": "400",
+            "profile_maximum": "400",
+            "profile_unit": "kcal",
+            "total_batch": "0.012",
+            "minimum_total_batch": "0.012",
+            "maximum_total_batch": "0.012",
+            "unit": "kcal",
+            "source": {
+              "kind": "nutrition_reference_assumption",
+              "reference": "FDA Federal Register 1974-07-26, p.27318: aspartame provides approximately 4 calories per gram. Applied to pure-aspartame scenario; other nutrient data not supplied.",
+              "url": "https://www.govinfo.gov/content/pkg/FR-1974-07-26/pdf/FR-1974-07-26.pdf"
+            },
+            "per_100_g": null,
+            "per_100_ml": "0.08",
+            "per_serving": "0.08",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "sodium",
+        "name": "Sodium",
+        "value": "61.0586470338253029345891001",
+        "total_batch": "9.158797055073795440188365015",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "61.0586470338253029345891001",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 61.0586470338253029345891001 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 7,
+            "input_material_id": "sodium_methylparaben_assumed",
+            "input_material_name": "Sodium methylparaben, assumed from Nepazene",
+            "material_id": "sodium_methylparaben_assumed",
+            "material_name": "Sodium methylparaben, assumed from Nepazene",
+            "material_path": [
+              "sodium_methylparaben_assumed"
+            ],
+            "input_mass_g": "0.015",
+            "minimum_input_mass_g": "0.015",
+            "maximum_input_mass_g": "0.015",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "13202.6470338253029345891001",
+            "profile_minimum": "13202.6470338253029345891001",
+            "profile_maximum": "13202.6470338253029345891001",
+            "profile_unit": "mg",
+            "total_batch": "1.980397055073795440188365015",
+            "minimum_total_batch": "1.980397055073795440188365015",
+            "maximum_total_batch": "1.980397055073795440188365015",
+            "unit": "mg",
+            "source": {
+              "kind": "stoichiometric_assumption",
+              "reference": "PubChem CID 23663626 molecular formula and molecular weight; identity assumed"
+            },
+            "per_100_g": null,
+            "per_100_ml": "13.2026470338253029345891001",
+            "per_serving": "13.2026470338253029345891001",
+            "retention_factor": "1"
+          },
+          {
+            "line_index": 10,
+            "input_material_id": "sodium_benzoate",
+            "input_material_name": "Sodium benzoate",
+            "material_id": "sodium_benzoate",
+            "material_name": "Sodium benzoate",
+            "material_path": [
+              "sodium_benzoate"
+            ],
+            "input_mass_g": "0.045",
+            "minimum_input_mass_g": "0.045",
+            "maximum_input_mass_g": "0.045",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "15952",
+            "profile_minimum": "15952",
+            "profile_maximum": "15952",
+            "profile_unit": "mg",
+            "total_batch": "7.1784",
+            "minimum_total_batch": "7.1784",
+            "maximum_total_batch": "7.1784",
+            "unit": "mg",
+            "source": {
+              "kind": "stoichiometric",
+              "reference": "Sodium fraction from sodium benzoate molecular mass"
+            },
+            "per_100_g": null,
+            "per_100_ml": "47.856",
+            "per_serving": "47.856",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "thiamin",
+        "name": "Vitamin B1 (thiamin)",
+        "value": "6.666666666666666666666666667",
+        "total_batch": "1",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "6.666666666666666666666666667",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 6.666666666666666666666666667 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 1,
+            "input_material_id": "vitamin_b1_declared",
+            "input_material_name": "Vitamin B1, declared active amount",
+            "material_id": "vitamin_b1_declared",
+            "material_name": "Vitamin B1, declared active amount",
+            "material_path": [
+              "vitamin_b1_declared"
+            ],
+            "input_mass_g": "0.001",
+            "minimum_input_mass_g": "0.001",
+            "maximum_input_mass_g": "0.001",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "1",
+            "minimum_total_batch": "1",
+            "maximum_total_batch": "1",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+            },
+            "per_100_g": null,
+            "per_100_ml": "6.666666666666666666666666667",
+            "per_serving": "6.666666666666666666666666667",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "riboflavin",
+        "name": "Vitamin B2 (riboflavin)",
+        "value": "6.666666666666666666666666667",
+        "total_batch": "1",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "6.666666666666666666666666667",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 6.666666666666666666666666667 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 2,
+            "input_material_id": "vitamin_b2_declared",
+            "input_material_name": "Vitamin B2, declared active amount",
+            "material_id": "vitamin_b2_declared",
+            "material_name": "Vitamin B2, declared active amount",
+            "material_path": [
+              "vitamin_b2_declared"
+            ],
+            "input_mass_g": "0.001",
+            "minimum_input_mass_g": "0.001",
+            "maximum_input_mass_g": "0.001",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "1",
+            "minimum_total_batch": "1",
+            "maximum_total_batch": "1",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+            },
+            "per_100_g": null,
+            "per_100_ml": "6.666666666666666666666666667",
+            "per_serving": "6.666666666666666666666666667",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "niacin",
+        "name": "Vitamin B3 (niacin)",
+        "value": "86.66666666666666666666666667",
+        "total_batch": "13",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "86.66666666666666666666666667",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 86.66666666666666666666666667 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 5,
+            "input_material_id": "niacinamide_pure",
+            "input_material_name": "Niacinamide, pure active basis",
+            "material_id": "niacinamide_pure",
+            "material_name": "Niacinamide, pure active basis",
+            "material_path": [
+              "niacinamide_pure"
+            ],
+            "input_mass_g": "0.013",
+            "minimum_input_mass_g": "0.013",
+            "maximum_input_mass_g": "0.013",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "13",
+            "minimum_total_batch": "13",
+            "maximum_total_batch": "13",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+            },
+            "per_100_g": null,
+            "per_100_ml": "86.66666666666666666666666667",
+            "per_serving": "86.66666666666666666666666667",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "vitamin_b6",
+        "name": "Vitamin B6",
+        "value": "6.666666666666666666666666667",
+        "total_batch": "1",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "6.666666666666666666666666667",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 6.666666666666666666666666667 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 3,
+            "input_material_id": "vitamin_b6_declared",
+            "input_material_name": "Vitamin B6, declared active amount",
+            "material_id": "vitamin_b6_declared",
+            "material_name": "Vitamin B6, declared active amount",
+            "material_path": [
+              "vitamin_b6_declared"
+            ],
+            "input_mass_g": "0.001",
+            "minimum_input_mass_g": "0.001",
+            "maximum_input_mass_g": "0.001",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "1",
+            "minimum_total_batch": "1",
+            "maximum_total_batch": "1",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+            },
+            "per_100_g": null,
+            "per_100_ml": "6.666666666666666666666666667",
+            "per_serving": "6.666666666666666666666666667",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "vitamin_b12",
+        "name": "Vitamin B12",
+        "value": "6.666666666666666666666666667",
+        "total_batch": "1",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "6.666666666666666666666666667",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 6.666666666666666666666666667 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 4,
+            "input_material_id": "vitamin_b12_declared",
+            "input_material_name": "Vitamin B12, declared active amount",
+            "material_id": "vitamin_b12_declared",
+            "material_name": "Vitamin B12, declared active amount",
+            "material_path": [
+              "vitamin_b12_declared"
+            ],
+            "input_mass_g": "0.000001",
+            "minimum_input_mass_g": "0.000001",
+            "maximum_input_mass_g": "0.000001",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000000",
+            "profile_minimum": "100000000",
+            "profile_maximum": "100000000",
+            "profile_unit": "ug",
+            "total_batch": "1",
+            "minimum_total_batch": "1",
+            "maximum_total_batch": "1",
+            "unit": "ug",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+            },
+            "per_100_g": null,
+            "per_100_ml": "6.666666666666666666666666667",
+            "per_serving": "6.666666666666666666666666667",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "pantothenic_acid",
+        "name": "Vitamin B5 (pantothenic acid equivalent)",
+        "value": "17.8018676410881039382866423",
+        "total_batch": "2.670280146163215590742996345",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "17.8018676410881039382866423",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 17.8018676410881039382866423 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 6,
+            "input_material_id": "d_panthenol_pure_assumed",
+            "input_material_name": "D-panthenol",
+            "material_id": "d_panthenol_pure_assumed",
+            "material_name": "D-panthenol",
+            "material_path": [
+              "d_panthenol_pure_assumed"
+            ],
+            "input_mass_g": "0.0025",
+            "minimum_input_mass_g": "0.0025",
+            "maximum_input_mass_g": "0.0025",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "106811.2058465286236297198538",
+            "profile_minimum": "106811.2058465286236297198538",
+            "profile_maximum": "106811.2058465286236297198538",
+            "profile_unit": "mg",
+            "total_batch": "2.670280146163215590742996345",
+            "minimum_total_batch": "2.670280146163215590742996345",
+            "maximum_total_batch": "2.670280146163215590742996345",
+            "unit": "mg",
+            "source": {
+              "kind": "theoretical_conversion_assumption",
+              "reference": "SCF 2002: panthenol can be oxidised in vivo to pantothenic acid; pantothenic acid MW 219.23. PubChem CID 131204: D-panthenol MW 205.25. Assumes pure D-isomer and complete 1:1 molar conversion; not a bioavailability claim.",
+              "url": "https://food.ec.europa.eu/system/files/2020-12/sci-com_scf_out80k_en.pdf"
+            },
+            "per_100_g": null,
+            "per_100_ml": "17.8018676410881039382866423",
+            "per_serving": "17.8018676410881039382866423",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "lysine",
+        "name": "Lysine",
+        "value": "133.397207774431973720229948",
+        "total_batch": "20.0095811661647960580344922",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "133.397207774431973720229948",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 133.397207774431973720229948 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 0,
+            "input_material_id": "lysine_hcl_pure_assumed",
+            "input_material_name": "Lysine hydrochloride",
+            "material_id": "lysine_hcl_pure_assumed",
+            "material_name": "Lysine hydrochloride",
+            "material_path": [
+              "lysine_hcl_pure_assumed"
+            ],
+            "input_mass_g": "0.025",
+            "minimum_input_mass_g": "0.025",
+            "maximum_input_mass_g": "0.025",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "80038.32466465918423213796879",
+            "profile_minimum": "80038.32466465918423213796879",
+            "profile_maximum": "80038.32466465918423213796879",
+            "profile_unit": "mg",
+            "total_batch": "20.0095811661647960580344922",
+            "minimum_total_batch": "20.0095811661647960580344922",
+            "maximum_total_batch": "20.0095811661647960580344922",
+            "unit": "mg",
+            "source": {
+              "kind": "theoretical_conversion_assumption",
+              "reference": "Pure anhydrous scenario, not a supplier assay. PubChem CID 5962: L-lysine MW 146.19; CID 69568: L-lysine monohydrochloride MW 182.65 g/mol. Chloride atomic weight 35.45.",
+              "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Lysine-hydrochloride"
+            },
+            "per_100_g": null,
+            "per_100_ml": "133.397207774431973720229948",
+            "per_serving": "133.397207774431973720229948",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "chloride",
+        "name": "Chloride",
+        "value": "32.34784195638288164978556439",
+        "total_batch": "4.852176293457432247467834658",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "32.34784195638288164978556439",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 32.34784195638288164978556439 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 0,
+            "input_material_id": "lysine_hcl_pure_assumed",
+            "input_material_name": "Lysine hydrochloride",
+            "material_id": "lysine_hcl_pure_assumed",
+            "material_name": "Lysine hydrochloride",
+            "material_path": [
+              "lysine_hcl_pure_assumed"
+            ],
+            "input_mass_g": "0.025",
+            "minimum_input_mass_g": "0.025",
+            "maximum_input_mass_g": "0.025",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "19408.70517382972898987133863",
+            "profile_minimum": "19408.70517382972898987133863",
+            "profile_maximum": "19408.70517382972898987133863",
+            "profile_unit": "mg",
+            "total_batch": "4.852176293457432247467834658",
+            "minimum_total_batch": "4.852176293457432247467834658",
+            "maximum_total_batch": "4.852176293457432247467834658",
+            "unit": "mg",
+            "source": {
+              "kind": "theoretical_conversion_assumption",
+              "reference": "Pure anhydrous scenario, not a supplier assay. PubChem CID 5962: L-lysine MW 146.19; CID 69568: L-lysine monohydrochloride MW 182.65 g/mol. Chloride atomic weight 35.45.",
+              "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Lysine-hydrochloride"
+            },
+            "per_100_g": null,
+            "per_100_ml": "32.34784195638288164978556439",
+            "per_serving": "32.34784195638288164978556439",
+            "retention_factor": "1"
+          }
+        ]
+      }
+    ],
+    "screened_components": [
+      {
+        "id": "energy",
+        "name": "Energy",
+        "value": "0.08",
+        "total_batch": "0.012",
+        "unit": "kcal",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0.08",
+          "upper": null,
+          "unit": "kcal",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0.08 kcal",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 13,
+            "input_material_id": "aspartame_pure_assumed",
+            "input_material_name": "Aspartame",
+            "material_id": "aspartame_pure_assumed",
+            "material_name": "Aspartame",
+            "material_path": [
+              "aspartame_pure_assumed"
+            ],
+            "input_mass_g": "0.003",
+            "minimum_input_mass_g": "0.003",
+            "maximum_input_mass_g": "0.003",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "400",
+            "profile_minimum": "400",
+            "profile_maximum": "400",
+            "profile_unit": "kcal",
+            "total_batch": "0.012",
+            "minimum_total_batch": "0.012",
+            "maximum_total_batch": "0.012",
+            "unit": "kcal",
+            "source": {
+              "kind": "nutrition_reference_assumption",
+              "reference": "FDA Federal Register 1974-07-26, p.27318: aspartame provides approximately 4 calories per gram. Applied to pure-aspartame scenario; other nutrient data not supplied.",
+              "url": "https://www.govinfo.gov/content/pkg/FR-1974-07-26/pdf/FR-1974-07-26.pdf"
+            },
+            "per_100_g": null,
+            "per_100_ml": "0.08",
+            "per_serving": "0.08",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "protein",
+        "name": "Protein",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "carbohydrate",
+        "name": "Carbohydrate",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "total_sugars",
+        "name": "Total sugars",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "added_sugars",
+        "name": "Added sugars",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "dietary_fibre",
+        "name": "Dietary fibre",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "total_fat",
+        "name": "Total fat",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "saturated_fat",
+        "name": "Saturated fat",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "trans_fat",
+        "name": "Trans fat",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "sodium",
+        "name": "Sodium",
+        "value": "61.0586470338253029345891001",
+        "total_batch": "9.158797055073795440188365015",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "61.0586470338253029345891001",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 61.0586470338253029345891001 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 7,
+            "input_material_id": "sodium_methylparaben_assumed",
+            "input_material_name": "Sodium methylparaben, assumed from Nepazene",
+            "material_id": "sodium_methylparaben_assumed",
+            "material_name": "Sodium methylparaben, assumed from Nepazene",
+            "material_path": [
+              "sodium_methylparaben_assumed"
+            ],
+            "input_mass_g": "0.015",
+            "minimum_input_mass_g": "0.015",
+            "maximum_input_mass_g": "0.015",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "13202.6470338253029345891001",
+            "profile_minimum": "13202.6470338253029345891001",
+            "profile_maximum": "13202.6470338253029345891001",
+            "profile_unit": "mg",
+            "total_batch": "1.980397055073795440188365015",
+            "minimum_total_batch": "1.980397055073795440188365015",
+            "maximum_total_batch": "1.980397055073795440188365015",
+            "unit": "mg",
+            "source": {
+              "kind": "stoichiometric_assumption",
+              "reference": "PubChem CID 23663626 molecular formula and molecular weight; identity assumed"
+            },
+            "per_100_g": null,
+            "per_100_ml": "13.2026470338253029345891001",
+            "per_serving": "13.2026470338253029345891001",
+            "retention_factor": "1"
+          },
+          {
+            "line_index": 10,
+            "input_material_id": "sodium_benzoate",
+            "input_material_name": "Sodium benzoate",
+            "material_id": "sodium_benzoate",
+            "material_name": "Sodium benzoate",
+            "material_path": [
+              "sodium_benzoate"
+            ],
+            "input_mass_g": "0.045",
+            "minimum_input_mass_g": "0.045",
+            "maximum_input_mass_g": "0.045",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "15952",
+            "profile_minimum": "15952",
+            "profile_maximum": "15952",
+            "profile_unit": "mg",
+            "total_batch": "7.1784",
+            "minimum_total_batch": "7.1784",
+            "maximum_total_batch": "7.1784",
+            "unit": "mg",
+            "source": {
+              "kind": "stoichiometric",
+              "reference": "Sodium fraction from sodium benzoate molecular mass"
+            },
+            "per_100_g": null,
+            "per_100_ml": "47.856",
+            "per_serving": "47.856",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "iron",
+        "name": "Iron",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "zinc",
+        "name": "Zinc",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "calcium",
+        "name": "Calcium",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "magnesium",
+        "name": "Magnesium",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "potassium",
+        "name": "Potassium",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "phosphorus",
+        "name": "Phosphorus",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "copper",
+        "name": "Copper",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "manganese",
+        "name": "Manganese",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "selenium",
+        "name": "Selenium",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "vitamin_a_rae",
+        "name": "Vitamin A",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "vitamin_c",
+        "name": "Vitamin C",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "vitamin_d",
+        "name": "Vitamin D",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "vitamin_e",
+        "name": "Vitamin E",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "vitamin_k",
+        "name": "Vitamin K",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "thiamin",
+        "name": "Vitamin B1 (thiamin)",
+        "value": "6.666666666666666666666666667",
+        "total_batch": "1",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "6.666666666666666666666666667",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 6.666666666666666666666666667 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 1,
+            "input_material_id": "vitamin_b1_declared",
+            "input_material_name": "Vitamin B1, declared active amount",
+            "material_id": "vitamin_b1_declared",
+            "material_name": "Vitamin B1, declared active amount",
+            "material_path": [
+              "vitamin_b1_declared"
+            ],
+            "input_mass_g": "0.001",
+            "minimum_input_mass_g": "0.001",
+            "maximum_input_mass_g": "0.001",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "1",
+            "minimum_total_batch": "1",
+            "maximum_total_batch": "1",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+            },
+            "per_100_g": null,
+            "per_100_ml": "6.666666666666666666666666667",
+            "per_serving": "6.666666666666666666666666667",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "riboflavin",
+        "name": "Vitamin B2 (riboflavin)",
+        "value": "6.666666666666666666666666667",
+        "total_batch": "1",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "6.666666666666666666666666667",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 6.666666666666666666666666667 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 2,
+            "input_material_id": "vitamin_b2_declared",
+            "input_material_name": "Vitamin B2, declared active amount",
+            "material_id": "vitamin_b2_declared",
+            "material_name": "Vitamin B2, declared active amount",
+            "material_path": [
+              "vitamin_b2_declared"
+            ],
+            "input_mass_g": "0.001",
+            "minimum_input_mass_g": "0.001",
+            "maximum_input_mass_g": "0.001",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "1",
+            "minimum_total_batch": "1",
+            "maximum_total_batch": "1",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+            },
+            "per_100_g": null,
+            "per_100_ml": "6.666666666666666666666666667",
+            "per_serving": "6.666666666666666666666666667",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "niacin",
+        "name": "Vitamin B3 (niacin)",
+        "value": "86.66666666666666666666666667",
+        "total_batch": "13",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "86.66666666666666666666666667",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 86.66666666666666666666666667 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 5,
+            "input_material_id": "niacinamide_pure",
+            "input_material_name": "Niacinamide, pure active basis",
+            "material_id": "niacinamide_pure",
+            "material_name": "Niacinamide, pure active basis",
+            "material_path": [
+              "niacinamide_pure"
+            ],
+            "input_mass_g": "0.013",
+            "minimum_input_mass_g": "0.013",
+            "maximum_input_mass_g": "0.013",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "13",
+            "minimum_total_batch": "13",
+            "maximum_total_batch": "13",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+            },
+            "per_100_g": null,
+            "per_100_ml": "86.66666666666666666666666667",
+            "per_serving": "86.66666666666666666666666667",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "vitamin_b6",
+        "name": "Vitamin B6",
+        "value": "6.666666666666666666666666667",
+        "total_batch": "1",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "6.666666666666666666666666667",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 6.666666666666666666666666667 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 3,
+            "input_material_id": "vitamin_b6_declared",
+            "input_material_name": "Vitamin B6, declared active amount",
+            "material_id": "vitamin_b6_declared",
+            "material_name": "Vitamin B6, declared active amount",
+            "material_path": [
+              "vitamin_b6_declared"
+            ],
+            "input_mass_g": "0.001",
+            "minimum_input_mass_g": "0.001",
+            "maximum_input_mass_g": "0.001",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "1",
+            "minimum_total_batch": "1",
+            "maximum_total_batch": "1",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+            },
+            "per_100_g": null,
+            "per_100_ml": "6.666666666666666666666666667",
+            "per_serving": "6.666666666666666666666666667",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "folic_acid",
+        "name": "Folic acid",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "vitamin_b12",
+        "name": "Vitamin B12",
+        "value": "6.666666666666666666666666667",
+        "total_batch": "1",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "6.666666666666666666666666667",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 6.666666666666666666666666667 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 4,
+            "input_material_id": "vitamin_b12_declared",
+            "input_material_name": "Vitamin B12, declared active amount",
+            "material_id": "vitamin_b12_declared",
+            "material_name": "Vitamin B12, declared active amount",
+            "material_path": [
+              "vitamin_b12_declared"
+            ],
+            "input_mass_g": "0.000001",
+            "minimum_input_mass_g": "0.000001",
+            "maximum_input_mass_g": "0.000001",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000000",
+            "profile_minimum": "100000000",
+            "profile_maximum": "100000000",
+            "profile_unit": "ug",
+            "total_batch": "1",
+            "minimum_total_batch": "1",
+            "maximum_total_batch": "1",
+            "unit": "ug",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied."
+            },
+            "per_100_g": null,
+            "per_100_ml": "6.666666666666666666666666667",
+            "per_serving": "6.666666666666666666666666667",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "pantothenic_acid",
+        "name": "Vitamin B5 (pantothenic acid equivalent)",
+        "value": "17.8018676410881039382866423",
+        "total_batch": "2.670280146163215590742996345",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "17.8018676410881039382866423",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 17.8018676410881039382866423 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "lysine_hcl_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 6,
+            "input_material_id": "d_panthenol_pure_assumed",
+            "input_material_name": "D-panthenol",
+            "material_id": "d_panthenol_pure_assumed",
+            "material_name": "D-panthenol",
+            "material_path": [
+              "d_panthenol_pure_assumed"
+            ],
+            "input_mass_g": "0.0025",
+            "minimum_input_mass_g": "0.0025",
+            "maximum_input_mass_g": "0.0025",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "106811.2058465286236297198538",
+            "profile_minimum": "106811.2058465286236297198538",
+            "profile_maximum": "106811.2058465286236297198538",
+            "profile_unit": "mg",
+            "total_batch": "2.670280146163215590742996345",
+            "minimum_total_batch": "2.670280146163215590742996345",
+            "maximum_total_batch": "2.670280146163215590742996345",
+            "unit": "mg",
+            "source": {
+              "kind": "theoretical_conversion_assumption",
+              "reference": "SCF 2002: panthenol can be oxidised in vivo to pantothenic acid; pantothenic acid MW 219.23. PubChem CID 131204: D-panthenol MW 205.25. Assumes pure D-isomer and complete 1:1 molar conversion; not a bioavailability claim.",
+              "url": "https://food.ec.europa.eu/system/files/2020-12/sci-com_scf_out80k_en.pdf"
+            },
+            "per_100_g": null,
+            "per_100_ml": "17.8018676410881039382866423",
+            "per_serving": "17.8018676410881039382866423",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "lysine",
+        "name": "Lysine",
+        "value": "133.397207774431973720229948",
+        "total_batch": "20.0095811661647960580344922",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "133.397207774431973720229948",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 133.397207774431973720229948 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 0,
+            "input_material_id": "lysine_hcl_pure_assumed",
+            "input_material_name": "Lysine hydrochloride",
+            "material_id": "lysine_hcl_pure_assumed",
+            "material_name": "Lysine hydrochloride",
+            "material_path": [
+              "lysine_hcl_pure_assumed"
+            ],
+            "input_mass_g": "0.025",
+            "minimum_input_mass_g": "0.025",
+            "maximum_input_mass_g": "0.025",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "80038.32466465918423213796879",
+            "profile_minimum": "80038.32466465918423213796879",
+            "profile_maximum": "80038.32466465918423213796879",
+            "profile_unit": "mg",
+            "total_batch": "20.0095811661647960580344922",
+            "minimum_total_batch": "20.0095811661647960580344922",
+            "maximum_total_batch": "20.0095811661647960580344922",
+            "unit": "mg",
+            "source": {
+              "kind": "theoretical_conversion_assumption",
+              "reference": "Pure anhydrous scenario, not a supplier assay. PubChem CID 5962: L-lysine MW 146.19; CID 69568: L-lysine monohydrochloride MW 182.65 g/mol. Chloride atomic weight 35.45.",
+              "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Lysine-hydrochloride"
+            },
+            "per_100_g": null,
+            "per_100_ml": "133.397207774431973720229948",
+            "per_serving": "133.397207774431973720229948",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "chloride",
+        "name": "Chloride",
+        "value": "32.34784195638288164978556439",
+        "total_batch": "4.852176293457432247467834658",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "32.34784195638288164978556439",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 32.34784195638288164978556439 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "aspartame_pure_assumed",
+          "d_panthenol_pure_assumed",
+          "mixed_fruit_essence",
+          "saccharin_unspecified"
+        ],
+        "contributions": [
+          {
+            "line_index": 0,
+            "input_material_id": "lysine_hcl_pure_assumed",
+            "input_material_name": "Lysine hydrochloride",
+            "material_id": "lysine_hcl_pure_assumed",
+            "material_name": "Lysine hydrochloride",
+            "material_path": [
+              "lysine_hcl_pure_assumed"
+            ],
+            "input_mass_g": "0.025",
+            "minimum_input_mass_g": "0.025",
+            "maximum_input_mass_g": "0.025",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "19408.70517382972898987133863",
+            "profile_minimum": "19408.70517382972898987133863",
+            "profile_maximum": "19408.70517382972898987133863",
+            "profile_unit": "mg",
+            "total_batch": "4.852176293457432247467834658",
+            "minimum_total_batch": "4.852176293457432247467834658",
+            "maximum_total_batch": "4.852176293457432247467834658",
+            "unit": "mg",
+            "source": {
+              "kind": "theoretical_conversion_assumption",
+              "reference": "Pure anhydrous scenario, not a supplier assay. PubChem CID 5962: L-lysine MW 146.19; CID 69568: L-lysine monohydrochloride MW 182.65 g/mol. Chloride atomic weight 35.45.",
+              "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Lysine-hydrochloride"
+            },
+            "per_100_g": null,
+            "per_100_ml": "32.34784195638288164978556439",
+            "per_serving": "32.34784195638288164978556439",
+            "retention_factor": "1"
+          }
+        ]
+      }
+    ],
+    "ingredient_assumptions": [
+      {
+        "query": "LYSINE HCL",
+        "selected_material_id": "lysine_hcl_pure_assumed",
+        "selected_name": "Lysine hydrochloride",
+        "matched_term": "lysine HCl",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "Calculation scenario: pure anhydrous L-lysine monohydrochloride, 100% assay. Free lysine = salt mass × 146.19/182.65; chloride = salt mass × 35.45/182.65. Supplier assay/hydrate not verified; lysine is not equated with protein.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='LYSINE HCL'",
+        "alternatives": [
+          {
+            "material_id": "lysine_hcl_unassayed",
+            "name": "Lysine hydrochloride",
+            "matched_term": "Lysine hydrochloride",
+            "score": 0.666667,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "pyridoxine_hydrochloride",
+            "name": "Pyridoxine hydrochloride",
+            "matched_term": "pyridoxine HCl",
+            "score": 0.666667,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "ascorbic_acid",
+            "name": "Ascorbic acid",
+            "matched_term": "vitamin C",
+            "score": 0.421053,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 0
+      },
+      {
+        "query": "VITAMIN B1",
+        "selected_material_id": "vitamin_b1_declared",
+        "selected_name": "Vitamin B1, declared active amount",
+        "matched_term": "vitamin B1",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='VITAMIN B1'",
+        "alternatives": [
+          {
+            "material_id": "vitamin_b12_declared",
+            "name": "Vitamin B12, declared active amount",
+            "matched_term": "vitamin B12",
+            "score": 0.952381,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "vitamin_b2_declared",
+            "name": "Vitamin B2, declared active amount",
+            "matched_term": "vitamin B2",
+            "score": 0.9,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "vitamin_b6_declared",
+            "name": "Vitamin B6, declared active amount",
+            "matched_term": "vitamin B6",
+            "score": 0.9,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 1
+      },
+      {
+        "query": "VITAMIN B2",
+        "selected_material_id": "vitamin_b2_declared",
+        "selected_name": "Vitamin B2, declared active amount",
+        "matched_term": "vitamin B2",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='VITAMIN B2'",
+        "alternatives": [
+          {
+            "material_id": "vitamin_b12_declared",
+            "name": "Vitamin B12, declared active amount",
+            "matched_term": "vitamin B12",
+            "score": 0.952381,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "vitamin_b1_declared",
+            "name": "Vitamin B1, declared active amount",
+            "matched_term": "vitamin B1",
+            "score": 0.9,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "vitamin_b6_declared",
+            "name": "Vitamin B6, declared active amount",
+            "matched_term": "vitamin B6",
+            "score": 0.9,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 2
+      },
+      {
+        "query": "VITAMIN B6",
+        "selected_material_id": "vitamin_b6_declared",
+        "selected_name": "Vitamin B6, declared active amount",
+        "matched_term": "vitamin B6",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='VITAMIN B6'",
+        "alternatives": [
+          {
+            "material_id": "vitamin_b1_declared",
+            "name": "Vitamin B1, declared active amount",
+            "matched_term": "vitamin B1",
+            "score": 0.9,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "vitamin_b2_declared",
+            "name": "Vitamin B2, declared active amount",
+            "matched_term": "vitamin B2",
+            "score": 0.9,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "vitamin_b12_declared",
+            "name": "Vitamin B12, declared active amount",
+            "matched_term": "vitamin B12",
+            "score": 0.857143,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 3
+      },
+      {
+        "query": "VITAMIN B12",
+        "selected_material_id": "vitamin_b12_declared",
+        "selected_name": "Vitamin B12, declared active amount",
+        "matched_term": "vitamin B12",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='VITAMIN B12'",
+        "alternatives": [
+          {
+            "material_id": "vitamin_b1_declared",
+            "name": "Vitamin B1, declared active amount",
+            "matched_term": "vitamin B1",
+            "score": 0.952381,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "vitamin_b2_declared",
+            "name": "Vitamin B2, declared active amount",
+            "matched_term": "vitamin B2",
+            "score": 0.952381,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "vitamin_b6_declared",
+            "name": "Vitamin B6, declared active amount",
+            "matched_term": "vitamin B6",
+            "score": 0.857143,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 4
+      },
+      {
+        "query": "NIACINAMIDE",
+        "selected_material_id": "niacinamide_pure",
+        "selected_name": "Niacinamide, pure active basis",
+        "matched_term": "niacinamide",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='NIACINAMIDE'",
+        "alternatives": [
+          {
+            "material_id": "nepazene_unresolved",
+            "name": "Nepazene (likely Nipazine), identity not confirmed",
+            "matched_term": "Nipazine",
+            "score": 0.631579,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "sodium_methylparaben_assumed",
+            "name": "Sodium methylparaben, assumed from Nepazene",
+            "matched_term": "Nipazine",
+            "score": 0.631579,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "benzoic_acid",
+            "name": "Benzoic acid",
+            "matched_term": "Benzoic acid",
+            "score": 0.521739,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 5
+      },
+      {
+        "query": "D-PANTHENOL",
+        "selected_material_id": "d_panthenol_pure_assumed",
+        "selected_name": "D-panthenol",
+        "matched_term": "D-panthenol",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "Calculation scenario: pure D-panthenol, 100% assay. Theoretical pantothenic-acid equivalent = mass × 219.23/205.25 for 1:1 molar oxidation. This is not measured bioavailability or a finished-product assay.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='D-PANTHENOL'",
+        "alternatives": [
+          {
+            "material_id": "d_panthenol_unassayed",
+            "name": "D-panthenol",
+            "matched_term": "D-panthenol",
+            "score": 1,
+            "match_type": "exact"
+          },
+          {
+            "material_id": "xanthan_gum_fibre_assumed",
+            "name": "Xanthan gum, assumed 100% dietary fibre",
+            "matched_term": "xanthan gum",
+            "score": 0.454545,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "propylparaben_assumed",
+            "name": "Propylparaben, assumed from Nepasol",
+            "matched_term": "Nepasol",
+            "score": 0.444444,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 6
+      },
+      {
+        "query": "NEPASOL",
+        "selected_material_id": "propylparaben_assumed",
+        "selected_name": "Propylparaben, assumed from Nepasol",
+        "matched_term": "Nepasol",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "Nepasol treated as likely Nipasol; public sources conflict between propylparaben and sodium propylparaben, so the sodium salt is not assumed",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='NEPASOL'",
+        "alternatives": [
+          {
+            "material_id": "bronopol",
+            "name": "Bronopol",
+            "matched_term": "Bronopol",
+            "score": 0.533333,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "nepazene_unresolved",
+            "name": "Nepazene (likely Nipazine), identity not confirmed",
+            "matched_term": "Nepazene",
+            "score": 0.533333,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "d_panthenol_pure_assumed",
+            "name": "D-panthenol",
+            "matched_term": "dexpanthenol",
+            "score": 0.526316,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 8
+      },
+      {
+        "query": "BRONOPAL",
+        "selected_material_id": "bronopol",
+        "selected_name": "Bronopol",
+        "matched_term": "Bronopol",
+        "score": "0.875000",
+        "confidence": "medium",
+        "identity_status": "verified",
+        "identity_note": null,
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='BRONOPAL'",
+        "alternatives": [
+          {
+            "material_id": "propylparaben_assumed",
+            "name": "Propylparaben, assumed from Nepasol",
+            "matched_term": "Nepasol",
+            "score": 0.533333,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "canola_oil",
+            "name": "Canola oil",
+            "matched_term": "Canola oil",
+            "score": 0.444444,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "sodium_chloride_food_grade",
+            "name": "Food-grade sodium chloride",
+            "matched_term": "common salt",
+            "score": 0.421053,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 9
+      },
+      {
+        "query": "SOD BENZ",
+        "selected_material_id": "sodium_benzoate",
+        "selected_name": "Sodium benzoate",
+        "matched_term": "sod benz",
+        "score": "1.000000",
+        "confidence": "exact",
+        "identity_status": "verified",
+        "identity_note": null,
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='SOD BENZ'",
+        "alternatives": [
+          {
+            "material_id": "sodium_methylparaben_assumed",
+            "name": "Sodium methylparaben, assumed from Nepazene",
+            "matched_term": "sodium methylparaben",
+            "score": 0.5,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "ascorbic_acid",
+            "name": "Ascorbic acid",
+            "matched_term": "ascorbate",
+            "score": 0.470588,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "sodium_chloride_food_grade",
+            "name": "Food-grade sodium chloride",
+            "matched_term": "sodium chloride",
+            "score": 0.434783,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 10
+      },
+      {
+        "query": "BENZOIC ACID",
+        "selected_material_id": "benzoic_acid",
+        "selected_name": "Benzoic acid",
+        "matched_term": "Benzoic acid",
+        "score": "1.000000",
+        "confidence": "exact",
+        "identity_status": "verified",
+        "identity_note": null,
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='BENZOIC ACID'",
+        "alternatives": [
+          {
+            "material_id": "folic_acid_pure",
+            "name": "Folic acid, pure",
+            "matched_term": "folic acid",
+            "score": 0.727273,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "ascorbic_acid",
+            "name": "Ascorbic acid",
+            "matched_term": "Ascorbic acid",
+            "score": 0.64,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "niacinamide_pure",
+            "name": "Niacinamide, pure active basis",
+            "matched_term": "niacinamide",
+            "score": 0.521739,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 11
+      },
+      {
+        "query": "SACCHRINE",
+        "selected_material_id": "saccharin_unspecified",
+        "selected_name": "Saccharin, salt form unspecified",
+        "matched_term": "sacchrine",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "unresolved",
+        "identity_note": "Confirm saccharin versus sodium saccharin and supplier composition; sodium is not assumed zero.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='SACCHRINE'",
+        "alternatives": [
+          {
+            "material_id": "granulated_sugar",
+            "name": "Granulated sugar",
+            "matched_term": "sucrose",
+            "score": 0.5,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "niacinamide_pure",
+            "name": "Niacinamide, pure active basis",
+            "matched_term": "niacinamide",
+            "score": 0.5,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "sodium_chloride_food_grade",
+            "name": "Food-grade sodium chloride",
+            "matched_term": "sodium chloride",
+            "score": 0.5,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 12
+      },
+      {
+        "query": "ASPARTUM",
+        "selected_material_id": "aspartame_pure_assumed",
+        "selected_name": "Aspartame",
+        "matched_term": "aspartum",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "Calculation scenario: ASPARTUM is pure aspartame, without a carrier. Energy uses approximately 4 kcal/g. Identity and supplier assay are not independently verified.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='ASPARTUM'",
+        "alternatives": [
+          {
+            "material_id": "aspartum_unresolved",
+            "name": "Aspartum, identity unconfirmed",
+            "matched_term": "Aspartum, identity unconfirmed",
+            "score": 0.511261,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "ascorbic_acid",
+            "name": "Ascorbic acid",
+            "matched_term": "ascorbate",
+            "score": 0.470588,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "granulated_sugar",
+            "name": "Granulated sugar",
+            "matched_term": "sugar",
+            "score": 0.461538,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 13
+      },
+      {
+        "query": "MIXED FRUIT ESSENCE",
+        "selected_material_id": "mixed_fruit_essence",
+        "selected_name": "Mixed fruit essence",
+        "matched_term": "Mixed fruit essence",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "unresolved",
+        "identity_note": "Flavour mixture and carrier composition were not supplied; sugar, energy and nutrient content remain unknown.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='MIXED FRUIT ESSENCE'",
+        "alternatives": [
+          {
+            "material_id": "ferric_ammonium_citrate_brown_mid",
+            "name": "Ferric ammonium citrate, brown grade at 19.5% iron",
+            "matched_term": "ammonium ferric citrate",
+            "score": 0.380952,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "niacinamide_pure",
+            "name": "Niacinamide, pure active basis",
+            "matched_term": "Niacinamide, pure active basis",
+            "score": 0.375,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "sodium_methylparaben_assumed",
+            "name": "Sodium methylparaben, assumed from Nepazene",
+            "matched_term": "Sodium methylparaben, assumed from Nepazene",
+            "score": 0.360656,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 14
+      },
+      {
+        "line_index": 7,
+        "query": "NEPAZENE",
+        "selected_material_id": "sodium_methylparaben_assumed",
+        "selected_name": "Sodium methylparaben",
+        "confidence": "low",
+        "score": "0.600000",
+        "reason": "First-ranked interpretation of the submitted trade name",
+        "alternatives": [
+          "Methylparaben",
+          "Paraben preservative blend"
+        ],
+        "correction": "Confirm this identity or select a different candidate"
+      }
+    ],
+    "report_assumptions": [
+      "Values are theoretical per 100 mL from the uploaded final-batch quantity.",
+      "Ingredient identities are selected from the current local catalog; review every non-exact match.",
+      "Only non-zero components are shown; screened zero fields remain in the analysis data.",
+      "Supplier specifications, lot assays, actual yield and process retention were not supplied unless stated."
+    ],
+    "missing_information": [
+      {
+        "item": "D-panthenol",
+        "needed": "Confirm D-isomer, purity/assay and carrier or dilution. B5 is a theoretical equivalent; request the supplier macro composition.",
+        "affects": [
+          "Added sugars",
+          "Calcium",
+          "Carbohydrate",
+          "Chloride",
+          "Copper",
+          "Dietary fibre",
+          "Energy",
+          "Folic acid",
+          "Iron",
+          "Lysine",
+          "Magnesium",
+          "Manganese",
+          "Phosphorus",
+          "Potassium",
+          "Protein",
+          "Saturated fat",
+          "Selenium",
+          "Sodium",
+          "Total fat",
+          "Total sugars",
+          "Trans fat",
+          "Vitamin A",
+          "Vitamin B1 (thiamin)",
+          "Vitamin B12",
+          "Vitamin B2 (riboflavin)",
+          "Vitamin B3 (niacin)",
+          "Vitamin B6",
+          "Vitamin C",
+          "Vitamin D",
+          "Vitamin E",
+          "Vitamin K",
+          "Zinc"
+        ]
+      },
+      {
+        "item": "Lysine hydrochloride",
+        "needed": "Confirm anhydrous monohydrochloride versus hydrate, purity/assay and the supplier nutrition profile. The lysine conversion is a pure-ingredient assumption; protein and energy remain unresolved.",
+        "affects": [
+          "Added sugars",
+          "Calcium",
+          "Carbohydrate",
+          "Copper",
+          "Dietary fibre",
+          "Energy",
+          "Folic acid",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Phosphorus",
+          "Potassium",
+          "Protein",
+          "Saturated fat",
+          "Selenium",
+          "Sodium",
+          "Total fat",
+          "Total sugars",
+          "Trans fat",
+          "Vitamin A",
+          "Vitamin B1 (thiamin)",
+          "Vitamin B12",
+          "Vitamin B2 (riboflavin)",
+          "Vitamin B3 (niacin)",
+          "Vitamin B5 (pantothenic acid equivalent)",
+          "Vitamin B6",
+          "Vitamin C",
+          "Vitamin D",
+          "Vitamin E",
+          "Vitamin K",
+          "Zinc"
+        ]
+      },
+      {
+        "item": "Mixed fruit essence",
+        "needed": "Flavour mixture and carrier composition were not supplied; sugar, energy and nutrient content remain unknown.",
+        "affects": [
+          "Added sugars",
+          "Calcium",
+          "Carbohydrate",
+          "Chloride",
+          "Copper",
+          "Dietary fibre",
+          "Energy",
+          "Folic acid",
+          "Iron",
+          "Lysine",
+          "Magnesium",
+          "Manganese",
+          "Phosphorus",
+          "Potassium",
+          "Protein",
+          "Saturated fat",
+          "Selenium",
+          "Sodium",
+          "Total fat",
+          "Total sugars",
+          "Trans fat",
+          "Vitamin A",
+          "Vitamin B1 (thiamin)",
+          "Vitamin B12",
+          "Vitamin B2 (riboflavin)",
+          "Vitamin B3 (niacin)",
+          "Vitamin B5 (pantothenic acid equivalent)",
+          "Vitamin B6",
+          "Vitamin C",
+          "Vitamin D",
+          "Vitamin E",
+          "Vitamin K",
+          "Zinc"
+        ]
+      },
+      {
+        "item": "Saccharin, salt form unspecified",
+        "needed": "Confirm saccharin versus sodium saccharin and supplier composition; sodium is not assumed zero.",
+        "affects": [
+          "Added sugars",
+          "Calcium",
+          "Carbohydrate",
+          "Chloride",
+          "Copper",
+          "Dietary fibre",
+          "Energy",
+          "Folic acid",
+          "Iron",
+          "Lysine",
+          "Magnesium",
+          "Manganese",
+          "Phosphorus",
+          "Potassium",
+          "Protein",
+          "Saturated fat",
+          "Selenium",
+          "Sodium",
+          "Total fat",
+          "Total sugars",
+          "Trans fat",
+          "Vitamin A",
+          "Vitamin B1 (thiamin)",
+          "Vitamin B12",
+          "Vitamin B2 (riboflavin)",
+          "Vitamin B3 (niacin)",
+          "Vitamin B5 (pantothenic acid equivalent)",
+          "Vitamin B6",
+          "Vitamin C",
+          "Vitamin D",
+          "Vitamin E",
+          "Vitamin K",
+          "Zinc"
+        ]
+      },
+      {
+        "item": "Aspartame",
+        "needed": "Confirm ASPARTUM means aspartame, its purity and any carrier. Only the pure-aspartame energy contribution is calculated; request the complete nutrition profile.",
+        "affects": [
+          "Added sugars",
+          "Calcium",
+          "Carbohydrate",
+          "Chloride",
+          "Copper",
+          "Dietary fibre",
+          "Folic acid",
+          "Iron",
+          "Lysine",
+          "Magnesium",
+          "Manganese",
+          "Phosphorus",
+          "Potassium",
+          "Protein",
+          "Saturated fat",
+          "Selenium",
+          "Sodium",
+          "Total fat",
+          "Total sugars",
+          "Trans fat",
+          "Vitamin A",
+          "Vitamin B1 (thiamin)",
+          "Vitamin B12",
+          "Vitamin B2 (riboflavin)",
+          "Vitamin B3 (niacin)",
+          "Vitamin B5 (pantothenic acid equivalent)",
+          "Vitamin B6",
+          "Vitamin C",
+          "Vitamin D",
+          "Vitamin E",
+          "Vitamin K",
+          "Zinc"
+        ]
+      }
+    ],
+    "warnings": [
+      "13 ingredient identities require review",
+      "11 ingredient match(es) have low confidence; review assumptions",
+      "Per-100-g and mass-yield values are unavailable without final density"
+    ],
+    "input_basis": "dose"
+  },
+  "labelReview": {
+    "signature": "[\"per 100 mL\",\"15\",\"64595645dbb252cfc291a7ac6935aa10b84af3037b225cd6e69b476648be32ef\",[\"[\\\"finished batch\\\",null,\\\"Final batch basis\\\",\\\"15\\\",\\\"mL\\\",null,null,null]\",\"[\\\"lysine hcl\\\",\\\"lysine_hcl_pure_assumed\\\",\\\"Lysine hydrochloride\\\",\\\"25\\\",\\\"mg\\\",null,\\\"Pure anhydrous scenario, not a supplier assay. PubChem CID 5962: L-lysine MW 146.19; CID 69568: L-lysine monohydrochloride MW 182.65 g/mol. Chloride atomic weight 35.45.\\\",\\\"Calculation scenario: pure anhydrous L-lysine monohydrochloride, 100% assay. Free lysine = salt mass × 146.19/182.65; chloride = salt mass × 35.45/182.65. Supplier assay/hydrate not verified; lysine is not equated with protein.\\\"]\",\"[\\\"vitamin b1\\\",\\\"vitamin_b1_declared\\\",\\\"Vitamin B1, declared active amount\\\",\\\"1\\\",\\\"mg\\\",null,\\\"Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.\\\",\\\"The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.\\\"]\",\"[\\\"vitamin b2\\\",\\\"vitamin_b2_declared\\\",\\\"Vitamin B2, declared active amount\\\",\\\"1\\\",\\\"mg\\\",null,\\\"Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.\\\",\\\"The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.\\\"]\",\"[\\\"vitamin b6\\\",\\\"vitamin_b6_declared\\\",\\\"Vitamin B6, declared active amount\\\",\\\"1\\\",\\\"mg\\\",null,\\\"Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.\\\",\\\"The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.\\\"]\",\"[\\\"vitamin b12\\\",\\\"vitamin_b12_declared\\\",\\\"Vitamin B12, declared active amount\\\",\\\"1\\\",\\\"ug\\\",null,\\\"Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.\\\",\\\"The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.\\\"]\",\"[\\\"niacinamide\\\",\\\"niacinamide_pure\\\",\\\"Niacinamide, pure active basis\\\",\\\"13\\\",\\\"mg\\\",null,\\\"Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.\\\",\\\"The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.\\\"]\",\"[\\\"d-panthenol\\\",\\\"d_panthenol_pure_assumed\\\",\\\"D-panthenol\\\",\\\"2.5\\\",\\\"mg\\\",null,\\\"SCF 2002: panthenol can be oxidised in vivo to pantothenic acid; pantothenic acid MW 219.23. PubChem CID 131204: D-panthenol MW 205.25. Assumes pure D-isomer and complete 1:1 molar conversion; not a bioavailability claim.\\\",\\\"Calculation scenario: pure D-panthenol, 100% assay. Theoretical pantothenic-acid equivalent = mass × 219.23/205.25 for 1:1 molar oxidation. This is not measured bioavailability or a finished-product assay.\\\"]\",\"[\\\"nepazene\\\",\\\"sodium_methylparaben_assumed\\\",\\\"Sodium methylparaben\\\",\\\"15\\\",\\\"mg\\\",null,\\\"PubChem CID 23663626 molecular formula and molecular weight; identity assumed\\\",\\\"Leading Nepazene candidate selected for the complete scenario; supplier label or CoA is still required\\\"]\",\"[\\\"nepasol\\\",\\\"propylparaben_assumed\\\",\\\"Propylparaben, assumed from Nepasol\\\",\\\"6\\\",\\\"mg\\\",null,\\\"Non-nutritive propylparaben scenario\\\",\\\"Nepasol treated as likely Nipasol; public sources conflict between propylparaben and sodium propylparaben, so the sodium salt is not assumed\\\"]\",\"[\\\"bronopal\\\",\\\"bronopol\\\",\\\"Bronopol\\\",\\\"1.5\\\",\\\"mg\\\",null,\\\"Bronopol treated as non-nutritive\\\",null]\",\"[\\\"sod benz\\\",\\\"sodium_benzoate\\\",\\\"Sodium benzoate\\\",\\\"45\\\",\\\"mg\\\",null,\\\"Sodium fraction from sodium benzoate molecular mass\\\",null]\",\"[\\\"benzoic acid\\\",\\\"benzoic_acid\\\",\\\"Benzoic acid\\\",\\\"15\\\",\\\"mg\\\",null,\\\"Benzoic acid treated as non-nutritive\\\",null]\",\"[\\\"sacchrine\\\",\\\"saccharin_unspecified\\\",\\\"Saccharin, salt form unspecified\\\",\\\"7.5\\\",\\\"mg\\\",null,\\\"Submitted ingredient identity; no supplier nutrient profile supplied. Confirm saccharin versus sodium saccharin and supplier composition; sodium is not assumed zero.\\\",\\\"Confirm saccharin versus sodium saccharin and supplier composition; sodium is not assumed zero.\\\"]\",\"[\\\"aspartum\\\",\\\"aspartame_pure_assumed\\\",\\\"Aspartame\\\",\\\"3\\\",\\\"mg\\\",null,\\\"FDA Federal Register 1974-07-26, p.27318: aspartame provides approximately 4 calories per gram. Applied to pure-aspartame scenario; other nutrient data not supplied.\\\",\\\"Calculation scenario: ASPARTUM is pure aspartame, without a carrier. Energy uses approximately 4 kcal/g. Identity and supplier assay are not independently verified.\\\"]\",\"[\\\"mixed fruit essence\\\",\\\"mixed_fruit_essence\\\",\\\"Mixed fruit essence\\\",\\\"7.5\\\",\\\"mg\\\",null,\\\"Submitted ingredient identity; no supplier nutrient profile supplied. Flavour mixture and carrier composition were not supplied; sugar, energy and nutrient content remain unknown.\\\",\\\"Flavour mixture and carrier composition were not supplied; sugar, energy and nutrient content remain unknown.\\\"]\"]]",
+    "productName": "B vitamins & lysine",
+    "servingSize": "15",
+    "servingsPerPack": "",
+    "amountBasis": "serving",
+    "waterBase": true,
+    "assumptionEstimate": true,
+    "productDetails": {
+      "description": "",
+      "category": "",
+      "netQuantity": "",
+      "intendedUsers": "",
+      "usage": "",
+      "duration": "",
+      "directions": "",
+      "storage": "",
+      "cautions": "",
+      "sweetenerDeclaration": "",
+      "allergens": "",
+      "allergenText": "",
+      "dietaryStatus": "",
+      "batchNumber": "",
+      "manufactureDate": "",
+      "expiryDate": "",
+      "mrp": "",
+      "licenceNumber": "",
+      "barcode": ""
+    },
+    "confirmedIdentities": [
+      "[\"lysine hcl\",\"lysine_hcl_pure_assumed\",\"Lysine hydrochloride\",\"25\",\"mg\",null,\"Pure anhydrous scenario, not a supplier assay. PubChem CID 5962: L-lysine MW 146.19; CID 69568: L-lysine monohydrochloride MW 182.65 g/mol. Chloride atomic weight 35.45.\",\"Calculation scenario: pure anhydrous L-lysine monohydrochloride, 100% assay. Free lysine = salt mass × 146.19/182.65; chloride = salt mass × 35.45/182.65. Supplier assay/hydrate not verified; lysine is not equated with protein.\"]",
+      "[\"vitamin b1\",\"vitamin_b1_declared\",\"Vitamin B1, declared active amount\",\"1\",\"mg\",null,\"Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.\",\"The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.\"]",
+      "[\"vitamin b2\",\"vitamin_b2_declared\",\"Vitamin B2, declared active amount\",\"1\",\"mg\",null,\"Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.\",\"The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.\"]",
+      "[\"vitamin b6\",\"vitamin_b6_declared\",\"Vitamin B6, declared active amount\",\"1\",\"mg\",null,\"Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.\",\"The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.\"]",
+      "[\"vitamin b12\",\"vitamin_b12_declared\",\"Vitamin B12, declared active amount\",\"1\",\"ug\",null,\"Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.\",\"The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.\"]",
+      "[\"niacinamide\",\"niacinamide_pure\",\"Niacinamide, pure active basis\",\"13\",\"mg\",null,\"Entered vitamin amount treated as active nutrient amount for a declared-active scenario; form, dilution and lot assay not supplied.\",\"The listed quantity is treated as active vitamin amount. Chemical form, dilution and supplier assay must be confirmed.\"]",
+      "[\"d-panthenol\",\"d_panthenol_pure_assumed\",\"D-panthenol\",\"2.5\",\"mg\",null,\"SCF 2002: panthenol can be oxidised in vivo to pantothenic acid; pantothenic acid MW 219.23. PubChem CID 131204: D-panthenol MW 205.25. Assumes pure D-isomer and complete 1:1 molar conversion; not a bioavailability claim.\",\"Calculation scenario: pure D-panthenol, 100% assay. Theoretical pantothenic-acid equivalent = mass × 219.23/205.25 for 1:1 molar oxidation. This is not measured bioavailability or a finished-product assay.\"]",
+      "[\"nepazene\",\"sodium_methylparaben_assumed\",\"Sodium methylparaben\",\"15\",\"mg\",null,\"PubChem CID 23663626 molecular formula and molecular weight; identity assumed\",\"Leading Nepazene candidate selected for the complete scenario; supplier label or CoA is still required\"]",
+      "[\"nepasol\",\"propylparaben_assumed\",\"Propylparaben, assumed from Nepasol\",\"6\",\"mg\",null,\"Non-nutritive propylparaben scenario\",\"Nepasol treated as likely Nipasol; public sources conflict between propylparaben and sodium propylparaben, so the sodium salt is not assumed\"]",
+      "[\"bronopal\",\"bronopol\",\"Bronopol\",\"1.5\",\"mg\",null,\"Bronopol treated as non-nutritive\",null]",
+      "[\"sacchrine\",\"saccharin_unspecified\",\"Saccharin, salt form unspecified\",\"7.5\",\"mg\",null,\"Submitted ingredient identity; no supplier nutrient profile supplied. Confirm saccharin versus sodium saccharin and supplier composition; sodium is not assumed zero.\",\"Confirm saccharin versus sodium saccharin and supplier composition; sodium is not assumed zero.\"]",
+      "[\"aspartum\",\"aspartame_pure_assumed\",\"Aspartame\",\"3\",\"mg\",null,\"FDA Federal Register 1974-07-26, p.27318: aspartame provides approximately 4 calories per gram. Applied to pure-aspartame scenario; other nutrient data not supplied.\",\"Calculation scenario: ASPARTUM is pure aspartame, without a carrier. Energy uses approximately 4 kcal/g. Identity and supplier assay are not independently verified.\"]",
+      "[\"mixed fruit essence\",\"mixed_fruit_essence\",\"Mixed fruit essence\",\"7.5\",\"mg\",null,\"Submitted ingredient identity; no supplier nutrient profile supplied. Flavour mixture and carrier composition were not supplied; sugar, energy and nutrient content remain unknown.\",\"Flavour mixture and carrier composition were not supplied; sugar, energy and nutrient content remain unknown.\"]"
+    ],
+    "inputBasis": "dose"
+  }
+}

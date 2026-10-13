@@ -894,6 +894,28 @@ h1 {
   gap: 10px;
 }
 
+.saved-product-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.saved-product-note {
+  margin-top: 16px;
+  font-size: 13px;
+}
+
+.recent-formulas-panel + .recent-formulas-panel {
+  margin-top: 20px;
+}
+
+@media (max-width: 760px) {
+  .saved-product-actions { width: 100%; }
+  .saved-product-actions a { flex: 1; text-align: center; }
+  #published-products-list .recent-formula-card { flex-direction: column; align-items: stretch; }
+}
+
 .recent-formula-card {
   padding: 18px;
   border: 1px solid var(--line);
@@ -1402,7 +1424,8 @@ td[data-label="Converted to"] {
   text-transform: uppercase;
 }
 
-.label-options input {
+.label-options input,
+.label-options select {
   width: 100%;
   min-height: 40px;
   padding: 0 10px;
@@ -1416,11 +1439,47 @@ td[data-label="Converted to"] {
   text-transform: none;
 }
 
+.label-content-options,
+.label-evidence {
+  min-width: 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.label-content-options summary,
+.label-evidence summary { cursor: pointer; font-size: 13px; font-weight: 700; }
+.label-content-options summary span { color: #765718; font-weight: 500; }
+.label-content-options > label { display: grid; gap: 5px; margin-top: 14px; font-size: 12px; font-weight: 650; }
+.label-content-options .label-option-row { margin-top: 14px; }
+.label-content-options textarea { width: 100%; padding: 10px; border: 1px solid #98a2b3; border-radius: 7px; font: inherit; font-size: 14px; resize: vertical; }
+.label-content-options .label-helper { margin-top: 10px; }
+.label-evidence { font-size: 12px; line-height: 1.5; }
+.label-evidence li + li { margin-top: 8px; }
+.label-evidence .label-warning { margin: 12px 0; }
+
 .label-option-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
+
+.assumption-options {
+  min-width: 0;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid #d6bb75;
+  border-radius: 7px;
+  background: #fffaf0;
+  font-size: 12px;
+}
+
+.assumption-options legend { padding: 0 4px; font-weight: 700; }
+.assumption-options .assumption-choice { display: flex; align-items: flex-start; gap: 9px; }
+.assumption-options input[type="checkbox"] { width: 18px; min-height: 18px; margin: 1px 0 0; flex: 0 0 18px; }
+.assumption-options .quiet { margin: 8px 0; }
+.assumption-options ul { margin: 8px 0 0; padding-left: 18px; }
+.assumption-options li + li { margin-top: 6px; }
+
+#label-data-warning { white-space: pre-line; }
 
 .input-with-suffix {
   display: grid;
@@ -1464,30 +1523,47 @@ td[data-label="Converted to"] {
 .nutrition-label {
   overflow: hidden;
   border: 2px solid #111;
-  background: white;
+  background: #fff59a;
   color: #111;
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.25;
 }
 
 .nutrition-label-header {
-  padding: 16px 18px 12px;
-  border-bottom: 8px solid #111;
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid #514b28;
 }
 
 .nutrition-label-header > p {
   margin: 0 0 3px;
-  font-size: 11px;
+  font-size: 18px;
   font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  line-height: 1.25;
 }
 
 .nutrition-label-header h4 {
   margin: 0 0 10px;
-  font-size: 24px;
-  line-height: 1.05;
+  font-size: 13px;
+  line-height: 1.3;
 }
+
+.nutrition-label-header #label-preview-name { margin: 5px 0; font-size: 22px; font-weight: 800; }
+.nutrition-label-header #label-preview-status { margin-bottom: 10px; font-size: 12px; font-weight: 700; }
+.nutrition-label-header #label-preview-description,
+.nutrition-label-header #label-preview-category { font-size: 12px; font-weight: 500; }
+.nutrition-label-reference { padding: 12px 16px; border-bottom: 1px solid #514b28; }
+.nutrition-label-reference p { margin: 0 0 7px; }
+.nutrition-label-reference p:last-child { margin-bottom: 0; }
+.nutrition-label-copy p { white-space: pre-line; overflow-wrap: anywhere; }
+.label-detail-pending { font-style: italic; }
+.label-declaration { font-weight: 800; text-transform: uppercase; }
+.label-pack-details { margin: 16px 0; padding-top: 12px; border-top: 1px solid #514b28; font-size: 12px; }
+.label-pack-details div { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 6px; }
+.label-pack-details dt { font-weight: 700; }
+.label-pack-details dd { margin: 0; overflow-wrap: anywhere; }
+.label-barcode { padding: 8px 0; }
+.label-barcode svg { display: block; width: 37.29mm; height: 28.05mm; max-width: 100%; margin: 0 auto; }
 
 .nutrition-label-header dl {
   display: flex;
@@ -1514,64 +1590,105 @@ td[data-label="Converted to"] {
   overflow-x: auto;
 }
 
-.nutrition-label-table {
-  min-width: 0;
-  color: #111;
+.nutrition-label-table-wrap:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: -2px;
+}
+
+.label-scroll-hint {
+  display: none;
+  margin: 0;
+  padding: 8px 16px;
+  border-bottom: 1px solid #514b28;
   font-size: 11px;
+}
+
+.nutrition-label-table {
+  min-width: 460px;
+  color: #111;
+  font-size: 12px;
   font-variant-numeric: tabular-nums;
   table-layout: fixed;
 }
 
 .nutrition-label-table th:first-child {
-  width: 30%;
+  width: 38%;
 }
+
+.nutrition-label-table thead th:nth-child(2) { width: 20%; }
+.nutrition-label-table thead th:nth-child(n+3) { width: 14%; }
 
 .nutrition-label-table th,
 .nutrition-label-table td {
-  padding: 7px 9px;
-  border-color: #444;
+  padding: 7px 6px;
+  border: 1px solid #6c663b;
+  vertical-align: middle;
 }
 
 .nutrition-label-table thead th {
-  background: #111;
-  color: white;
-  font-size: 9px;
-  letter-spacing: 0.02em;
+  background: transparent;
+  color: #111;
+  font-size: 11px;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: normal;
 }
 
 .nutrition-label-table tbody th {
-  background: white;
+  background: transparent;
   text-align: left;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: inherit;
+  color: inherit;
 }
 
 .nutrition-label-table td,
 .nutrition-label-table thead th:not(:first-child) {
-  text-align: right;
+  text-align: center;
 }
 
 .nutrition-label-table td {
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+}
+
+.nutrition-label-source {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.nutrition-label-table .nutrition-label-category th {
+  width: auto;
+  background: #f5e981;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  color: #111;
 }
 
 .nutrition-label-table tr.is-partial th,
 .nutrition-label-table tr.is-partial td {
-  background: #fff8e7;
+  background: #fff9bd;
 }
 
 .nutrition-label-copy {
   display: grid;
   gap: 9px;
-  padding: 13px 18px 16px;
-  border-top: 4px solid #111;
+  padding: 13px 16px 16px;
+  border-top: 1px solid #514b28;
 }
 
 .nutrition-label-copy p {
   margin: 0;
-  font-size: 10px;
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .nutrition-label-copy > p:first-child {
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -1583,7 +1700,20 @@ td[data-label="Converted to"] {
 
 .label-footnote {
   color: #333;
+  font-size: 10px;
   line-height: 1.35;
+}
+
+@media screen {
+  #label-product-sections p + p { margin-top: 9px; }
+}
+
+@media (max-width: 1000px) {
+  .label-workspace { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 520px) {
+  .label-scroll-hint { display: block; }
 }
 
 .disclaimer {
@@ -1865,7 +1995,7 @@ td[data-label="Converted to"] {
 
   .nutrition-label-table {
     display: table;
-    font-size: 9px;
+    font-size: 12px;
   }
 
   .nutrition-label-table thead {
@@ -1936,26 +2066,58 @@ td[data-label="Converted to"] {
 }
 
 @media print {
+  @page { size: A4 portrait; margin: 12mm; }
+  .label-scroll-hint { display: none; }
   body.printing-label {
     background: white;
   }
 
-  body.printing-label * {
-    visibility: hidden;
+  /* Remove the other report branches from print layout, including their space. */
+  body.printing-label *:not(#nutrition-label):not(#nutrition-label *):not(:has(#nutrition-label)) {
+    display: none !important;
   }
 
-  body.printing-label #nutrition-label,
-  body.printing-label #nutrition-label * {
-    visibility: visible;
+  body.printing-label :has(#nutrition-label) {
+    display: block;
+    min-height: 0;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
   }
 
   body.printing-label #nutrition-label {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    break-inside: avoid;
+    position: static;
+    width: 180mm;
+    max-width: 100%;
+    margin: 0 auto;
+    border-width: 0.35mm;
+    background: white;
+    font-size: 8pt;
+    break-inside: auto;
+    print-color-adjust: exact;
   }
+
+  body.printing-label .nutrition-label-panels { display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
+  body.printing-label .nutrition-label-nutrition { min-width: 0; border-right: 0.2mm solid #514b28; }
+  body.printing-label .nutrition-label-header { padding: 3mm; }
+  body.printing-label .nutrition-label-header > p { font-size: 10pt; }
+  body.printing-label .nutrition-label-header #label-preview-name { font-size: 16pt; }
+  body.printing-label .nutrition-label-header #label-preview-status,
+  body.printing-label .nutrition-label-header #label-preview-description,
+  body.printing-label .nutrition-label-header #label-preview-category,
+  body.printing-label .nutrition-label-header dl { font-size: 8pt; }
+  body.printing-label .nutrition-label-copy,
+  body.printing-label .nutrition-label-reference { padding: 3mm; }
+  body.printing-label .nutrition-label-copy p { margin: 0 0 2.3mm; font-size: 8pt; line-height: 1.35; }
+  body.printing-label .nutrition-label-copy .label-footnote,
+  body.printing-label .nutrition-label-reference .label-footnote { font-size: 7pt; line-height: 1.3; }
+  body.printing-label .label-pack-details { margin: 3mm 0; padding-top: 2mm; font-size: 8pt; }
+  body.printing-label .nutrition-label-table th,
+  body.printing-label .nutrition-label-table td { padding: 1.2mm 1mm; font-size: 7.5pt; }
+  body.printing-label .nutrition-label-table thead th { font-size: 7pt; }
+  body.printing-label .nutrition-label-source { font-size: 6.5pt; }
 
   body.printing-label .nutrition-label-table-wrap {
     overflow: visible;
@@ -1964,4 +2126,44 @@ td[data-label="Converted to"] {
   body.printing-label .nutrition-label-table {
     min-width: 0;
   }
+
+  body.printing-label .nutrition-label-table tr,
+  body.printing-label .nutrition-label-copy p,
+  body.printing-label .label-pack-details div {
+    break-inside: avoid;
+  }
+}
+
+/* Input and printable output are the main path; evidence stays expandable. */
+.label-workspace { display: block; }
+.label-controls, .calculation-details { margin: 16px 0; border: 1px solid var(--line); border-radius: 10px; background: white; }
+.label-controls > summary, .calculation-details > summary, .validation-panel > summary { padding: 16px; cursor: pointer; font-weight: 650; }
+.label-controls .label-options { border: 0; }
+.calculation-details > .label-actions { padding: 16px 24px 0; }
+.nutrition-label-panels { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.label-export-actions { margin: 0 0 16px; }
+@media (max-width: 1000px) { .nutrition-label-panels { grid-template-columns: minmax(0, 1fr); } .label-export-actions > a, .label-export-actions > button { flex: 1; text-align: center; } }
+
+.input-basis-controls { display: flex; gap: 16px; align-items: end; margin-bottom: 10px; }
+.input-basis-controls label { display: grid; gap: 6px; font-size: 13px; font-weight: 650; }
+.input-basis-controls select, .input-basis-controls input { min-height: 42px; border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; background: white; }
+#dose-volume { width: 100px; }
+#input-basis-note { margin: 0 0 18px; font-size: 13px; }
+@media (max-width: 540px) { .input-basis-controls { flex-direction: column; align-items: stretch; } #dose-volume { width: 100%; } }
+
+/* Keep the everyday workflow to input, label and one export action. */
+.input-extras { margin: 16px 0; }
+.input-extras > summary { color: var(--muted); cursor: pointer; font-size: 14px; padding: 8px 0; }
+.input-extras .drop-zone { margin-top: 12px; }
+.secondary-tools { padding: 8px 16px; justify-content: flex-start; flex-wrap: wrap; }
+.label-export-actions { align-items: center; }
+#download-saved-label { display: none; }
+
+.support-details { max-width: 1180px; margin: 24px auto; padding: 0 24px; }
+.support-details > summary { color: var(--muted); cursor: pointer; font-size: 14px; padding: 12px 0; }
+
+.label-export-actions > button { white-space: nowrap; }
+@media (max-width: 540px) {
+  .label-export-actions > button { flex-basis: 100%; }
+  .label-export-actions > .quiet { font-size: 12px; }
 }

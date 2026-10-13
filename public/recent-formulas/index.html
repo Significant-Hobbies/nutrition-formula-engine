@@ -30,6 +30,13 @@
         <p class="lede">Continue a formula or review its earlier versions.</p>
       </section>
 
+      <section class="recent-formulas-panel" aria-labelledby="published-products-title">
+        <h2 id="published-products-title">Your published products</h2>
+        <p class="quiet">Your 15 mL formulas, saved with the reviewed assumptions. Download the printable label in one click.</p>
+        <div id="published-products-list" class="recent-formulas-list"></div>
+        <p class="quiet saved-product-note">Printable drafts. Missing composition, supplier and pack declarations remain marked in each label.</p>
+      </section>
+
       <section class="recent-formulas-panel" aria-labelledby="saved-formulas-title">
         <div class="recent-formulas-heading">
           <div>
@@ -54,7 +61,10 @@
         Saved formulas are public and appear here on every device.
       </p>
     </main>
-    <script src="https://sassmaker.com/project-strip.js" data-project="nutrition-formula-engine" defer></script>
-  <script src="https://sassmaker.com/ai-chat-footer.js" data-name="Formula Composition Engine" defer></script>
+    <fleet-footer-extension data-fleet-footer-project="nutrition-formula-engine" product-name="Formula Calculator" art-src="/footer-art/nutrition-formula-engine.webp" art-alt="Formula Composition Engine: A restrained formula-review bench centers an ingredient identity card and transparent scale. Generic bowls, blank quantity slips and a separate unresolved-identity tray emphasize correction before calculation." art-width="2170" art-height="725" art-position="50% 50%" art-credit="Original illustration for Formula Composition Engine" surface="app" theme="light">
+      <nav slot="navigation" data-fleet-footer-navigation aria-label="Formula Calculator links"><a href="/">Calculator</a> · <a href="/recent-formulas/">Recent formulas</a> · <a href="/case-studies/">Case studies</a></nav>
+    </fleet-footer-extension>
+    <script type="text/plain" data-after-load-src="https://sassmaker.com/project-strip.js" data-project="nutrition-formula-engine"></script>
+  <script type="text/plain" data-after-load-src="https://sassmaker.com/ai-chat-footer.js" data-name="Formula Calculator" data-surface="app"></script>
 </body>
 </html>

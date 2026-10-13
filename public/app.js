@@ -1,6 +1,10 @@
 import { normalizeText, rowsToTsv } from "./input-normalizer.js";
 import { createAuditLog, sha256 } from "./audit-log.js";
-import { buildNutritionLabel } from "./nutrition-label.js";
+import { buildNutritionLabel, identityReviewKey, multiplyDivideDecimal, pendingIdentityRows } from "./nutrition-label.js";
+import { buildResultReadiness, componentEvidence, readinessMarkdown, senderChecklist } from "./result-readiness.js";
+import { buildAssumptionScenario, scenarioEligibility, scenarioAssumptions } from "./assumption-scenario.js";
+import { LABEL_DETAIL_FIELDS } from "./label-details.js";
+import { savedProduct, savedProductForRows, bestEstimateAliases } from "./saved-products.js";
 import sampleTsvUrl from "./sample-tonic.tsv?url";
 import {
   appendSessionVersion,
@@ -48,24 +52,110 @@ let workspace = null;
 let savedIngredients = [];
 let sharedIngredientProfiles = [];
 let sharedIngredientLibraryAvailable = false;
+let savedLabelReview = null;
+let publishedProduct = null;
+let publishedReviewSignature = null;
+let currentInputBasis = "dose";
 const confirmedIdentities = new Set();
 const auditLog = createAuditLog();
 
+function labelReviewOptions() {
+  return {
+    inputBasis: currentInputBasis,
+    productName: document.querySelector("#label-product-name").value,
+    servingSize: document.querySelector("#label-serving-size").value,
+    servingsPerPack: document.querySelector("#label-servings-per-pack").value,
+    amountBasis: document.querySelector("#label-amount-basis").value,
+    waterBase: document.querySelector("#label-base").value === "water",
+    assumptionEstimate: document.querySelector("#label-assumption-estimate").checked,
+    productDetails: Object.fromEntries(Object.keys(LABEL_DETAIL_FIELDS).map((key) => [key, document.querySelector(`#label-detail-${key}`).value])),
+    confirmedIdentities,
+  };
+}
+
+function displayedResult() {
+  return buildAssumptionScenario(latestResult, labelReviewOptions());
+}
+
+function updateScenarioControl() {
+  const eligibility = scenarioEligibility(latestResult, labelReviewOptions());
+  const input = document.querySelector("#label-assumption-estimate");
+  input.disabled = !eligibility.allowed;
+  document.querySelector("#assumption-estimate-status").textContent = input.checked && eligibility.allowed
+    ? "Working estimate selected. Results, label and downloads use these assumptions. Supplier requests remain open."
+    : eligibility.reason;
+  renderList("#assumption-estimate-terms", scenarioAssumptions(latestResult), "");
+  document.querySelector("#assumption-estimate-terms").hidden = !eligibility.allowed;
+}
+
+function reviewSignature(result) {
+  return JSON.stringify([result.basis_label, result.label_batch_quantity,
+    result.calculation?.nutrition_catalog_fingerprint, result.formula_rows.map(identityReviewKey)]);
+}
+
+function labelReviewSnapshot() {
+  if (!latestResult) return null;
+  return { signature: reviewSignature(latestResult), ...labelReviewOptions(), confirmedIdentities: [...confirmedIdentities] };
+}
+
+function restoreLabelReview(result) {
+  const review = savedLabelReview;
+  savedLabelReview = null;
+  if (!review || review.signature !== reviewSignature(result)) return;
+  currentInputBasis = review.inputBasis || result.input_basis || "batch";
+  document.querySelector("#input-basis").value = currentInputBasis;
+  updateInputBasis();
+  const validKeys = new Set(result.formula_rows.filter((row) => !row.unresolved).map(identityReviewKey));
+  confirmedIdentities.clear();
+  for (const key of review.confirmedIdentities || []) if (validKeys.has(key)) confirmedIdentities.add(key);
+  for (const [selector, value] of [["#label-product-name", review.productName], ["#label-serving-size", review.servingSize],
+    ["#label-servings-per-pack", review.servingsPerPack], ["#label-amount-basis", review.amountBasis]]) {
+    if (typeof value === "string") document.querySelector(selector).value = value;
+  }
+  document.querySelector("#label-base").value = review.waterBase && result.basis_label === "per 100 mL" ? "water" : "unspecified";
+  document.querySelector("#label-assumption-estimate").checked = review.assumptionEstimate === true;
+  for (const key of Object.keys(LABEL_DETAIL_FIELDS)) {
+    document.querySelector(`#label-detail-${key}`).value = typeof review.productDetails?.[key] === "string" ? review.productDetails[key] : "";
+  }
+}
+
+function persistLabelReview() {
+  if (!workspace || !latestResult) return;
+  persistBrowserWorkspace().catch(() => updateStatus(document.querySelector("#label-status"),
+    "The label is updated, but its review settings could not be saved in this browser. Download JSON to retain them.", true));
+}
+
+function renderReadiness() {
+  if (!latestResult) return;
+  const active = displayedResult();
+  const readiness = buildResultReadiness(active, labelReviewOptions());
+  document.querySelector("#result-state").textContent = readiness.scenario ? "Calculation finished · assumption estimate" : readiness.partial ? "Calculation finished · partial result" : "Calculation finished · draft result";
+  document.querySelector("#inference-name").textContent = readiness.title;
+  document.querySelector("#inference-reason").textContent = readiness.summary;
+  document.querySelector("#inference-boundary").textContent = readiness.nextAction;
+  document.querySelector("#inference-confidence").textContent = `${readiness.requests.length} information requests · ${readiness.pendingIdentityCount} identities to review`;
+  document.querySelector("#component-legend").textContent = readiness.scenario ? readiness.legend
+    : `${readiness.legend} Only nonzero known contributions appear in this table; omitted values are not confirmed zeros.`;
+  renderList("#assumptions-list", active.report_assumptions, "No extra assumptions were used.");
+  renderList("#missing-list", readiness.requests, "No additional information requests.");
+  return readiness;
+}
+
 async function persistBrowserWorkspace() {
   if (workspace?.mode === "server") {
-    await saveBrowserWorkspace(serverWorkspaceRecord({
+    await saveBrowserWorkspace({ ...serverWorkspaceRecord({
       formulaId: workspace.formulaId,
       currentVersion: workspace.currentVersion,
-    }));
+    }), label_review: labelReviewSnapshot() });
     return;
   }
   if (workspace?.mode !== "browser") return;
-  await saveBrowserWorkspace(browserWorkspaceRecord({
+  await saveBrowserWorkspace({ ...browserWorkspaceRecord({
     history: sessionHistory,
     latestContents,
     latestFileName,
     formulaId: workspace.formulaId,
-  }));
+  }), label_review: labelReviewSnapshot() });
   workspace.currentVersion = sessionHistory.at(-1)?.version || workspace.currentVersion;
 }
 
@@ -118,10 +208,12 @@ function ingredientIsSaved(row) {
 }
 
 function acceptedAliasPayload() {
-  return savedIngredients.map((item) => ({
-    alias: item.alias,
-    material_id: item.material_id,
-  }));
+  const acceptedRows = currentRows.slice(1).filter((row) => row.material_id && !row.unresolved &&
+    confirmedIdentities.has(identityReviewKey(row)));
+  return [...new Map([
+    ...savedIngredients.map((item) => ({ alias: item.alias, material_id: item.material_id })),
+    ...acceptedRows.map((row) => ({ alias: row.item, material_id: row.material_id })),
+  ].map((item) => [aliasKey(item.alias), item])).values()];
 }
 
 function setIngredientLibraryStatus(message, isError = false) {
@@ -271,6 +363,8 @@ async function refreshDatabaseSync() {
 }
 
 async function loadRemoteWorkspace(formulaId) {
+  const savedReview = await loadBrowserWorkspace().catch(() => null);
+  if (savedReview?.formula_id === formulaId) savedLabelReview = savedReview.label_review;
   const historyResponse = await fetch(`/api/formulas/${encodeURIComponent(formulaId)}`);
   const historyPayload = await historyResponse.json();
   if (!historyResponse.ok) throw new Error(historyPayload.error || "The saved work could not be opened.");
@@ -298,9 +392,11 @@ async function loadRemoteWorkspace(formulaId) {
     formulaId,
     currentVersion: historyPayload.current_version,
   };
-  await persistBrowserWorkspace();
   formulaReview.hidden = true;
+  currentInputBasis = latest.report.input_basis || "batch";
   renderResult(latest.report);
+  if (!document.querySelector("#label-serving-size").value) applyBestLabelDefaults();
+  await persistBrowserWorkspace();
   recordAudit("workspace_resumed", { storage: "database", version: workspace.currentVersion });
 }
 
@@ -320,8 +416,11 @@ async function loadSavedBrowserFormula() {
     formulaId: saved.formula_id,
     currentVersion: saved.history.at(-1).version,
   };
+  currentInputBasis = saved.label_review?.inputBasis || saved.history.at(-1).report.input_basis || "batch";
+  savedLabelReview = saved.label_review;
   formulaReview.hidden = true;
   renderResult(saved.history.at(-1).report);
+  if (!document.querySelector("#label-serving-size").value) applyBestLabelDefaults();
   recordAudit("workspace_resumed", {
     storage: "browser",
     version: workspace.currentVersion,
@@ -415,11 +514,12 @@ function renderDraftRows() {
     const itemCell = document.createElement("td");
     itemCell.dataset.label = "Item";
     itemCell.append(draftInput(
-      row.item,
+      index === 0 && currentInputBasis === "dose" ? "DOSE BASIS" : row.item,
       `Item row ${index + 1}`,
       (value) => { row.item = value; },
       { row_index: index + 1, field: "item" },
     ));
+    if (index === 0 && currentInputBasis === "dose") itemCell.querySelector("input").readOnly = true;
     const quantityCell = document.createElement("td");
     quantityCell.dataset.label = "Quantity";
     const quantity = draftInput(
@@ -481,6 +581,8 @@ function renderPreparedFormula(extraction) {
 async function prepareInput() {
   const startedAt = performance.now();
   const inputKind = selectedFile ? "file" : "paste";
+  currentInputBasis = document.querySelector("#input-basis").value;
+  const normalization = currentInputBasis === "dose" ? { basisRow: { quantity: document.querySelector("#dose-volume").value, unit: "mL" } } : {};
   prepareButton.disabled = true;
   prepareButton.textContent = "Reading…";
   setStatus("Reading the formula in your browser…");
@@ -493,8 +595,12 @@ async function prepareInput() {
     const inputHash = await sha256(selectedFile ? await selectedFile.arrayBuffer() : formulaText.value);
     const extraction = selectedFile
       ? await import("./ingestion.js").then(({ ingestFile }) =>
-          ingestFile(selectedFile, (message) => setStatus(message)))
-      : { ...normalizeText(formulaText.value), rawText: formulaText.value };
+          ingestFile(selectedFile, (message) => setStatus(message), normalization))
+      : { ...normalizeText(formulaText.value, "pasted text", normalization), rawText: formulaText.value };
+    if (/finished\s+batch|final\s+batch|batch\s+size/i.test(extraction.rawText || "")) currentInputBasis = "batch";
+    document.querySelector("#input-basis").value = currentInputBasis;
+    if (currentInputBasis === "dose" && extraction.rows[0].unit === "mL") document.querySelector("#dose-volume").value = extraction.rows[0].quantity;
+    updateInputBasis();
     latestFileName = selectedFile?.name || "pasted-formula.tsv";
     renderPreparedFormula(extraction);
     recordAudit("ingestion_completed", {
@@ -504,7 +610,22 @@ async function prepareInput() {
       duration_ms: durationSince(startedAt),
       input_sha256: inputHash,
     });
-    setStatus("");
+    const product = currentInputBasis === "dose" ? savedProductForRows(extraction.rows) : null;
+    if (product) openPublishedProduct(product);
+    else if (!/(ocr|tesseract)/i.test(extraction.method) && !extraction.warnings?.length) {
+      validateDraftRows();
+      workspace = null;
+      publishedProduct = null;
+      publishedReviewSignature = null;
+      sessionHistory = [];
+      confirmedIdentities.clear();
+      document.querySelector("#label-options").reset();
+  document.querySelector("#calculation-details").open = false;
+      if (await analyzeContents(rowsToTsv(draftRows), latestFileName, "automatic_estimate")) {
+        setStatus("Printable estimate ready. Assumptions and information needed are included below.");
+        document.querySelector("#label-builder").scrollIntoView({ block: "start" });
+      }
+    } else setStatus("Check the recovered rows, then calculate the printable estimate.");
   } catch (error) {
     recordAudit("ingestion_failed", {
       input_kind: inputKind,
@@ -514,11 +635,20 @@ async function prepareInput() {
     setStatus(error.message, true);
   } finally {
     prepareButton.disabled = false;
-    prepareButton.textContent = "Check formula";
+    prepareButton.textContent = "Generate label";
   }
 }
 
 prepareButton.addEventListener("click", prepareInput);
+
+function updateInputBasis() {
+  const dose = document.querySelector("#input-basis").value === "dose";
+  document.querySelector("#dose-volume-field").hidden = !dose;
+  document.querySelector("#input-basis-note").textContent = dose
+    ? "Enter amounts per dose. A dose-volume line is optional; this is not a production batch."
+    : "Enter the finished batch quantity followed by ingredient amounts for that entire batch.";
+}
+document.querySelector("#input-basis").addEventListener("change", updateInputBasis);
 
 document.querySelector("#add-draft-row").addEventListener("click", () => {
   draftRows.push({ item: "", quantity: "", unit: "kg" });
@@ -552,21 +682,21 @@ function renderFormula(rows) {
   for (const [index, row] of rows.entries()) {
     const tr = document.createElement("tr");
     tr.append(
-      cell("Item", row.item),
+      cell("Item", index === 0 && currentInputBasis === "dose" ? "DOSE BASIS" : row.item),
       cell("Given", `${row.submitted_quantity} ${row.submitted_unit}`),
       cell("Converted to", row.normalized_equivalent),
     );
     const interpretation = document.createElement("td");
     interpretation.dataset.label = "Read as";
     const name = document.createElement("div");
-    name.textContent = row.interpretation;
+    name.textContent = index === 0 && currentInputBasis === "dose" ? "Amounts per dose" : row.interpretation;
     interpretation.append(name);
     if (row.confidence && row.confidence !== "exact") interpretation.append(confidenceBadge(row.confidence));
     if (index > 0 && row.material_id && row.reusable_profile) {
       const save = reviewButton("Save for reuse", () => saveIngredientForReuse(row));
       save.className = "ingredient-save-button";
       save.setAttribute("aria-label", `Save ${row.item} for reuse`);
-      const confirmed = !row.needs_review || confirmedIdentities.has(row.item.toLowerCase());
+      const confirmed = !row.needs_review || confirmedIdentities.has(identityReviewKey(row));
       if (!confirmed) {
         save.textContent = "Confirm before saving";
         save.disabled = true;
@@ -612,11 +742,11 @@ function renderIdentityReview(rows) {
   const uncertain = rows.map((row, index) => ({ row, index })).filter(({ row }) => row.needs_review);
   section.hidden = uncertain.length === 0;
   list.replaceChildren();
-  const pending = uncertain.filter(({ row }) => !confirmedIdentities.has(row.item.toLowerCase())).length;
+  const pending = pendingIdentityRows({ formula_rows: rows }, confirmedIdentities).length;
   document.querySelector("#review-count").textContent = `${pending} to review`;
 
   for (const { row, index } of uncertain) {
-    const key = row.item.toLowerCase();
+    const key = identityReviewKey(row);
     const card = document.createElement("div");
     card.className = "identity-review-row";
     if (confirmedIdentities.has(key)) card.classList.add("is-confirmed");
@@ -625,26 +755,38 @@ function renderIdentityReview(rows) {
     const submitted = document.createElement("strong");
     submitted.textContent = row.item;
     const interpreted = document.createElement("span");
-    interpreted.textContent = `Read as ${row.interpretation} · ${row.confidence} confidence`;
+    interpreted.textContent = row.unresolved ? "Not identified · nutrient composition unknown"
+      : `Read as ${row.interpretation} · ${row.confidence} confidence`;
     copy.append(submitted, interpreted);
+    if (row.identity_note) {
+      const note = document.createElement("span");
+      note.textContent = row.identity_note;
+      copy.append(note);
+    }
     const actions = document.createElement("div");
     actions.className = "identity-actions";
     const replacement = document.createElement("div");
     replacement.className = "replacement-controls";
     replacement.hidden = true;
-    if (!confirmedIdentities.has(key)) {
-      actions.append(
+    if (!confirmedIdentities.has(key) || row.unresolved) {
+      if (!row.unresolved) actions.append(
         reviewButton("Confirm", async () => {
           confirmedIdentities.add(key);
           recordAudit("identity_confirmed", { row_index: index + 1 });
           renderIdentityReview(currentRows);
           renderFormula(currentRows);
+          renderReadiness();
+          renderComponents(latestResult.present_components, latestResult.basis_label);
+          renderNutritionLabel();
+          persistLabelReview();
           if (workspace) {
             await reanalyzeCurrentRows("identity_confirmed", [
               { action: "confirm", line_index: index, candidate_id: row.material_id },
             ]);
           }
         }),
+      );
+      actions.append(
         reviewButton("Reject / replace", () => {
           replacement.hidden = !replacement.hidden;
           recordAudit("identity_alternatives_toggled", {
@@ -656,8 +798,15 @@ function renderIdentityReview(rows) {
     } else {
       const confirmed = document.createElement("span");
       confirmed.className = "confidence-label";
-      confirmed.textContent = "Confirmed for this review";
-      actions.append(confirmed);
+      confirmed.textContent = "Interpretation accepted · composition still requires review";
+      actions.append(confirmed, reviewButton("Review again", () => {
+        confirmedIdentities.delete(key);
+        renderIdentityReview(currentRows);
+        renderFormula(currentRows);
+        renderComponents(latestResult.present_components, latestResult.basis_label);
+        renderNutritionLabel();
+        persistLabelReview();
+      }));
     }
     const alternatives = document.createElement("select");
     alternatives.setAttribute("aria-label", `Alternative for ${row.item}`);
@@ -713,9 +862,18 @@ function sourceLabel(contribution) {
 }
 
 function renderComponents(components, basisLabel) {
+  const active = displayedResult();
+  const options = labelReviewOptions();
+  let label;
+  try { label = buildNutritionLabel(active, { ...options, servingSize: options.servingSize || "100", includeUnavailable: false }); } catch { label = null; }
+  const useServing = options.amountBasis === "serving" && Boolean(options.servingSize) && Boolean(label);
+  const amounts = new Map((label?.nutrients || []).map((nutrient) => [nutrient.id, nutrient]));
+  components = active.present_components;
+  document.querySelector("#basis-label").textContent = `${active.assumption_scenario?.active ? "Estimated" : "Calculated"} ${useServing ? label.servingLabel.toLowerCase() : active.basis_label}`;
   const body = document.querySelector("#components-body");
   body.replaceChildren();
   for (const component of components) {
+    const valueEvidence = componentEvidence(component, active, confirmedIdentities);
     const tr = document.createElement("tr");
     const componentCell = cell("Component", component.name);
     const nonZeroContributions = (component.contributions || []).filter((item) => {
@@ -730,21 +888,33 @@ function renderComponents(components, basisLabel) {
       const list = document.createElement("ul");
       for (const contribution of nonZeroContributions) {
         const item = document.createElement("li");
-        const value = contributionValue(contribution, basisLabel);
-        item.textContent = `${contribution.material_name}: ${formatNumber(value)} ${contribution.unit.replace("ug", "µg")} · ${sourceLabel(contribution)}`;
+        const value = useServing && contribution.total_batch != null
+          ? multiplyDivideDecimal(contribution.total_batch, options.servingSize, active.label_batch_quantity, 6)
+          : contributionValue(contribution, basisLabel);
+        item.textContent = `${contribution.material_name}: ${formatNumber(value)} ${contribution.unit.replace("ug", "µg")} (${useServing ? label.servingLabel : active.basis_label}) · ${sourceLabel(contribution)}`;
         list.append(item);
       }
       details.append(summary, list);
       componentCell.append(details);
     }
+    const amount = valueEvidence.incomplete
+      ? multiplyDivideDecimal(component.value, "1", "1", 6, "down") : formatNumber(component.value);
+    const shared = amounts.get(component.id);
+    const sharedAmount = shared ? useServing ? shared.perServing : shared.perBasis : null;
     tr.append(
       componentCell,
-      cell("Amount", `${formatNumber(component.value)} ${component.unit.replace("ug", "µg")}`),
-      cell("Possible range", component.range_label || "—"),
+      cell("Amount", `${sharedAmount || (valueEvidence.incomplete ? amount === "0" ? "Known contribution <0.000001" : `≥${amount}` : amount)} ${component.unit.replace("ug", "µg")}`),
+      cell("Possible range", component.assumption ? component.range_label : useServing ? `Source bounds ${active.basis_label} in JSON` : component.range_label || "—"),
     );
     const evidence = document.createElement("td");
-    evidence.dataset.label = "Confidence";
-    evidence.append(confidenceBadge(`${component.confidence.score} ${component.confidence.band}`));
+    evidence.dataset.label = "Value basis";
+    evidence.append(confidenceBadge(valueEvidence.label));
+    const note = document.createElement("span");
+    note.className = "quiet";
+    note.textContent = component.assumption ? " · assumed, not measured" : shared?.status === "declared"
+      ? " · entered active amount" : shared?.status === "estimated" ? " · purity/conversion assumption"
+      : valueEvidence.incomplete ? " · total incomplete" : " · source-based total";
+    evidence.append(note);
     tr.append(evidence);
     body.append(tr);
   }
@@ -780,8 +950,8 @@ async function restoreVersion(record) {
     }
     const restored = restoreSessionVersion(sessionHistory, record.version);
     sessionHistory = restored.history;
-    await persistBrowserWorkspace();
     renderResult(restored.report);
+    await persistBrowserWorkspace();
     recordAudit("report_version_restored", { source: "browser_session", version: record.version });
   } catch (error) {
     updateStatus(document.querySelector("#history-status"), error.message, true);
@@ -830,26 +1000,136 @@ function renderList(selector, items, fallback) {
       const strong = document.createElement("strong");
       strong.textContent = `${item.item}: `;
       li.append(strong, document.createTextNode(item.needed));
+      if (item.affects?.length) {
+        const details = document.createElement("details");
+        const affected = document.createElement("summary");
+        const blocksMacros = item.affects.some((name) => ["Energy", "Protein", "Carbohydrate", "Total sugars", "Added sugars", "Total fat"].includes(name));
+        affected.textContent = blocksMacros ? "Needed for complete macro totals · show affected values" : "Show affected values";
+        const names = document.createElement("p");
+        names.textContent = item.affects.join(", ");
+        details.append(affected, names);
+        li.append(details);
+      }
     }
     list.append(li);
   }
 }
 
 function renderNutritionLabel() {
+  const download = document.querySelector("#download-saved-label");
+  download.hidden = !publishedProduct?.pdfUrl || !publishedReviewSignature ||
+    JSON.stringify(labelReviewSnapshot()) !== publishedReviewSignature;
+  if (publishedProduct?.pdfUrl) {
+    download.href = publishedProduct.pdfUrl;
+    download.download = `${publishedProduct.id}-label.pdf`;
+  }
   if (!latestResult) return;
+  updateScenarioControl();
+  const active = displayedResult();
+  renderComponents(active.present_components, active.basis_label);
   const labelStatus = document.querySelector("#label-status");
+  const pending = pendingIdentityRows(latestResult, confirmedIdentities);
+  const preview = document.querySelector("#nutrition-label");
+  const printButton = document.querySelector("#print-label");
+  const readiness = renderReadiness();
+  preview.hidden = false;
+  printButton.disabled = false;
   try {
-    const label = buildNutritionLabel(latestResult, {
-      productName: document.querySelector("#label-product-name").value,
-      servingSize: document.querySelector("#label-serving-size").value,
-      servingsPerPack: document.querySelector("#label-servings-per-pack").value,
+    if (!document.querySelector("#label-serving-size").value.trim()) throw new Error("Enter the intended serving size or dose to calculate amounts and RDA.");
+    const label = buildNutritionLabel(active, {
+      ...labelReviewOptions(),
+      includeUnavailable: true,
+      waterBase: document.querySelector("#label-base").value === "water",
     });
+    preview.hidden = false;
+    printButton.disabled = false;
+    document.querySelector("#label-preview-status").textContent = readiness.scenario
+      ? "Assumption-based working estimate — supplier data needed" : readiness.partial
+      ? "Partial draft — macros/nutrient totals incomplete" : "Calculated draft — source and regulatory review required";
     document.querySelector("#label-preview-name").textContent = label.productName;
     document.querySelector("#label-preview-serving").textContent = `${label.servingSize} ${label.servingUnit}`;
-    document.querySelector("#label-basis-heading").textContent = label.basisLabel;
-    document.querySelector("#label-serving-heading").textContent = label.servingLabel;
+    const perServing = document.querySelector("#label-amount-basis").value === "serving";
+    const amountHeading = perServing ? label.servingLabel : label.basisLabel;
+    document.querySelector("#label-amount-heading").textContent = amountHeading;
     document.querySelector("#label-serving-unit").textContent = label.servingUnit;
     document.querySelector("#label-ingredients").textContent = label.ingredients.join(", ") || "Not established";
+    document.querySelector("#label-ins-summary").textContent = label.ingredientIdentifierSummary;
+    const details = label.productDetails;
+    const description = document.querySelector("#label-preview-description");
+    description.textContent = details.values.description;
+    description.hidden = !details.values.description;
+    document.querySelector("#label-preview-category").textContent = `Category: ${details.category} · Dietary status: ${details.dietary}`;
+    document.querySelector("#label-detail-count").textContent = details.missing.length ? `(${details.missing.length} to complete)` : "(completed)";
+    const productSections = document.querySelector("#label-product-sections");
+    productSections.replaceChildren();
+    for (const section of details.sections) {
+      const paragraph = document.createElement("p");
+      const heading = document.createElement("strong");
+      heading.textContent = `${section.title}: `;
+      paragraph.append(heading, section.text);
+      if (section.pending) paragraph.className = "label-detail-pending";
+      productSections.append(paragraph);
+    }
+    const declaration = document.querySelector("#label-category-declaration");
+    declaration.textContent = details.categoryDeclaration;
+    declaration.hidden = !details.categoryDeclaration;
+    const packDetails = document.querySelector("#label-pack-details");
+    packDetails.replaceChildren();
+    for (const item of details.pack) {
+      const row = document.createElement("div");
+      const title = document.createElement("dt");
+      const value = document.createElement("dd");
+      title.textContent = item.title;
+      value.textContent = item.text;
+      if (item.pending) row.className = "label-detail-pending";
+      row.append(title, value);
+      packDetails.append(row);
+    }
+    const barcodeBox = document.querySelector("#label-barcode");
+    barcodeBox.replaceChildren();
+    if (details.barcode.valid) {
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("viewBox", "0 0 113 85");
+      svg.setAttribute("role", "img");
+      svg.setAttribute("aria-label", `EAN-13 ${details.barcode.digits}`);
+      const background = document.createElementNS(svg.namespaceURI, "rect");
+      background.setAttribute("width", "113"); background.setAttribute("height", "85"); background.setAttribute("fill", "white");
+      svg.append(background);
+      for (const bar of details.barcode.bars) {
+        const rect = document.createElementNS(svg.namespaceURI, "rect");
+        rect.setAttribute("x", String(bar.x)); rect.setAttribute("y", "1");
+        rect.setAttribute("width", "1"); rect.setAttribute("height", String(bar.height)); rect.setAttribute("fill", "black");
+        svg.append(rect);
+      }
+      for (const [text, x] of [[details.barcode.digits[0], 4], [details.barcode.digits.slice(1, 7), 32], [details.barcode.digits.slice(7), 79]]) {
+        const caption = document.createElementNS(svg.namespaceURI, "text");
+        caption.textContent = text; caption.setAttribute("x", String(x)); caption.setAttribute("y", "83");
+        caption.setAttribute("font-family", "monospace"); caption.setAttribute("font-size", "8"); caption.setAttribute("text-anchor", "middle");
+        svg.append(caption);
+      }
+      barcodeBox.append(svg);
+    } else {
+      const note = document.createElement("p");
+      note.className = "label-detail-pending";
+      note.textContent = `Barcode: ${details.barcode.issue}.`;
+      barcodeBox.append(note);
+    }
+    const additiveReview = document.querySelector("#label-additive-review");
+    additiveReview.replaceChildren();
+    for (const issue of label.additiveIssues) {
+      const item = document.createElement("li");
+      item.textContent = `${issue.ingredient}: ${issue.needed}`;
+      additiveReview.append(item);
+    }
+    document.querySelector("#label-ins-reference").href = label.additiveReference.url;
+    document.querySelector("#label-print-review").textContent = [
+      readiness.scenario ? "Estimated macros assume water and pure ingredients without nutritive carriers; ≈0 is assumed, not measured. Active forms and assays require confirmation." : "Composition totals and ingredient grades require supplier confirmation.",
+      pending.length ? `${pending.length} ingredient interpretations are provisional; supplier identification is required.` : "",
+      label.additiveIssues.length ? `Supplier identity / permitted use to confirm: ${label.additiveIssues.map((issue) => issue.ingredient).join(", ")}. Full details are in the ingredient review.` : "",
+      active.label_draft_note || (active.formula_rows.some((row) => ["iron_fac_declared", "zinc_sulphate_declared"].includes(row.material_id))
+        ? "Iron and zinc are treated as declared elemental amounts, not salt weights; confirm that basis, salt assay and actual salt weights. Macro estimates exclude unreported citrate energy; ingredient order is provisional." : ""),
+      details.missing.length ? `Incomplete product declarations: ${details.missing.length}. Fields marked “To be confirmed” must be completed before final artwork.` : "Category-specific declarations, additive use permissions and artwork require review.",
+    ].filter(Boolean).join(" ");
 
     const servingsRow = document.querySelector("#label-preview-servings-row");
     servingsRow.hidden = !label.servingsPerPack;
@@ -857,83 +1137,123 @@ function renderNutritionLabel() {
 
     const nutrientBody = document.querySelector("#label-nutrients");
     nutrientBody.replaceChildren();
-    for (const nutrient of label.nutrients) {
-      const row = document.createElement("tr");
-      if (nutrient.status === "partial") row.className = "is-partial";
-      const name = document.createElement("th");
-      name.scope = "row";
-      name.textContent = nutrient.name;
-      const basis = document.createElement("td");
-      basis.dataset.label = label.basisLabel;
-      basis.textContent = `${nutrient.perBasis} ${nutrient.unit}`;
-      const serving = document.createElement("td");
-      serving.dataset.label = label.servingLabel;
-      serving.textContent = `${nutrient.perServing} ${nutrient.unit}`;
-      const rda = document.createElement("td");
-      rda.dataset.label = "%RDA";
-      rda.textContent = nutrient.rdaPercent;
-      row.append(name, basis, serving, rda);
-      nutrientBody.append(row);
+    for (const group of label.groups) {
+      const band = document.createElement("tr");
+      band.className = "nutrition-label-category";
+      const heading = document.createElement("th");
+      heading.colSpan = 5;
+      heading.scope = "rowgroup";
+      heading.textContent = group.name;
+      band.append(heading);
+      nutrientBody.append(band);
+      for (const nutrient of group.nutrients) {
+        const row = document.createElement("tr");
+        if (nutrient.status === "partial") row.className = "is-partial";
+        const name = document.createElement("th");
+        name.scope = "row";
+        name.textContent = nutrient.name;
+        if (nutrient.sourceLabel) {
+          const source = document.createElement("span");
+          source.className = "nutrition-label-source";
+          source.textContent = `(${nutrient.sourceLabel})`;
+          name.append(source);
+        }
+        const amount = document.createElement("td");
+        amount.dataset.label = amountHeading;
+        const value = perServing ? nutrient.perServing : nutrient.perBasis;
+        amount.textContent = value === "Not established" ? "Needs composition" : `${value} ${nutrient.unit}`;
+        row.append(name, amount);
+        for (const [key, title] of [["men", "Men"], ["women", "Women"], ["children", "10–12 years"]]) {
+          const rda = document.createElement("td");
+          rda.dataset.label = `% RDA ${title}`;
+          rda.textContent = value === "Not established" ? "—" : nutrient.rda[key];
+          row.append(rda);
+        }
+        nutrientBody.append(row);
+      }
     }
 
     const warnings = [];
-    if (label.hasIncompleteData) {
-      warnings.push("≥ marks a lower bound because one or more ingredient profiles are incomplete.");
+    if (readiness.scenario) warnings.push(...active.assumption_scenario.assumptions,
+      ...(latestResult.formula_rows.some((row) => row.material_id === "lysine_hcl_pure_assumed") ? ["Chloride shown is the lysine-HCl contribution only; unreported vitamin salts may add chloride. B5 percentages use adequate intake (AI)."] : []),
+      "Original composition data remains unchanged. Obtain the sender specifications before finalizing declarations.");
+    if (!readiness.scenario && label.hasIncompleteData) {
+      warnings.push("≥ is the known contribution under the selected ingredient profiles, with incomplete composition coverage; unverified purity and identities can change it.");
     }
+    if (!readiness.scenario && label.unavailableNutrients.length) {
+      warnings.push("Needs composition = unresolved, not zero. Discuss the flagged specifications with the sender before finalizing macro totals.");
+    }
+    if (label.hasDeclaredActives) {
+      warnings.push("Vitamin amounts use the entered active-quantity assumption.");
+    }
+    if (label.hasEstimatedActives) {
+      warnings.push("≈ assumes pure anhydrous lysine HCl and pure D-panthenol; B5 is a theoretical conversion. Assays are unverified.");
+    }
+    if (label.waterBase && !readiness.scenario) {
+      warnings.push("Base assumption: water sufficient to make the finished volume; no sugar syrup added. Other ingredients may still contribute energy or macronutrients.");
+    }
+    else if (!label.waterBase && label.servingUnit === "mL") warnings.push("Liquid base not confirmed: request the water, syrup, sorbitol or carrier composition and finished yield.");
     if (label.hasIdentityReview) {
       warnings.push("Resolve the flagged ingredient identities before using this draft externally.");
     }
+    if (label.hasDeclaredActiveAssumptions) {
+      warnings.push("Vitamin quantities use the entered amounts as active nutrient amounts; confirm chemical forms, dilutions and supplier assays.");
+    }
     const warning = document.querySelector("#label-data-warning");
     warning.hidden = warnings.length === 0;
-    warning.textContent = warnings.join(" ");
-    updateStatus(labelStatus, "Label preview updated.");
+    warning.textContent = warnings.join(readiness.scenario ? "\n\n" : " ");
+    updateStatus(labelStatus, `${readiness.title}. ${readiness.requests.length} supplier information requests; ${details.missing.length} product declarations to complete. Print produces draft artwork.`);
     recordAudit("label_preview_updated", {
       serving_size: label.servingSize,
       serving_unit: label.servingUnit,
       nutrient_count: label.nutrients.length,
       incomplete_data: label.hasIncompleteData,
+      assumption_estimate: Boolean(active.assumption_scenario?.active),
     });
     return true;
   } catch (error) {
+    preview.hidden = true;
+    printButton.disabled = true;
     updateStatus(labelStatus, error.message, true);
     return false;
   }
 }
 
 function renderResult(result) {
+  const hadResult = Boolean(latestResult);
   latestResult = result;
+  currentInputBasis = result.input_basis || currentInputBasis;
+  document.querySelector("#input-basis").value = currentInputBasis;
+  updateInputBasis();
   currentRows = result.formula_rows.map((row) => ({ ...row }));
-  document.querySelector("#inference-name").textContent = result.product_inference.name;
-  document.querySelector("#inference-reason").textContent = result.product_inference.reason;
-  document.querySelector("#inference-boundary").textContent = result.product_inference.boundary;
-  document.querySelector("#inference-confidence").textContent = `Confidence: ${result.product_inference.confidence}`;
   const known = formatNumber(result.coverage.characterized_percent);
   const unknown = formatNumber(result.coverage.uncharacterized_percent);
   document.querySelector("#coverage-known").textContent = known;
   document.querySelector("#coverage-bar").style.width = `${Math.min(100, Number(known))}%`;
-  document.querySelector("#coverage-note").textContent = `${unknown}% of the measured input has not been identified. This is different from accuracy.`;
+  document.querySelector("#coverage-note").textContent = `${unknown}% of explicitly weighed input has no composition profile. A profile may cover just one nutrient; this percentage does not measure complete macros, accuracy or the unlisted liquid base.`;
   document.querySelector("#basis-label").textContent = `Calculated ${result.basis_label}`;
   document.querySelector("#engine-version").textContent = `Calculator ${result.calculation?.engine_version || "version not shown"}`;
   document.querySelector("#report-fingerprint").textContent = result.calculation?.nutrition_catalog_fingerprint
     ? `Data set ${result.calculation.nutrition_catalog_fingerprint.slice(0, 10)}`
     : "Data set ID unavailable";
-  renderFormula(result.formula_rows);
-  renderIdentityReview(currentRows);
-  renderComponents(result.present_components, result.basis_label);
   renderHistory();
   renderList("#assumptions-list", result.report_assumptions, "No extra assumptions were used.");
-  renderList("#missing-list", result.missing_information, "No missing ingredient information was found.");
   const labelUnit = result.basis_label === "per 100 mL" ? "mL" : "g";
   const labelUnitElement = document.querySelector("#label-serving-unit");
   if (labelUnitElement.textContent !== labelUnit) {
-    document.querySelector("#label-serving-size").value = labelUnit === "mL" ? "200" : "30";
+    document.querySelector("#label-serving-size").value = "";
   }
   labelUnitElement.textContent = labelUnit;
-  document.querySelector("#label-product-name").value = result.product_name;
+  document.querySelector("#label-base").disabled = labelUnit !== "mL";
+  if (labelUnit !== "mL") document.querySelector("#label-base").value = "unspecified";
+  if (!hadResult) document.querySelector("#label-product-name").value = result.product_name;
+  restoreLabelReview(result);
+  renderFormula(result.formula_rows);
+  renderIdentityReview(currentRows);
   renderNutritionLabel();
   const saveButton = document.querySelector("#save-workspace");
   saveButton.disabled = Boolean(workspace);
-  saveButton.textContent = workspace ? "Saved" : "Save formula";
+  saveButton.textContent = workspace ? workspace.mode === "browser" ? "Saved in this browser" : "Saved online" : "Save formula";
   results.hidden = false;
   results.scrollIntoView({ behavior: "smooth", block: "start" });
   document.querySelector("#results-title").focus();
@@ -942,6 +1262,7 @@ function renderResult(result) {
 async function analyzeContents(contents, uploadedName, trigger = "review_confirmed", decisions = []) {
   const startedAt = performance.now();
   const inputHash = await sha256(contents);
+  const acceptedRows = currentRows.filter((row) => confirmedIdentities.has(identityReviewKey(row)));
   let requestId = null;
   let responseStatus = null;
   latestFileName = uploadedName;
@@ -962,7 +1283,11 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
       file_name: uploadedName.endsWith(".tsv") ? uploadedName : `${uploadedName}.tsv`,
       contents,
       accepted_aliases: acceptedAliasPayload(),
+      input_basis: currentInputBasis,
     };
+    if (trigger === "automatic_estimate" || trigger === "review_confirmed") {
+      requestBody.accepted_aliases = [...new Map([...bestEstimateAliases(draftRows), ...requestBody.accepted_aliases].map((item) => [item.alias, item])).values()];
+    }
     if (workspace?.mode === "server") {
       requestBody.expected_version = workspace.currentVersion;
       requestBody.cause = trigger;
@@ -980,7 +1305,6 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
     const data = payload.report || payload;
     if (workspace?.mode === "server" && payload.version) {
       workspace.currentVersion = payload.version.version;
-      await persistBrowserWorkspace();
       await refreshDatabaseSync();
     }
     sessionHistory = appendSessionVersion(
@@ -989,9 +1313,17 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
       trigger === "review_confirmed" && sessionHistory.length === 0 ? "created" : trigger,
       payload.version?.version || null,
     );
-    await persistBrowserWorkspace();
+    // Alias acceptance can change source wording; retain the exact accepted input
+    // and material through recalculation, without accepting a new interpretation.
+    for (const row of data.formula_rows) {
+      if (!row.unresolved && acceptedRows.some((accepted) => accepted.item === row.item &&
+        accepted.material_id === row.material_id && accepted.submitted_quantity === row.submitted_quantity &&
+        accepted.submitted_unit === row.submitted_unit)) confirmedIdentities.add(identityReviewKey(row));
+    }
     formulaReview.hidden = true;
     renderResult(data);
+    if (trigger === "automatic_estimate" || trigger === "review_confirmed") applyBestLabelDefaults();
+    await persistBrowserWorkspace();
     window.appHealth?.track('formula_checked');
     const resultForHash = { ...data };
     delete resultForHash.markdown;
@@ -1034,17 +1366,25 @@ document.querySelector("#save-workspace").addEventListener("click", async () => 
   button.disabled = true;
   button.textContent = "Saving…";
   try {
-    const response = await fetch("/api/formulas", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        file_name: latestFileName,
-        contents: latestContents,
-        accepted_aliases: acceptedAliasPayload(),
-      }),
-    });
-    const payload = await response.json();
-    if (!response.ok && payload.code !== "persistence_unavailable") {
+    let response;
+    let payload;
+    try {
+      response = await fetch("/api/formulas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          file_name: latestFileName,
+          contents: latestContents,
+          accepted_aliases: acceptedAliasPayload(),
+          input_basis: currentInputBasis,
+        }),
+      });
+      payload = await response.json();
+      if (response.status >= 500) payload = { code: "persistence_unavailable" };
+    } catch {
+      payload = { code: "persistence_unavailable" };
+    }
+    if (response && !response.ok && payload.code !== "persistence_unavailable") {
       throw new Error(payload.error || "Your work could not be saved.");
     }
     if (payload.code === "persistence_unavailable") {
@@ -1054,7 +1394,7 @@ document.querySelector("#save-workspace").addEventListener("click", async () => 
         currentVersion: sessionHistory.at(-1)?.version || 1,
       };
       await persistBrowserWorkspace();
-      button.textContent = "Saved";
+      button.textContent = "Saved in this browser";
       renderHistory();
       recordAudit("workspace_saved", {
         storage: "browser",
@@ -1091,31 +1431,105 @@ calculateButton.addEventListener("click", async () => {
   }
 });
 
+function currentOutputSnapshot() {
+  const options = labelReviewOptions();
+  const active = displayedResult();
+  const exportResult = structuredClone(active);
+  exportResult.readiness = buildResultReadiness(active, options);
+  exportResult.label_review = labelReviewSnapshot();
+  try { exportResult.label = buildNutritionLabel(active, { ...options, includeUnavailable: true }); }
+  catch { exportResult.label = null; }
+  delete exportResult.markdown;
+  if (active.assumption_scenario?.active) {
+    exportResult.source_result = structuredClone(latestResult);
+    delete exportResult.source_result.markdown;
+  }
+  return exportResult;
+}
+
+function currentOutputMarkdown(snapshot) {
+  const label = snapshot.label;
+  const basis = snapshot.label_review.amountBasis === "serving" ? "perServing" : "perBasis";
+  const lines = [`# ${label?.productName || snapshot.product_name}`, "",
+    readinessMarkdown(snapshot.readiness, snapshot.product_name), "", "## Output assumptions", "",
+    ...(snapshot.report_assumptions || []).map((assumption) => `- ${assumption}`), ""];
+  if (label) {
+    lines.push(`## Nutrition label — ${basis === "perServing" ? label.servingLabel : label.basisLabel}`, "",
+      `RDA percentages use the ${label.servingSize} ${label.servingUnit} dose. Men/women: moderate work; child reference: boys aged 10–12. B5 uses adequate intake (AI).`, "",
+      "| Nutrient | Amount | Men | Women | Boys 10–12 |", "|---|---:|---:|---:|---:|");
+    for (const group of label.groups) {
+      lines.push(`| **${group.name}** | | | | |`);
+      for (const nutrient of group.nutrients) lines.push(`| ${nutrient.name}${nutrient.sourceLabel ? ` (${nutrient.sourceLabel})` : ""} | ${nutrient[basis]} ${nutrient.unit} | ${nutrient.rda.men} | ${nutrient.rda.women} | ${nutrient.rda.children} |`);
+    }
+    lines.push("", "## Ingredient statement", "", label.ingredients.join(", "), "");
+    lines.push("## Ingredient INS status", "", "| Ingredient | INS status |", "|---|---|",
+      ...label.ingredientDetails.map((item) => `| ${item.name} | ${item.insStatusLabel} |`), "");
+    lines.push("## Product declarations", "", `Category: ${label.productDetails.category}. Dietary status: ${label.productDetails.dietary}.`, "",
+      ...label.productDetails.sections.map((section) => `**${section.title}:** ${section.text}`), "",
+      ...label.productDetails.pack.map((item) => `**${item.title}:** ${item.text}`), "",
+      `**Barcode:** ${label.productDetails.barcode.valid ? label.productDetails.barcode.digits : label.productDetails.barcode.issue}`, "",
+      label.productDetails.categoryDeclaration, label.productDetails.note, "",
+      "## Additive identity review", "", ...label.additiveIssues.map((issue) => `- ${issue.ingredient}: ${issue.needed}`), "",
+      `[${label.additiveReference.title}](${label.additiveReference.url})`, label.additiveReference.scope, "");
+  } else lines.push("Serving details are invalid or missing; specify the dose before finalizing per-serving output.", "");
+  if (snapshot.assumption_scenario?.active) lines.push("Original source results are retained separately in the JSON download. Assumed zero macros are not measured zeros. Chloride is the lysine-HCl contribution only.", "");
+  return lines.join("\n");
+}
+
 document.querySelector("#download-report").addEventListener("click", () => {
   if (!latestResult) return;
   window.appHealth?.track('report_downloaded');
   recordAudit("report_downloaded", { format: "markdown" });
-  const blob = new Blob([latestResult.markdown], { type: "text/markdown;charset=utf-8" });
+  const snapshot = currentOutputSnapshot();
+  const blob = new Blob([currentOutputMarkdown(snapshot)], { type: "text/markdown;charset=utf-8" });
   downloadBlob(blob, `${latestResult.product_name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-report.md`);
 });
 
 document.querySelector("#download-json").addEventListener("click", () => {
   if (!latestResult) return;
   recordAudit("report_downloaded", { format: "json" });
-  const exportResult = { ...latestResult };
-  delete exportResult.markdown;
+  const exportResult = currentOutputSnapshot();
   const blob = new Blob([`${JSON.stringify(exportResult, null, 2)}\n`], { type: "application/json;charset=utf-8" });
   downloadBlob(blob, `${latestResult.product_name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.json`);
+});
+
+document.querySelector("#download-requests").addEventListener("click", () => {
+  if (!latestResult) return;
+  const readiness = buildResultReadiness(displayedResult(), labelReviewOptions());
+  const label = currentOutputSnapshot().label;
+  const labelRequests = label ? ["", "ADDITIVE IDENTITY / SUITABILITY", ...label.additiveIssues.map((issue) => `- ${issue.ingredient}: ${issue.needed}`),
+    "", "PRODUCT DECLARATIONS TO COMPLETE", ...label.productDetails.missing.map((item) => `- ${item}`), "", label.productDetails.note].join("\n") : "";
+  downloadBlob(new Blob([senderChecklist(readiness, document.querySelector("#label-product-name").value || latestResult.product_name), labelRequests], { type: "text/plain;charset=utf-8" }), "sender-information-needed.txt");
+  recordAudit("sender_checklist_downloaded", { request_count: readiness.requests.length });
 });
 
 document.querySelector("#label-options").addEventListener("submit", (event) => {
   event.preventDefault();
   renderNutritionLabel();
+  persistLabelReview();
 });
+
+for (const selector of ["#label-amount-basis", "#label-base", "#label-assumption-estimate"]) {
+  document.querySelector(selector).addEventListener("change", () => { renderNutritionLabel(); persistLabelReview(); });
+}
+for (const id of ["#label-serving-size", "#label-servings-per-pack", "#label-product-name"]) {
+  document.querySelector(id).addEventListener("input", () => { renderNutritionLabel(); persistLabelReview(); });
+}
+for (const key of Object.keys(LABEL_DETAIL_FIELDS)) {
+  const input = document.querySelector(`#label-detail-${key}`);
+  input.addEventListener(input.tagName === "SELECT" ? "change" : "input", () => { renderNutritionLabel(); persistLabelReview(); });
+}
 
 document.querySelector("#print-label").addEventListener("click", () => {
   if (!latestResult) return;
   if (!renderNutritionLabel()) return;
+  const savedPdf = document.querySelector("#download-saved-label");
+  if (savedPdf.hasAttribute("href") && publishedReviewSignature &&
+    JSON.stringify(labelReviewSnapshot()) === publishedReviewSignature) {
+    savedPdf.click();
+    recordAudit("label_downloaded", { format: "saved_pdf" });
+    return;
+  }
   document.body.classList.add("printing-label");
   recordAudit("label_print_opened", { format: "browser_print" });
   window.print();
@@ -1144,6 +1558,9 @@ document.querySelector("#start-over").addEventListener("click", () => {
   sessionHistory = [];
   workspace = null;
   confirmedIdentities.clear();
+  savedLabelReview = null;
+  document.querySelector("#label-options").reset();
+  document.querySelector("#calculation-details").open = false;
   fileInput.value = "";
   formulaText.value = "";
   fileSummary.hidden = true;
@@ -1194,8 +1611,49 @@ addIngredientForm.addEventListener("submit", async (event) => {
 refreshIngredientLibrary().then(refreshDatabaseSync);
 
 const requestedFormula = new URLSearchParams(window.location.search).get("formula");
+const requestedProduct = new URLSearchParams(window.location.search).get("product");
 const resumeBrowserFormula = new URLSearchParams(window.location.search).get("resume") === "browser";
-if (requestedFormula || resumeBrowserFormula) {
+function applyBestLabelDefaults() {
+  for (const row of latestResult.formula_rows) if (row.material_id && !row.unresolved)
+    confirmedIdentities.add(identityReviewKey(row));
+  const liquid = latestResult.basis_label === "per 100 mL";
+  const smallDose = currentInputBasis === "dose";
+  document.querySelector("#label-serving-size").value = smallDose ? latestResult.label_batch_quantity : "100";
+  document.querySelector("#label-amount-basis").value = smallDose ? "serving" : "100";
+  document.querySelector("#label-base").value = liquid ? "water" : "unspecified";
+  document.querySelector("#label-assumption-estimate").checked = scenarioEligibility(latestResult, labelReviewOptions()).allowed;
+  renderNutritionLabel();
+}
+
+function openPublishedProduct(product) {
+  workspace = null;
+  confirmedIdentities.clear();
+  document.querySelector("#label-options").reset();
+  document.querySelector("#calculation-details").open = false;
+  publishedProduct = product;
+  currentInputBasis = "dose";
+  document.querySelector("#input-basis").value = "dose";
+  document.querySelector("#dose-volume").value = product.labelReview.servingSize;
+  updateInputBasis();
+  latestContents = product.contents;
+  latestFileName = product.fileName;
+  sessionHistory = appendSessionVersion([], product.report, "published_product");
+  savedLabelReview = product.labelReview;
+  formulaReview.hidden = true;
+  renderResult(structuredClone(product.report));
+  publishedReviewSignature = JSON.stringify(labelReviewSnapshot());
+  renderNutritionLabel();
+  setStatus("Your label is ready. Download PDF saves this sheet; after edits, choose Save as PDF in the print dialog.");
+  document.querySelector("#label-builder").scrollIntoView({ block: "start" });
+}
+
+if (requestedProduct) {
+  const product = savedProduct(requestedProduct);
+  if (!product) setStatus("This published product could not be found.", true);
+  else {
+    openPublishedProduct(product);
+  }
+} else if (requestedFormula || resumeBrowserFormula) {
   (requestedFormula ? loadRemoteWorkspace(requestedFormula) : loadSavedBrowserFormula())
     .catch((error) => setStatus(error.message, true));
 }
