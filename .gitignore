@@ -14,3 +14,4 @@ artifacts/worker-build/
 node_modules/
 dist/
 eng.traineddata
+.fleet-local/

@@ -123,7 +123,7 @@ function jsonRows(value) {
   return [];
 }
 
-export function normalizeJson(value) {
+export function normalizeJson(value, options = {}) {
   const parsed = typeof value === "string" ? JSON.parse(value) : value;
   const rows = [];
   if (parsed && !Array.isArray(parsed) && typeof parsed === "object") {
@@ -146,7 +146,7 @@ export function normalizeJson(value) {
       : rowFromObject(row, index + 1);
     if (normalized) rows.push(normalized);
   }
-  return finalizeRows(rows, "JSON");
+  return finalizeRows(rows, "JSON", options);
 }
 
 function detectHeader(matrix) {
@@ -160,7 +160,7 @@ function detectHeader(matrix) {
   return null;
 }
 
-export function normalizeMatrix(rawMatrix, method = "table") {
+export function normalizeMatrix(rawMatrix, method = "table", options = {}) {
   const matrix = rawMatrix
     .map((row) => (Array.isArray(row) ? row.map(cleanCell) : [cleanCell(row)]))
     .map((row) => {
@@ -188,10 +188,15 @@ export function normalizeMatrix(rawMatrix, method = "table") {
     } else if (cells.length === 1) row = parseLine(cells[0], index + 1);
     if (row) rows.push(row);
   }
-  return finalizeRows(rows, method);
+  return finalizeRows(rows, method, options);
 }
 
-function finalizeRows(rows, method) {
+function finalizeRows(rows, method, options = {}) {
+  if (options.basisRow && rows.length && !isFinishedBatch(rows[0].item)) {
+    const basis = canonicalRow("FINISHED BATCH", options.basisRow.quantity, options.basisRow.unit, 0);
+    if (!basis) throw new Error("Enter a valid dose volume and unit.");
+    rows = [basis, ...rows];
+  }
   const deduplicated = rows.filter(
     (row, index) => index === 0 || JSON.stringify(row) !== JSON.stringify(rows[index - 1]),
   );
@@ -206,12 +211,12 @@ function finalizeRows(rows, method) {
   return { rows: deduplicated, method };
 }
 
-export function normalizeText(text, method = "pasted text") {
+export function normalizeText(text, method = "pasted text", options = {}) {
   const source = String(text || "").trim();
   if (!source) throw new Error("Paste a formula or choose a supported file.");
   if (/^[\[{]/.test(source)) {
     try {
-      return normalizeJson(source);
+      return normalizeJson(source, options);
     } catch (error) {
       if (error instanceof SyntaxError) throw new Error("The JSON input is not valid.");
       throw error;
@@ -229,7 +234,7 @@ export function normalizeText(text, method = "pasted text") {
           ? ","
           : null;
   const matrix = lines.map((line) => delimiter ? parseCsvLine(line, delimiter) : [line]);
-  return normalizeMatrix(matrix, method);
+  return normalizeMatrix(matrix, method, options);
 }
 
 export function rowsToTsv(rows) {

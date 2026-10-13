@@ -87,6 +87,7 @@ def _source_record(material: dict[str, Any]) -> dict[str, Any]:
         for key in (
             "kind",
             "reference",
+            "label_source",
             "id",
             "url",
             "version",

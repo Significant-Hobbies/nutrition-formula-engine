@@ -30,7 +30,11 @@ opened. The saved list is public and identical on every device.
 - The editable recovered formula appears before calculation.
 - The macro/micronutrient result follows, then assumptions and missing evidence.
 - A compact label builder follows the evidence review and pairs editable serving
-  details with a monochrome, printable nutrition panel.
+  details with the owner-supplied warm yellow, ruled nutrition table. Main
+  nutrients, vitamins, minerals and weighed ingredient groups have category bands; mineral forms sit below
+  nutrient names. One amount column and three RDA columns retain the reference
+  hierarchy. The surrounding neutral app shell stays consistent. On phones,
+  this dense table keeps readable type with contained horizontal scrolling.
 - Uncertain rows expand inline; corrections do not open a separate workflow.
 - On narrow screens, tables become labelled stacked rows without hiding units,
   ranges, source status, or decision actions.

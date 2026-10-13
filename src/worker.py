@@ -7,7 +7,7 @@ import json
 import re
 import time
 import uuid
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, urlparse, quote
 
 from js import console
 from pyodide.ffi import create_proxy
@@ -36,9 +36,68 @@ from nutrition_formula.versioning import (
     VersionConflictError,
 )
 
+from nutrition_formula.provider_search import ProviderSearch
+from nutrition_formula.line_review import D1LineReviewRepository, source_rows
+
 MAX_REQUEST_BYTES = MAX_UPLOAD_BYTES + 4096
+MAX_PROVIDER_RESPONSE_BYTES = 262144
 JSON_HEADERS = {"Cache-Control": "no-store"}
 _APP_HEALTH_TASKS: set[asyncio.Task] = set()
+
+
+async def _release_provider_reader(reader, *, cancel):
+    if cancel:
+        try:
+            await reader.cancel()
+        except BaseException:  # Keep the original read error or timeout.
+            pass
+    try:
+        reader.releaseLock()
+    except Exception:  # noqa: BLE001 - cleanup must not mask the request result.
+        pass
+
+
+async def _provider_json_response(response):
+    body = response.body
+    if body is None:
+        return json.loads(b"")
+    reader = body.getReader()
+    complete = False
+    try:
+        declared_length = response.headers.get("content-length")
+        if declared_length is not None:
+            try:
+                declared_length = int(declared_length)
+            except (TypeError, ValueError) as exc:
+                raise ValueError("Invalid provider Content-Length") from exc
+            if declared_length < 0 or declared_length > MAX_PROVIDER_RESPONSE_BYTES:
+                raise ValueError("Provider response exceeds size bound")
+
+        chunks = []
+        total_bytes = 0
+        while True:
+            result = await reader.read()
+            if result.done:
+                complete = True
+                break
+            chunk = result.value
+            chunk_length = getattr(chunk, "byteLength", None)
+            if chunk_length is None:
+                chunk_length = len(chunk)
+            try:
+                chunk_length = int(chunk_length)
+            except (TypeError, ValueError) as exc:
+                raise ValueError("Invalid provider response chunk") from exc
+            if chunk_length < 0 or total_bytes + chunk_length > MAX_PROVIDER_RESPONSE_BYTES:
+                raise ValueError("Provider response exceeds size bound")
+            chunk_bytes = chunk.to_bytes() if hasattr(chunk, "to_bytes") else bytes(chunk)
+            if len(chunk_bytes) != chunk_length:
+                raise ValueError("Invalid provider response chunk")
+            chunks.append(chunk_bytes)
+            total_bytes += chunk_length
+        return json.loads(b"".join(chunks).decode("utf-8"))
+    finally:
+        await _release_provider_reader(reader, cancel=not complete)
 _APP_HEALTH_COLD = True
 
 
@@ -78,6 +137,29 @@ class Default(WorkerEntrypoint):
         self._record_stage_timing(request, path, response.status, started, cold, duration_ms)
         return response
 
+    async def _provider_transport(self, provider, query, limit):
+        if provider == "pubchem":
+            url = ("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/"
+                   + quote(query, safe="") + "/property/Title,MolecularFormula,MolecularWeight/JSON")
+        else:
+            key = getattr(self.env, "FDC_API_KEY", None)
+            if not key:
+                return 503, None
+            url = ("https://api.nal.usda.gov/fdc/v1/foods/search?query=" + quote(query, safe="")
+                   + "&pageSize=" + str(limit) + "&api_key=" + quote(str(key), safe=""))
+        response = await worker_fetch(url)
+        if response.status != 200:
+            if response.body is not None:
+                reader = response.body.getReader()
+                await _release_provider_reader(reader, cancel=True)
+            return response.status, None
+        return 200, await _provider_json_response(response)
+
+    def _provider_service(self):
+        if not hasattr(self, "_provider_search"):
+            self._provider_search = ProviderSearch(self._provider_transport)
+        return self._provider_search
+
     async def _fetch(self, request, parsed_url, path, method):
 
         if path == "/api/health" and method == "GET":
@@ -91,6 +173,12 @@ class Default(WorkerEntrypoint):
         if path == "/api/ingredients/search" and method == "GET":
             params = parse_qs(parsed_url.query)
             try:
+                provider = params.get("provider", ["local"])[0]
+                if provider != "local":
+                    return _json(await self._provider_service().search(
+                        provider, params.get("q", [""])[0],
+                        refresh=params.get("refresh", ["false"])[0] == "true"
+                    ))
                 result = search_local_ingredients(
                     params.get("q", [""])[0], params.get("kind", ["all"])[0]
                 )
@@ -137,6 +225,13 @@ class Default(WorkerEntrypoint):
                     return _json({"profiles": profiles}, request_id=request_id)
                 if path == "/api/ingredients" and method == "POST":
                     body = await request.json()
+                    if body.get("provider"):
+                        profile = await self._provider_service().accept(
+                            repository, provider=body.get("provider"), query=body.get("query"),
+                            candidate_id=body.get("candidate_id"), evidence_id=body.get("evidence_id"),
+                            submitted_alias=body.get("submitted_alias"),
+                        )
+                        return _json({"profile": profile}, status=201, request_id=request_id)
                     material_id, submitted_alias, kind = validate_material_save_body(body)
                     material = local_material(material_id, kind)
                     if material is None:
@@ -204,6 +299,18 @@ class Default(WorkerEntrypoint):
                 repository = D1FormulaRepository(
                     self.env.FORMULA_DB, owner_id=PUBLIC_OWNER_ID
                 )
+                review_match = re.fullmatch(r"/api/formulas/([^/]+)/versions/(\d+)/review", path)
+                if review_match and method in {"GET", "POST"}:
+                    version = await repository.get_version(review_match.group(1), None, int(review_match.group(2)))
+                    reviews = D1LineReviewRepository(self.env.FORMULA_DB, owner_id=PUBLIC_OWNER_ID)
+                    if method == "POST":
+                        decision = await reviews.save(version, await request.json())
+                        return _json({"decision": decision}, request_id=request_id)
+                    rows = source_rows(version)
+                    identities = {r["source_row_id"] for r in rows}
+                    decisions = [d for d in await reviews.list(version["formula_id"])
+                                 if d["source_row_id"] in identities]
+                    return _json({"rows": rows, "decisions": decisions}, request_id=request_id)
                 if path == "/api/formulas" and method == "GET":
                     return _json(
                         {"workspaces": await repository.list_workspaces()},
@@ -221,6 +328,7 @@ class Default(WorkerEntrypoint):
                         accepted_profiles=profiles,
                         accepted_aliases=validate_accepted_aliases(body),
                     )
+                    report["input_basis"] = "dose" if body.get("input_basis") == "dose" else "batch"
                     record = await repository.create(
                         file_name=file_name,
                         contents=contents,
@@ -264,6 +372,7 @@ class Default(WorkerEntrypoint):
                         accepted_profiles=profiles,
                         accepted_aliases=validate_accepted_aliases(body),
                     )
+                    report["input_basis"] = "dose" if body.get("input_basis") == "dose" else "batch"
                     version = await repository.append(
                         formula_id=append_match.group(1),
                         access_token=None,
@@ -296,7 +405,7 @@ class Default(WorkerEntrypoint):
                 return _json({"error": "Formula history route not found"}, status=404)
             except VersionConflictError as exc:
                 return _json({"error": str(exc)}, status=409, request_id=request_id)
-            except (FormulaAccessError, FormulaUploadError) as exc:
+            except (FormulaAccessError, FormulaUploadError, ValueError) as exc:
                 return _json({"error": str(exc)}, status=400, request_id=request_id)
             except Exception as exc:  # noqa: BLE001 - runtime JSON and D1 errors vary
                 console.error(
@@ -383,6 +492,7 @@ class Default(WorkerEntrypoint):
                     accepted_profiles=profiles,
                     accepted_aliases=validate_accepted_aliases(body),
                 )
+                result["input_basis"] = "dose" if body.get("input_basis") == "dose" else "batch"
                 _log(
                     "formula_analysis_completed",
                     request_id,

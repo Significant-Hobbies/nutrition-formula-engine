@@ -73,7 +73,7 @@ async function renderPdfPage(page) {
   return canvas;
 }
 
-async function ingestPdf(file, onProgress) {
+async function ingestPdf(file, onProgress, options) {
   onProgress("Reading PDF in this browser…");
   const bytes = new Uint8Array(await file.arrayBuffer());
   const pdf = await getDocument({ data: bytes }).promise;
@@ -93,7 +93,7 @@ async function ingestPdf(file, onProgress) {
   const embeddedText = pageTexts.join("\n").trim();
   if (embeddedText) {
     try {
-      return { ...normalizeText(embeddedText, "PDF embedded text"), rawText: embeddedText };
+      return { ...normalizeText(embeddedText, "PDF embedded text", options), rawText: embeddedText };
     } catch {
       // A scanned or layout-heavy PDF falls through to page OCR.
     }
@@ -106,28 +106,28 @@ async function ingestPdf(file, onProgress) {
     ocrTexts.push(await recognizeImage(canvas, onProgress));
   }
   const rawText = ocrTexts.join("\n");
-  return { ...normalizeText(rawText, "PDF OCR"), rawText };
+  return { ...normalizeText(rawText, "PDF OCR", options), rawText };
 }
 
-async function ingestSpreadsheet(file, onProgress) {
+async function ingestSpreadsheet(file, onProgress, options) {
   onProgress("Reading spreadsheet in this browser…");
   const matrix = await readSheet(file);
-  return { ...normalizeMatrix(matrix, "XLSX spreadsheet"), rawText: "" };
+  return { ...normalizeMatrix(matrix, "XLSX spreadsheet", options), rawText: "" };
 }
 
-export async function ingestFile(file, onProgress = () => {}) {
+export async function ingestFile(file, onProgress = () => {}, options = {}) {
   if (!file) throw new Error("Choose a file or paste a formula.");
   if (file.size > MAX_INPUT_BYTES) throw new Error("The input must be 12 MB or smaller.");
   const extension = fileExtension(file);
-  if (extension === "xlsx") return ingestSpreadsheet(file, onProgress);
-  if (extension === "pdf" || file.type === "application/pdf") return ingestPdf(file, onProgress);
+  if (extension === "xlsx") return ingestSpreadsheet(file, onProgress, options);
+  if (extension === "pdf" || file.type === "application/pdf") return ingestPdf(file, onProgress, options);
   if (IMAGE_TYPES.has(file.type) || ["png", "jpg", "jpeg", "webp", "bmp"].includes(extension)) {
     const rawText = await recognizeImage(file, onProgress);
-    return { ...normalizeText(rawText, "image OCR"), rawText };
+    return { ...normalizeText(rawText, "image OCR", options), rawText };
   }
   if (file.type.startsWith("text/") || TEXT_EXTENSIONS.has(extension)) {
     const rawText = await file.text();
-    return { ...normalizeText(rawText, extension === "json" ? "JSON" : "text file"), rawText };
+    return { ...normalizeText(rawText, extension === "json" ? "JSON" : "text file", options), rawText };
   }
   throw new Error(
     "That file type is not supported yet. Use pasted text, TSV, CSV, TXT, JSON, XLSX, PNG, JPEG, WebP, BMP, or PDF.",
