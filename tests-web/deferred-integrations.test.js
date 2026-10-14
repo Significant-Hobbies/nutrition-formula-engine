@@ -72,11 +72,15 @@ test("entry pages preserve main studio footer and defer optional remote scripts"
   for (const path of ["index.html", "recent-formulas/index.html", "case-studies/index.html"]) {
     const html = await readFile(new URL(`../public/${path}`, import.meta.url), "utf8");
     for (const tag of html.matchAll(/<script\b[^>]*>/g)) {
-      if (!tag[0].includes("health.sassmaker.com/tracker.js")) assert.doesNotMatch(tag[0], /\ssrc=["']https?:\/\//, `${path} has an eager remote script`);
+      assert.doesNotMatch(tag[0], /\ssrc=["']https?:\/\//, `${path} has an eager remote script`);
       if (tag[0].includes("data-after-load-src")) {
         assert.match(tag[0], /type="text\/plain"/, `${path} must keep the placeholder inert`);
       }
     }
     assert.match(html, /studio-footer/);
+    if (path === "index.html") {
+      assert.match(html, /afterPageLoad\(loadDeferredScripts\)/);
+      assert.match(html, /data-after-load-src="https:\/\/health\.sassmaker\.com\/tracker\.js"/);
+    }
   }
 });
