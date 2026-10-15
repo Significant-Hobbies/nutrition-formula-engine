@@ -1307,6 +1307,120 @@ td[data-label="Converted to"] {
   font-size: 12px;
 }
 
+.line-review-panel {
+  min-width: 0;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.line-review-panel summary {
+  color: var(--blue-dark);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.line-review-panel[open] summary {
+  margin-bottom: 12px;
+}
+
+.line-review-fields,
+.line-review-actions,
+.line-review-results {
+  display: grid;
+  gap: 10px;
+}
+
+.line-review-fields label {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.line-review-fields input,
+.line-review-fields select,
+.line-review-fields textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  padding: 7px 9px;
+  border: 1px solid #98a2b3;
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.line-review-fields textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+
+.line-review-actions {
+  margin-top: 12px;
+}
+
+.line-review-actions button,
+.line-review-candidate button {
+  min-height: 38px;
+  padding: 7px 10px;
+  border: 1px solid #b8c5c1;
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.line-review-actions .line-review-search {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: var(--surface);
+}
+
+.line-review-actions button:disabled,
+.line-review-candidate button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.line-review-status {
+  margin: 12px 0 0;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.line-review-results {
+  margin-top: 10px;
+}
+
+.line-review-candidate {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface);
+  overflow-wrap: anywhere;
+}
+
+.line-review-candidate a {
+  color: var(--blue-dark);
+}
+
 .formula-tools {
   margin-top: 14px;
   align-items: flex-start;
@@ -1986,6 +2100,10 @@ td[data-label="Converted to"] {
     font-weight: 800;
     letter-spacing: 0.05em;
     text-transform: uppercase;
+  }
+
+  .line-review-panel {
+    grid-column: 1 / -1;
   }
 
   .label-workspace {

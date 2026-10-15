@@ -26,12 +26,16 @@ test("line review preserves request across failed write, reads back, and isolate
     };
     const first = lineReviewPanel({formulaId: "fixture", version: 1, ordinal: 1, item: "duplicate", fetcher});
     const nodes = descendants(first);
+    const retry = nodes.find(n => n.textContent === "Retry saved decision");
+    assert.equal(retry.hidden, true);
     nodes.find(n => n.placeholder).value = "Check source";
     await nodes.find(n => n.textContent === "Search").listeners.click();
     assert.equal(writes[0].state, "search_pending");
-    await nodes.find(n => n.textContent === "Retry saved decision").listeners.click();
+    assert.equal(retry.hidden, false);
+    await retry.listeners.click();
+    assert.equal(retry.hidden, true);
     assert.deepEqual(writes[0], writes[1]);
-    assert.match(nodes.find(n => n.tag === "p").textContent, /search_pending: Check source/);
+    assert.match(nodes.find(n => n.tag === "p").textContent, /Search pending: Check source/);
     const second = lineReviewPanel({formulaId: "fixture", version: 1, ordinal: 2, item: "duplicate", fetcher});
     second.open = true; second.listeners.toggle(); await new Promise(resolve => setImmediate(resolve));
     assert.equal(descendants(second).find(n => n.tag === "p").textContent, "No source decisions recorded.");
