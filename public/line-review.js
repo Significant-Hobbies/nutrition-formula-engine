@@ -1,19 +1,32 @@
 // Review records do not edit the formula or automatically accept search candidates.
 export function lineReviewPanel({ formulaId, version, ordinal, item, fetcher = fetch }) {
   const panel = document.createElement("details");
+  panel.className = "line-review-panel";
   const summary = document.createElement("summary");
   summary.textContent = "Search sources / record rejection";
   panel.append(summary);
   const status = document.createElement("p");
+  status.className = "line-review-status";
   status.setAttribute("role", "status");
   const provider = document.createElement("select");
   for (const [value, label] of [["fdc", "FoodData Central"], ["pubchem", "PubChem"]]) {
     const option = document.createElement("option"); option.value = value; option.textContent = label; provider.append(option);
   }
   const query = document.createElement("input"); query.value = item; query.maxLength = 160; query.setAttribute("aria-label", "Source search query");
-  const rationale = document.createElement("input"); rationale.maxLength = 2000; rationale.placeholder = "Decision rationale (required)"; rationale.setAttribute("aria-label", "Decision rationale");
+  const rationale = document.createElement("textarea"); rationale.maxLength = 2000; rationale.rows = 3; rationale.placeholder = "Why this source decision was made (required)"; rationale.setAttribute("aria-label", "Decision rationale");
   const list = document.createElement("div");
-  let rowId, pending, busy = false;
+  list.className = "line-review-results";
+  const fields = document.createElement("div");
+  fields.className = "line-review-fields";
+  for (const [caption, control] of [["Source", provider], ["Search query", query], ["Decision rationale", rationale]]) {
+    const label = document.createElement("label");
+    label.textContent = caption;
+    label.append(control);
+    fields.append(label);
+  }
+  const actions = document.createElement("div");
+  actions.className = "line-review-actions";
+  let rowId, pending, retryButton, busy = false;
   const endpoint = `/api/formulas/${encodeURIComponent(formulaId)}/versions/${version}/review`;
   async function json(url, options) {
     const response = await fetcher(url, options); const data = await response.json();
@@ -25,7 +38,10 @@ export function lineReviewPanel({ formulaId, version, ordinal, item, fetcher = f
     rowId = data.rows.find(row => row.ordinal === ordinal)?.source_row_id;
     if (!rowId) throw new Error("Source row unavailable");
     const records = data.decisions.filter(d => d.source_row_id === rowId);
-    status.textContent = records.map(d => `${d.state}: ${d.rationale}`).join(" · ") || "No source decisions recorded.";
+    const labels = {search_pending: "Search pending", no_candidate: "No candidate", provider_failure: "Provider unavailable",
+      malformed_response: "Provider response invalid", ambiguous_candidates: "Ambiguous candidates",
+      search_results: "Search results", rejected_candidate: "Candidate rejected"};
+    status.textContent = records.map(d => `${labels[d.state] || d.state}: ${d.rationale}`).join(" · ") || "No source decisions recorded.";
   }
   async function save(state, candidate = {}, retry = false) {
     if (pending && !retry) throw new Error("Retry the failed decision before starting another action.");
@@ -41,7 +57,7 @@ export function lineReviewPanel({ formulaId, version, ordinal, item, fetcher = f
   }
   function button(label, action) {
     const b = document.createElement("button"); b.type = "button"; b.textContent = label;
-    b.addEventListener("click", async () => {if (busy) return; busy = true; b.disabled = true; try {await action();} catch (e) {status.textContent = e.message;} finally {b.disabled = false; busy = false;}});
+    b.addEventListener("click", async () => {if (busy) return; busy = true; b.disabled = true; try {await action();} catch (e) {status.textContent = e.message;} finally {b.disabled = false; busy = false; retryButton.hidden = !pending;}});
     return b;
   }
   async function search(refresh) {
@@ -52,6 +68,7 @@ export function lineReviewPanel({ formulaId, version, ordinal, item, fetcher = f
     await save(states[data.status], {provider: selectedProvider, search_query: selectedQuery}); list.replaceChildren();
     for (const candidate of data.candidates) {
       const entry = document.createElement("p");
+      entry.className = "line-review-candidate";
       const link = document.createElement("a"); link.href = candidate.source.reference; link.target = "_blank"; link.rel = "noopener"; link.textContent = `${candidate.name} · ${candidate.candidate_id} · ${candidate.retrieved_at}`;
       entry.append(link, button("Reject candidate", () => save("rejected_candidate", {...candidate, search_query: selectedQuery})));
       if (candidate.has_composition_profile) entry.append(button("Accept for reuse", async () => {
@@ -62,10 +79,15 @@ export function lineReviewPanel({ formulaId, version, ordinal, item, fetcher = f
       list.append(entry);
     }
   }
-  panel.append(provider, query, rationale, button("Search", () => search(false)), button("Refresh sources", () => search(true)), button("Retry saved decision", async () => {
+  const searchButton = button("Search", () => search(false));
+  searchButton.className = "line-review-search";
+  retryButton = button("Retry saved decision", async () => {
     if (!pending) throw new Error("No failed decision to retry.");
     await save(pending.state, {}, true);
-  }), status, list);
+  });
+  retryButton.hidden = true;
+  actions.append(searchButton, button("Refresh sources", () => search(true)), retryButton);
+  panel.append(fields, actions, status, list);
   panel.addEventListener("toggle", () => {if (panel.open) readback().catch(e => {status.textContent = e.message;});});
   return panel;
 }
