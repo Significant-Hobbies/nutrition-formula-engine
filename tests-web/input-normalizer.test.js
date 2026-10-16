@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { normalizeJson, normalizeMatrix, normalizeText, rowsToTsv } from "../public/input-normalizer.js";
+import { normalizeJson, normalizeMatrix, normalizeText, normalizePages, rowsToTsv } from "../public/input-normalizer.js";
 
 const expected = [
   { item: "FINISHED BATCH", quantity: "1000", unit: "L", source_line: 2 },
@@ -10,7 +10,7 @@ const expected = [
 
 test("normalizes a TSV table", () => {
   const result = normalizeText("Item\tQuantity\tUnit\nFINISHED BATCH\t1000\tL\nFerric ammonium citrate\t13.4\tkg");
-  assert.deepEqual(result.rows, expected);
+  assert.deepEqual(result.rows.map(({ input_source, ...row }) => row), expected);
 });
 
 test("normalizes CSV with quoted cells", () => {
@@ -109,4 +109,50 @@ test("normalizes 48 deterministic unit and finished-batch alias combinations", (
       assert.equal(result.rows[1].unit, expectedUnit, `${batchAlias} / ${unit}`);
     }
   }
+});
+
+
+test("physical line coordinates survive blank lines and Markdown separators", () => {
+  const result = normalizeText("\nItem | Quantity | Unit\n--- | --- | ---\n\nFINISHED BATCH | 1000 | litres\n\nSugar | 500 | grams\n");
+  assert.deepEqual(result.rows.map(row => row.source_line), [5, 7]);
+  assert.equal(result.rows[1].input_source.text, "Sugar | 500 | grams");
+});
+
+test("worksheet coordinates and original cells survive blank rows and edits", () => {
+  const result = normalizeMatrix([[], ["Item", "Quantity", "Unit"], [], ["FINISHED BATCH", "1,000", "litres"], [], ["Sugar", "500", "grams"]], "XLSX spreadsheet", { worksheet: 1 });
+  const row = result.rows[1];
+  row.quantity = "400";
+  row.item = "Sucrose";
+  assert.equal(row.input_source.line, 6);
+  assert.equal(row.input_source.worksheet, 1);
+  assert.deepEqual(row.input_source.cells, ["Sugar", "500", "grams"]);
+  assert.deepEqual(row.input_source.original, { item: "Sugar", quantity: "500", unit: "g" });
+  assert.match(rowsToTsv(result.rows), /Sucrose\t400\tg/);
+});
+
+test("PDF page boundaries and OCR engine confidence survive normalization", () => {
+  const ocr = { engine: "Tesseract.js 7 / LSTM", language: "eng", scope: "page", confidence: 73.25 };
+  const result = normalizePages([{ text: "FINISHED BATCH 1000 L\n", ocr }, { text: "\nSugar 500 kg", ocr }], "PDF OCR");
+  assert.deepEqual(result.rows.map(row => [row.input_source.page, row.input_source.line]), [[1, 1], [2, 2]]);
+  assert.equal(result.rows[1].input_source.ocr.confidence, 73.25);
+  assert.equal(result.rows[1].confidence, undefined);
+});
+
+test("JSON uses structural locations instead of invented physical lines", () => {
+  const result = normalizeJson({ batch: { quantity: 1000, unit: "L" }, ingredients: [{ item: "Sugar", quantity: 500, unit: "kg" }] });
+  assert.deepEqual(result.rows.map(row => row.input_source.json_path), ["batch", "ingredients[0]"]);
+  assert.ok(result.rows.every(row => row.source_line === undefined));
+  assert.equal(JSON.parse(result.rows[1].input_source.text).quantity, 500);
+});
+
+
+test("JSON provenance excludes unrelated object and nested quantity metadata", () => {
+  const result = normalizeJson({
+    owner_note: "PRIVATE-UNUSED",
+    batch: { quantity: { value: "1000", unit: "L", private_note: "PRIVATE-UNUSED" }, customer: "PRIVATE-UNUSED" },
+    ingredients: [{ item: "Sugar", quantity: { value: "500", unit: "kg", secret: "PRIVATE-UNUSED" }, supplier_contact: "PRIVATE-UNUSED" }],
+  });
+  assert.ok(!JSON.stringify(result.rows).includes("PRIVATE-UNUSED"));
+  assert.deepEqual(JSON.parse(result.rows[1].input_source.text), { item: "Sugar", quantity: "500", unit: "kg" });
+  assert.equal(result.rows[1].input_source.json_path, "ingredients[0]");
 });

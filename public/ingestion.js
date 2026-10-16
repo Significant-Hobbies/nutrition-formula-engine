@@ -3,7 +3,7 @@ import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import { readSheet } from "read-excel-file/browser";
 import { createWorker, OEM, PSM } from "tesseract.js";
 
-import { normalizeMatrix, normalizeText } from "./input-normalizer.js";
+import { normalizeMatrix, normalizeText, normalizePages } from "./input-normalizer.js";
 
 GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
@@ -44,9 +44,9 @@ async function recognizeImage(image, onProgress) {
   onProgress("Loading browser OCR…");
   const worker = await getOcrWorker(onProgress);
   const result = await worker.recognize(image);
-  const text = result.data.text.trim();
-  if (!text) throw new Error("OCR did not recover any text from this image.");
-  return text;
+  const text = result.data.text;
+  if (!text.trim()) throw new Error("OCR did not recover any text from this image.");
+  return { text, ocr: { engine: "Tesseract.js 7 / LSTM", language: "eng", scope: "image", confidence: Number.isFinite(result.data.confidence) ? result.data.confidence : null } };
 }
 
 function pdfPageText(items) {
@@ -88,12 +88,16 @@ async function ingestPdf(file, onProgress, options) {
     const page = await pdf.getPage(pageNumber);
     pages.push(page);
     const content = await page.getTextContent();
-    pageTexts.push(pdfPageText(content.items));
+    const text = pdfPageText(content.items);
+    // Only a page with no drawing operators is provably empty. A scanned page
+    // or unrecognized nonblank content must still go through OCR.
+    const empty = !text && (await page.getOperatorList()).fnArray.length === 0;
+    pageTexts.push({ text, empty });
   }
-  const embeddedText = pageTexts.join("\n").trim();
-  if (embeddedText) {
+  const embeddedText = pageTexts.map((page) => page.text).join("\n").trim();
+  if (embeddedText && pageTexts.every((page) => page.text.trim() || page.empty)) {
     try {
-      return { ...normalizeText(embeddedText, "PDF embedded text", options), rawText: embeddedText };
+      return normalizePages(pageTexts, "PDF embedded text", options);
     } catch {
       // A scanned or layout-heavy PDF falls through to page OCR.
     }
@@ -101,18 +105,27 @@ async function ingestPdf(file, onProgress, options) {
 
   const ocrTexts = [];
   for (let index = 0; index < pages.length; index += 1) {
+    if (pageTexts[index].empty) {
+      ocrTexts.push({ text: "" });
+      continue;
+    }
     onProgress(`Rendering PDF page ${index + 1} of ${pages.length} for OCR…`);
     const canvas = await renderPdfPage(pages[index]);
-    ocrTexts.push(await recognizeImage(canvas, onProgress));
+    try {
+      const recognized = await recognizeImage(canvas, onProgress);
+      recognized.ocr.scope = "page";
+      ocrTexts.push(recognized);
+    } catch {
+      throw new Error(`Could not recover text from nonblank PDF page ${index + 1}. Check this page or enter its rows manually.`);
+    }
   }
-  const rawText = ocrTexts.join("\n");
-  return { ...normalizeText(rawText, "PDF OCR", options), rawText };
+  return normalizePages(ocrTexts, "PDF OCR", options);
 }
 
 async function ingestSpreadsheet(file, onProgress, options) {
   onProgress("Reading spreadsheet in this browser…");
-  const matrix = await readSheet(file);
-  return { ...normalizeMatrix(matrix, "XLSX spreadsheet", options), rawText: "" };
+  const matrix = await readSheet(file, { trim: false, parseNumber: (value) => value });
+  return { ...normalizeMatrix(matrix, "XLSX spreadsheet", { ...options, worksheet: 1 }), rawText: "" };
 }
 
 export async function ingestFile(file, onProgress = () => {}, options = {}) {
@@ -122,8 +135,10 @@ export async function ingestFile(file, onProgress = () => {}, options = {}) {
   if (extension === "xlsx") return ingestSpreadsheet(file, onProgress, options);
   if (extension === "pdf" || file.type === "application/pdf") return ingestPdf(file, onProgress, options);
   if (IMAGE_TYPES.has(file.type) || ["png", "jpg", "jpeg", "webp", "bmp"].includes(extension)) {
-    const rawText = await recognizeImage(file, onProgress);
-    return { ...normalizeText(rawText, "image OCR", options), rawText };
+    const recognized = await recognizeImage(file, onProgress);
+    const rawText = recognized.text;
+    const sourceRows = rawText.split(/\r\n|\r|\n/).map(() => ({ ocr: recognized.ocr }));
+    return { ...normalizeText(rawText, "image OCR", { ...options, sourceRows }), rawText };
   }
   if (file.type.startsWith("text/") || TEXT_EXTENSIONS.has(extension)) {
     const rawText = await file.text();

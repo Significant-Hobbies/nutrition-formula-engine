@@ -1,3 +1,4 @@
+import { inputProvenance, sourceLabel as inputSourceLabel, sourceMarkdown } from "./input-provenance.js";
 import { lineReviewPanel } from "./line-review.js";
 import { normalizeText, rowsToTsv } from "./input-normalizer.js";
 import { createAuditLog, sha256 } from "./audit-log.js";
@@ -5,7 +6,7 @@ import { buildNutritionLabel, identityReviewKey, multiplyDivideDecimal, pendingI
 import { buildResultReadiness, componentEvidence, readinessMarkdown, senderChecklist } from "./result-readiness.js";
 import { buildAssumptionScenario, scenarioEligibility, scenarioAssumptions } from "./assumption-scenario.js";
 import { LABEL_DETAIL_FIELDS } from "./label-details.js";
-import { savedProduct, savedProductForRows, bestEstimateAliases } from "./saved-products.js";
+import { savedProduct, bestEstimateAliases } from "./saved-products.js";
 import sampleTsvUrl from "./sample-tonic.tsv?url";
 import {
   appendSessionVersion,
@@ -520,6 +521,15 @@ function renderDraftRows() {
       (value) => { row.item = value; },
       { row_index: index + 1, field: "item" },
     ));
+    if (row.input_source) {
+      const source = document.createElement("small");
+      source.className = "input-source";
+      source.textContent = inputSourceLabel(row.input_source);
+      const original = document.createElement("span");
+      original.textContent = `Recovered: ${["item", "quantity", "unit"].map((key) => row.input_source.original[key]).join(" · ")}`;
+      source.append(original);
+      itemCell.append(source);
+    }
     if (index === 0 && currentInputBasis === "dose") itemCell.querySelector("input").readOnly = true;
     const quantityCell = document.createElement("td");
     quantityCell.dataset.label = "Quantity";
@@ -611,22 +621,7 @@ async function prepareInput() {
       duration_ms: durationSince(startedAt),
       input_sha256: inputHash,
     });
-    const product = currentInputBasis === "dose" ? savedProductForRows(extraction.rows) : null;
-    if (product) openPublishedProduct(product);
-    else if (!/(ocr|tesseract)/i.test(extraction.method) && !extraction.warnings?.length) {
-      validateDraftRows();
-      workspace = null;
-      publishedProduct = null;
-      publishedReviewSignature = null;
-      sessionHistory = [];
-      confirmedIdentities.clear();
-      document.querySelector("#label-options").reset();
-  document.querySelector("#calculation-details").open = false;
-      if (await analyzeContents(rowsToTsv(draftRows), latestFileName, "automatic_estimate")) {
-        setStatus("Printable estimate ready. Assumptions and information needed are included below.");
-        document.querySelector("#label-builder").scrollIntoView({ block: "start" });
-      }
-    } else setStatus("Check the recovered rows, then calculate the printable estimate.");
+    setStatus("Check the recovered rows, then confirm and calculate.");
   } catch (error) {
     recordAudit("ingestion_failed", {
       input_kind: inputKind,
@@ -636,7 +631,7 @@ async function prepareInput() {
     setStatus(error.message, true);
   } finally {
     prepareButton.disabled = false;
-    prepareButton.textContent = "Generate label";
+    prepareButton.textContent = "Prepare formula for review";
   }
 }
 
@@ -692,6 +687,12 @@ function renderFormula(rows) {
     const name = document.createElement("div");
     name.textContent = index === 0 && currentInputBasis === "dose" ? "Amounts per dose" : row.interpretation;
     interpretation.append(name);
+    if (row.input_source) {
+      const source = document.createElement("small");
+      source.className = "input-source";
+      source.textContent = inputSourceLabel(row.input_source);
+      interpretation.append(source);
+    }
     if (row.confidence && row.confidence !== "exact") interpretation.append(confidenceBadge(row.confidence));
     if (index > 0 && row.material_id && row.reusable_profile) {
       const save = reviewButton("Save for reuse", () => saveIngredientForReuse(row));
@@ -1289,8 +1290,9 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
       contents,
       accepted_aliases: acceptedAliasPayload(),
       input_basis: currentInputBasis,
+      input_provenance: inputProvenance(trigger === "review_confirmed" ? draftRows : currentRows),
     };
-    if (trigger === "automatic_estimate" || trigger === "review_confirmed") {
+    if (trigger === "review_confirmed") {
       requestBody.accepted_aliases = [...new Map([...bestEstimateAliases(draftRows), ...requestBody.accepted_aliases].map((item) => [item.alias, item])).values()];
     }
     if (workspace?.mode === "server") {
@@ -1327,7 +1329,7 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
     }
     formulaReview.hidden = true;
     renderResult(data);
-    if (trigger === "automatic_estimate" || trigger === "review_confirmed") applyBestLabelDefaults();
+    if (trigger === "review_confirmed") applyBestLabelDefaults();
     await persistBrowserWorkspace();
     window.appHealth?.track('formula_checked');
     const resultForHash = { ...data };
@@ -1382,6 +1384,7 @@ document.querySelector("#save-workspace").addEventListener("click", async () => 
           contents: latestContents,
           accepted_aliases: acceptedAliasPayload(),
           input_basis: currentInputBasis,
+          input_provenance: inputProvenance(latestResult.formula_rows),
         }),
       });
       payload = await response.json();
@@ -1430,6 +1433,13 @@ document.querySelector("#save-workspace").addEventListener("click", async () => 
 calculateButton.addEventListener("click", async () => {
   try {
     validateDraftRows();
+    workspace = null;
+    publishedProduct = null;
+    publishedReviewSignature = null;
+    sessionHistory = [];
+    confirmedIdentities.clear();
+    document.querySelector("#label-options").reset();
+    document.querySelector("#calculation-details").open = false;
     await analyzeContents(rowsToTsv(draftRows), latestFileName, "review_confirmed");
   } catch (error) {
     recordAudit("review_validation_failed", { error_type: error?.constructor?.name || "Error" });
@@ -1479,6 +1489,7 @@ function currentOutputMarkdown(snapshot) {
       `[${label.additiveReference.title}](${label.additiveReference.url})`, label.additiveReference.scope, "");
   } else lines.push("Serving details are invalid or missing; specify the dose before finalizing per-serving output.", "");
   if (snapshot.assumption_scenario?.active) lines.push("Original source results are retained separately in the JSON download. Assumed zero macros are not measured zeros. Chloride is the lysine-HCl contribution only.", "");
+  lines.push(sourceMarkdown(snapshot.formula_rows));
   return lines.join("\n");
 }
 
