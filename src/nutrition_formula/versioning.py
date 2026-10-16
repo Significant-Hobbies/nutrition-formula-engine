@@ -106,6 +106,8 @@ def _version_record(
     previous_report: dict[str, Any] | None,
 ) -> dict[str, Any]:
     normalized_input = {"file_name": file_name, "contents": contents}
+    if report.get("input_provenance") is not None:
+        normalized_input["input_provenance"] = deepcopy(report["input_provenance"])
     report_payload = deepcopy(report)
     return {
         "formula_id": formula_id,

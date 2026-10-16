@@ -97,7 +97,7 @@
           <input
             id="formula-file"
             type="file"
-            accept=".tsv,.csv,.txt,.json,.xlsx,.png,.jpg,.jpeg,.webp,.bmp,.pdf,text/*,image/*,application/json,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            accept=".tsv,.csv,.txt,.json,.xlsx,.png,.jpg,.jpeg,.webp,.bmp,.pdf,text/*,image/png,image/jpeg,image/webp,image/bmp,application/json,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           />
           <span class="upload-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" role="img">
@@ -105,7 +105,7 @@
             </svg>
           </span>
           <strong>Drop a formula here or choose a file</strong>
-          <span>Text, CSV, JSON, XLSX, image, or PDF · Maximum 12 MB</span>
+          <span>Text, CSV, JSON, XLSX, PNG/JPEG/WebP/BMP, or PDF · Maximum 12 MiB</span>
         </label>
         </details>
 
@@ -116,7 +116,7 @@
           </div>
         </div>
         <button id="prepare-button" class="primary-button wide-button" type="button">
-          Generate label
+          Prepare formula for review
         </button>
         <p id="status" class="status" role="status" aria-live="polite"></p>
 
@@ -148,6 +148,7 @@
             <button id="calculate-button" class="primary-button" type="button">Confirm and calculate</button>
           </div>
         </div>
+        <p class="review-intro">Check every recovered row against your source, including missing rows. PDFs are limited to 8 pages; spreadsheets read the first worksheet. OCR supports English machine print; its engine confidence is not ingredient identity confidence.</p>
         <details id="source-text-details" class="source-text-details" hidden>
           <summary>View recovered source text</summary>
           <pre id="recovered-source-text"></pre>
@@ -325,6 +326,7 @@
             <button id="save-workspace" class="text-button" type="button">Save formula</button>
             <button id="start-over" class="text-button" type="button">Clear and start again</button>
           </div>
+          <p class="label-helper source-save-note">Online saves are public, including source rows. Browser-only saves stay on this device.</p>
           <div class="label-actions">            <button id="download-report" class="secondary-button" type="button">
               Download report
             </button>

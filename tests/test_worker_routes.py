@@ -218,7 +218,8 @@ class FormulaWorkerRouteTests(unittest.IsolatedAsyncioTestCase):
             async def list_active(self):
                 return active_profiles
 
-        def analyze(_contents, _file_name, *, accepted_profiles, accepted_aliases):
+        def analyze(_contents, _file_name, *, accepted_profiles, accepted_aliases, input_provenance):
+            self.assertIsNone(input_provenance)
             received_profiles.extend(accepted_profiles)
             return {"formula_rows": [{}]}
 
@@ -259,7 +260,8 @@ class FormulaWorkerRouteTests(unittest.IsolatedAsyncioTestCase):
             async def list_active(self):
                 return active_profiles
 
-        def analyze(_contents, _file_name, *, accepted_profiles, accepted_aliases):
+        def analyze(_contents, _file_name, *, accepted_profiles, accepted_aliases, input_provenance):
+            self.assertIsNone(input_provenance)
             received_profiles.extend(accepted_profiles)
             return {"formula_rows": [{}]}
 

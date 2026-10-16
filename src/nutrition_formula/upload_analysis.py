@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from .input_provenance import validate_input_provenance, provenance_markdown
+
 import json
 from copy import deepcopy
 from decimal import Decimal
@@ -498,10 +500,12 @@ def analyze_formula_upload(
     *,
     accepted_profiles: list[dict[str, Any]] | None = None,
     accepted_aliases: dict[str, str] | None = None,
+    input_provenance: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Parse one TSV upload and return a concise, auditable composition report."""
 
     parsed = parse_formula_tsv(text, file_name)
+    input_provenance = validate_input_provenance(input_provenance, len(parsed["rows"]))
     submitted_formula = parsed["formula"]
     nutrition_catalog = _load_json(NUTRITION_CATALOG_PATH)
     chemical_catalog = _load_json(CHEMICAL_CATALOG_PATH)
@@ -618,5 +622,9 @@ def analyze_formula_upload(
         "missing_information": missing_information,
         "warnings": warnings,
     }
-    result["markdown"] = _markdown(result)
+    if input_provenance is not None:
+        result["input_provenance"] = input_provenance
+        for row, source in zip(formula_rows, input_provenance["rows"], strict=True):
+            row["input_source"] = source
+    result["markdown"] = _markdown(result) + provenance_markdown(formula_rows)
     return result

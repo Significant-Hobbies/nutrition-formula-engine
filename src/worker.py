@@ -327,6 +327,7 @@ class Default(WorkerEntrypoint):
                         file_name,
                         accepted_profiles=profiles,
                         accepted_aliases=validate_accepted_aliases(body),
+                        input_provenance=body.get("input_provenance"),
                     )
                     report["input_basis"] = "dose" if body.get("input_basis") == "dose" else "batch"
                     record = await repository.create(
@@ -371,6 +372,7 @@ class Default(WorkerEntrypoint):
                         file_name,
                         accepted_profiles=profiles,
                         accepted_aliases=validate_accepted_aliases(body),
+                        input_provenance=body.get("input_provenance"),
                     )
                     report["input_basis"] = "dose" if body.get("input_basis") == "dose" else "batch"
                     version = await repository.append(
@@ -491,6 +493,7 @@ class Default(WorkerEntrypoint):
                     file_name,
                     accepted_profiles=profiles,
                     accepted_aliases=validate_accepted_aliases(body),
+                    input_provenance=body.get("input_provenance"),
                 )
                 result["input_basis"] = "dose" if body.get("input_basis") == "dose" else "batch"
                 _log(

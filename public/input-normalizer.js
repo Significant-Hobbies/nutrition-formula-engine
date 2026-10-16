@@ -114,6 +114,22 @@ function rowFromObject(object, sourceLine) {
   return canonicalRow(entries.get(itemKey), quantity, unit, sourceLine);
 }
 
+// Retain only fields read by the formula parser, never unrelated JSON metadata.
+function jsonRowEvidence(value, batch = false) {
+  const literal = (entry) => entry == null || ["string", "number", "boolean"].includes(typeof entry) ? entry : String(entry);
+  if (Array.isArray(value)) return value.slice(0, 3).map(literal);
+  if (!value || typeof value !== "object") return literal(value);
+  const entries = new Map(Object.entries(value).map(([key, entry]) => [normalizedKey(key), entry]));
+  const read = (keys) => entries.get(keys.map(normalizedKey).find((key) => entries.has(key)));
+  let quantity = read(batch ? ["final_quantity", ...QUANTITY_KEYS] : QUANTITY_KEYS);
+  let unit = read(UNIT_KEYS);
+  if (quantity && typeof quantity === "object") {
+    unit ||= quantity.unit;
+    quantity = quantity.value ?? quantity.quantity ?? quantity.amount;
+  }
+  return { item: batch ? "FINISHED BATCH" : literal(read(ITEM_KEYS)), quantity: literal(quantity), unit: literal(unit) };
+}
+
 function jsonRows(value) {
   if (Array.isArray(value)) return value;
   if (!value || typeof value !== "object") return [];
@@ -146,6 +162,13 @@ export function normalizeJson(value, options = {}) {
       : rowFromObject(row, index + 1);
     if (normalized) rows.push(normalized);
   }
+  const container = Array.isArray(parsed) ? "" : ["rows", "ingredients", "items", "formula", "materials"].find((key) => Array.isArray(parsed?.[key]));
+  for (const row of rows) {
+    const isBatch = !Array.isArray(parsed) && row.item === "FINISHED BATCH" && (parsed.batch || parsed.finished_batch || parsed.final_batch);
+    const path = isBatch ? ["batch", "finished_batch", "final_batch"].find((key) => parsed[key]) : `${container || ""}[${row.source_line - 1}]`;
+    row.input_source = { method: "JSON", json_path: path, text: JSON.stringify(jsonRowEvidence(isBatch || jsonRows(parsed)[row.source_line - 1], Boolean(isBatch))), original: originalValues(row) };
+    delete row.source_line;
+  }
   return finalizeRows(rows, "JSON", options);
 }
 
@@ -161,32 +184,39 @@ function detectHeader(matrix) {
 }
 
 export function normalizeMatrix(rawMatrix, method = "table", options = {}) {
-  const matrix = rawMatrix
-    .map((row) => (Array.isArray(row) ? row.map(cleanCell) : [cleanCell(row)]))
-    .map((row) => {
-      while (row[0] === "") row.shift();
-      while (row.at(-1) === "") row.pop();
-      return row;
-    })
-    .filter((row) => row.some(Boolean))
-    .filter((row) => !row.every((cell) => /^:?-{3,}:?$/.test(cell)));
+  const entries = rawMatrix.map((raw, index) => {
+    const cells = (Array.isArray(raw) ? raw : [raw]).map(cleanCell);
+    while (cells[0] === "") cells.shift();
+    while (cells.at(-1) === "") cells.pop();
+    return { cells, index, raw };
+  }).filter(({ cells }) => cells.some(Boolean) && !cells.every((cell) => /^:?-{3,}:?$/.test(cell)));
+  const matrix = entries.map(({ cells }) => cells);
   const header = detectHeader(matrix);
   const rows = [];
   const start = header ? header.index + 1 : 0;
   for (let index = start; index < matrix.length; index += 1) {
     const cells = matrix[index];
+    const sourceLine = entries[index].index + 1;
     let row = null;
     if (header) {
       row = canonicalRow(
-        cells[header.item], cells[header.quantity], cells[header.unit], index + 1,
+        cells[header.item], cells[header.quantity], cells[header.unit], sourceLine,
       );
     } else if (cells.length >= 3) {
-      row = canonicalRow(cells[0], cells[1], cells[2], index + 1);
+      row = canonicalRow(cells[0], cells[1], cells[2], sourceLine);
     } else if (cells.length === 2) {
       const combined = parseQuantityAndUnit(cells[1]);
-      if (combined) row = canonicalRow(cells[0], combined.quantity, combined.unit, index + 1);
-    } else if (cells.length === 1) row = parseLine(cells[0], index + 1);
-    if (row) rows.push(row);
+      if (combined) row = canonicalRow(cells[0], combined.quantity, combined.unit, sourceLine);
+    } else if (cells.length === 1) row = parseLine(cells[0], sourceLine);
+    if (row) {
+      const supplied = options.sourceRows?.[entries[index].index];
+      row.input_source = { method, line: sourceLine,
+        ...(options.worksheet ? { worksheet: options.worksheet } : {}),
+        ...(supplied || { cells: (Array.isArray(entries[index].raw) ? entries[index].raw : [entries[index].raw]).map((cell) => cell == null ? "" : String(cell)) }),
+        original: originalValues(row) };
+      row.source_line = row.input_source.line;
+      rows.push(row);
+    }
   }
   return finalizeRows(rows, method, options);
 }
@@ -212,9 +242,9 @@ function finalizeRows(rows, method, options = {}) {
 }
 
 export function normalizeText(text, method = "pasted text", options = {}) {
-  const source = String(text || "").trim();
-  if (!source) throw new Error("Paste a formula or choose a supported file.");
-  if (/^[\[{]/.test(source)) {
+  const source = String(text || "");
+  if (!source.trim()) throw new Error("Paste a formula or choose a supported file.");
+  if (/^[\[{]/.test(source.trim())) {
     try {
       return normalizeJson(source, options);
     } catch (error) {
@@ -222,8 +252,8 @@ export function normalizeText(text, method = "pasted text", options = {}) {
       throw error;
     }
   }
-  const lines = source.split(/\r?\n/).filter((line) => cleanCell(line));
-  const firstLines = lines.slice(0, 5).join("\n");
+  const lines = source.split(/\r\n|\r|\n/);
+  const firstLines = lines.filter((line) => cleanCell(line)).slice(0, 5).join("\n");
   const delimiter = firstLines.includes("\t")
     ? "\t"
     : firstLines.includes("|")
@@ -234,7 +264,7 @@ export function normalizeText(text, method = "pasted text", options = {}) {
           ? ","
           : null;
   const matrix = lines.map((line) => delimiter ? parseCsvLine(line, delimiter) : [line]);
-  return normalizeMatrix(matrix, method, options);
+  return normalizeMatrix(matrix, method, { ...options, sourceRows: lines.map((text, index) => ({ text, ...options.sourceRows?.[index] })) });
 }
 
 export function rowsToTsv(rows) {
@@ -243,4 +273,17 @@ export function rowsToTsv(rows) {
     "Item\tQuantity\tUnit",
     ...rows.map((row) => [row.item, row.quantity, row.unit].map(safe).join("\t")),
   ].join("\n") + "\n";
+}
+
+function originalValues({ item, quantity, unit }) {
+  return { item, quantity, unit };
+}
+
+// Join extracted page lines only after recording their page-local coordinates.
+export function normalizePages(pages, method, options = {}) {
+  const sourceRows = pages.flatMap((page, index) => page.text.split(/\r\n|\r|\n/).map((text, line) => ({
+    text, page: index + 1, line: line + 1, ...(page.ocr ? { ocr: page.ocr } : {}),
+  })));
+  const rawText = sourceRows.map((source) => source.text).join("\n");
+  return { ...normalizeText(rawText, method, { ...options, sourceRows }), rawText };
 }

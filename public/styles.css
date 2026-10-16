@@ -408,6 +408,10 @@ h1 {
   color: var(--ink);
 }
 
+.draft-table select {
+  min-width: 72px;
+}
+
 .draft-table th:first-child,
 .draft-table td:first-child {
   width: 54%;
@@ -2294,3 +2298,8 @@ td[data-label="Converted to"] {
   .label-export-actions > .quiet { font-size: 12px; }
 }
 @media print { studio-footer { display: none; } }
+
+.input-source { display: block; grid-column: 1 / -1; margin-top: 6px; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; color: var(--muted); }
+.input-source span { display: block; }
+
+.source-save-note { padding: 0 24px; }

@@ -15,3 +15,4 @@ node_modules/
 dist/
 eng.traineddata
 .fleet-local/
+/.qualification-nutrition/
