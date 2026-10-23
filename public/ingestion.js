@@ -30,11 +30,20 @@ async function getOcrWorker(onProgress) {
       logger: (message) => onProgress(progressLabel(message)),
       errorHandler: (error) => console.error("Browser OCR failed", error),
     }).then(async (worker) => {
-      await worker.setParameters({
-        tessedit_pageseg_mode: PSM.SINGLE_BLOCK,
-        preserve_interword_spaces: "1",
-      });
+      try {
+        await worker.setParameters({
+          tessedit_pageseg_mode: PSM.SINGLE_BLOCK,
+          preserve_interword_spaces: "1",
+        });
+      } catch (error) {
+        // Cleanup must not hide the initialization failure reported to the user.
+        await worker.terminate().catch(() => {});
+        throw error;
+      }
       return worker;
+    }).catch((error) => {
+      ocrWorkerPromise = null;
+      throw error;
     });
   }
   return ocrWorkerPromise;
