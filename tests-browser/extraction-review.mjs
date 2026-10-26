@@ -28,6 +28,7 @@ try {
       return route.continue();
     });
     await page.goto(origin);
+    await page.locator("#input-basis").selectOption("batch");
     const failedText = "Salt\n10 g\nSugar 500 kg";
     await page.locator("#formula-file").setInputFiles({ name: "ambiguous.txt", mimeType: "text/plain", buffer: Buffer.from(failedText) });
     const beforeFailure = calculations.length;
