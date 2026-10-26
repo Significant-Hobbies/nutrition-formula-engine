@@ -582,6 +582,11 @@ function renderPreparedFormula(extraction) {
   const sourceDetails = document.querySelector("#source-text-details");
   document.querySelector("#recovered-source-text").textContent = extraction.rawText || "";
   sourceDetails.hidden = !extraction.rawText;
+  const unparsedRows = extraction.unparsedRows || [];
+  const unparsedDetails = document.querySelector("#unparsed-source-details");
+  unparsedDetails.hidden = !unparsedRows.length;
+  unparsedDetails.open = true;
+  document.querySelector("#unparsed-source-text").textContent = unparsedRows.map(source => `${inputSourceLabel(source)}\n${source.text ?? source.cells?.join(" · ") ?? ""}`).join("\n\n");
   formulaReview.hidden = false;
   results.hidden = true;
   setReviewStatus(`${draftRows.length} rows found. Check every value before calculation.`);

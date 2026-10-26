@@ -60,11 +60,11 @@ function parseQuantityAndUnit(value) {
   return { quantity: match[1], unit: match[2] };
 }
 
-function parseLine(value, sourceLine) {
+function parseLine(value, sourceLine, allowImplicitBatch = true) {
   const line = cleanCell(value).replace(/^[•·*-]\s*/, "");
   const quantityOnly = parseQuantityAndUnit(line);
   if (quantityOnly) {
-    return canonicalRow("FINISHED BATCH", quantityOnly.quantity, quantityOnly.unit, sourceLine);
+    return allowImplicitBatch ? canonicalRow("FINISHED BATCH", quantityOnly.quantity, quantityOnly.unit, sourceLine) : null;
   }
   const match = line.match(
     /^(.+?)\s+([+-]?(?:\d[\d,.]*|\.\d+))\s*(kg|kgs?|kilograms?|g|gms?|grams?|mg|milligrams?|ug|mcg|[µμ]g|micrograms?|l|lt|ltr|lit(?:er|re)s?|ml|millilit(?:er|re)s?)\.?$/i,
@@ -193,6 +193,7 @@ export function normalizeMatrix(rawMatrix, method = "table", options = {}) {
   const matrix = entries.map(({ cells }) => cells);
   const header = detectHeader(matrix);
   const rows = [];
+  const unparsedRows = [];
   const start = header ? header.index + 1 : 0;
   for (let index = start; index < matrix.length; index += 1) {
     const cells = matrix[index];
@@ -207,18 +208,18 @@ export function normalizeMatrix(rawMatrix, method = "table", options = {}) {
     } else if (cells.length === 2) {
       const combined = parseQuantityAndUnit(cells[1]);
       if (combined) row = canonicalRow(cells[0], combined.quantity, combined.unit, sourceLine);
-    } else if (cells.length === 1) row = parseLine(cells[0], sourceLine);
+    } else if (cells.length === 1) row = parseLine(cells[0], sourceLine, index === start);
+    const supplied = options.sourceRows?.[entries[index].index];
+    const inputSource = { method, line: sourceLine,
+      ...(options.worksheet ? { worksheet: options.worksheet } : {}),
+      ...(supplied || { cells: (Array.isArray(entries[index].raw) ? entries[index].raw : [entries[index].raw]).map((cell) => cell == null ? "" : String(cell)) }) };
     if (row) {
-      const supplied = options.sourceRows?.[entries[index].index];
-      row.input_source = { method, line: sourceLine,
-        ...(options.worksheet ? { worksheet: options.worksheet } : {}),
-        ...(supplied || { cells: (Array.isArray(entries[index].raw) ? entries[index].raw : [entries[index].raw]).map((cell) => cell == null ? "" : String(cell)) }),
-        original: originalValues(row) };
+      row.input_source = { ...inputSource, original: originalValues(row) };
       row.source_line = row.input_source.line;
       rows.push(row);
-    }
+    } else unparsedRows.push(inputSource);
   }
-  return finalizeRows(rows, method, options);
+  return { ...finalizeRows(rows, method, options), unparsedRows };
 }
 
 function finalizeRows(rows, method, options = {}) {

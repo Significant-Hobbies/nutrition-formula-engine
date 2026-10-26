@@ -149,6 +149,11 @@
           </div>
         </div>
         <p class="review-intro">Check every recovered row against your source, including missing rows. PDFs are limited to 8 pages; spreadsheets read the first worksheet. OCR supports English machine print; its engine confidence is not ingredient identity confidence.</p>
+        <details id="unparsed-source-details" class="source-text-details" open hidden>
+          <summary>Recovered lines not added to the formula</summary>
+          <p>These lines could not be read as complete formula rows. Check them against your source and add any missing ingredients before confirming. No quantities or units were guessed.</p>
+          <pre id="unparsed-source-text"></pre>
+        </details>
         <details id="source-text-details" class="source-text-details" hidden>
           <summary>View recovered source text</summary>
           <pre id="recovered-source-text"></pre>

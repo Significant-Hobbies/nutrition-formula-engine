@@ -27,11 +27,15 @@ try {
       if (url.pathname.startsWith("/api/")) return route.fulfill({ json: { workspaces: [], profiles: [] } });
       return route.continue();
     });
-    for (const kind of ["paste", "text", "json", "xlsx", "pdf", "pdf-blank", "published-match"]) {
+    for (const kind of ["paste", "damaged", "wrapped", "text", "json", "xlsx", "pdf", "pdf-blank", "published-match"]) {
       await page.goto(origin);
       const contents = "\nItem\tQuantity\tUnit\n\nFINISHED BATCH\t1000\tL\n\nSugar\t500\tkg\n";
       let expectedLine = 6;
       if (kind === "paste") await page.locator("#formula-text").fill(contents);
+      if (kind === "damaged" || kind === "wrapped") {
+        await page.locator("#formula-text").fill(`FINISHED BATCH 1000 L\nSugar 500 kg\n${kind === "damaged" ? "Salt 1O g" : "Salt\n10 g"}`);
+        expectedLine = 2;
+      }
       if (kind === "text") await page.locator("#formula-file").setInputFiles({ name: "formula.txt", mimeType: "text/plain", buffer: Buffer.from(contents) });
       if (kind === "json") {
         const json = { batch: { quantity: "1000", unit: "L", private_note: "PRIVATE-UNUSED" }, ingredients: [{ item: "Sugar", quantity: "500", unit: "kg", private_note: "PRIVATE-UNUSED" }] };
@@ -55,6 +59,19 @@ try {
       assert.equal(await page.locator("#formula-review").isVisible(), true, `${kind}: review required`);
       assert.equal(await page.locator("#results").isVisible(), false, `${kind}: no premature result`);
       assert.equal(calculations.length, before, `${kind}: no pre-confirm request`);
+      if (kind === "damaged" || kind === "wrapped") {
+        assert.equal(await page.locator("#draft-body tr").count(), 2, "No fabricated batch or guessed ingredient");
+        assert.equal(await page.locator("#unparsed-source-details").isVisible(), true);
+        assert.match(await page.locator("#unparsed-source-text").textContent(), /line 3\nSalt/);
+        if (kind === "damaged") assert.match(await page.locator("#unparsed-source-text").textContent(), /Salt 1O g/);
+        else assert.match(await page.locator("#unparsed-source-text").textContent(), /line 4\n10 g/);
+        await page.locator("#formula-review").screenshot({ path: fileURLToPath(new URL(`${kind}-${width}.png`, output)) });
+        assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+        await page.locator("#add-draft-row").click();
+        await page.getByRole("textbox", { name: "Item row 3", exact: true }).fill("Salt");
+        await page.getByRole("textbox", { name: "Quantity row 3", exact: true }).fill("10");
+        await page.getByRole("combobox", { name: "Unit row 3", exact: true }).selectOption("g");
+      } else assert.equal(await page.locator("#unparsed-source-details").isVisible(), false);
       if (kind !== "published-match") {
         await page.getByRole("textbox", { name: "Quantity row 2", exact: true }).fill("400");
         if (kind === "paste") {
@@ -70,6 +87,10 @@ try {
       assert.equal(calculations.length, before + 1);
       const payload = calculations.at(-1);
       assert.equal(payload.input_provenance.version, 1);
+      if (kind === "damaged" || kind === "wrapped") {
+        assert.match(payload.contents, /Salt\t10\tg/);
+        assert.equal(payload.input_provenance.rows[2], null, "Manual correction does not invent source provenance");
+      }
       if (kind !== "published-match") {
         assert.match(payload.contents, /Sugar\t400\tkg/);
         const source = payload.input_provenance.rows[1];
