@@ -38,3 +38,9 @@ test("a wrapped quantity cannot replace an explicit dose basis", () => {
   ]);
   assert.deepEqual(result.unparsedRows.map(row => row.text), ["Salt", "10 g"]);
 });
+
+test("recovered text before a detected header remains explicit uncertainty", () => {
+  const result = normalizeText("Salt 1O g\nItem\tQuantity\tUnit\nFINISHED BATCH\t1000\tL\nSugar\t500\tkg", "image OCR");
+  assert.deepEqual(result.rows.map(row => row.item), ["FINISHED BATCH", "Sugar"]);
+  assert.deepEqual(result.unparsedRows, [{ method: "image OCR", line: 1, text: "Salt 1O g" }]);
+});

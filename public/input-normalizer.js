@@ -195,11 +195,14 @@ export function normalizeMatrix(rawMatrix, method = "table", options = {}) {
   const rows = [];
   const unparsedRows = [];
   const start = header ? header.index + 1 : 0;
-  for (let index = start; index < matrix.length; index += 1) {
+  for (let index = 0; index < matrix.length; index += 1) {
+    if (header && index === header.index) continue;
     const cells = matrix[index];
     const sourceLine = entries[index].index + 1;
     let row = null;
-    if (header) {
+    if (index < start) {
+      row = null;
+    } else if (header) {
       row = canonicalRow(
         cells[header.item], cells[header.quantity], cells[header.unit], sourceLine,
       );
