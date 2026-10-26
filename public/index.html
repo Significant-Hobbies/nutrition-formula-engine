@@ -119,6 +119,11 @@
           Prepare formula for review
         </button>
         <p id="status" class="status" role="status" aria-live="polite"></p>
+        <details id="failed-source-details" class="source-text-details" hidden open>
+          <summary>Recovered text needs correction</summary>
+          <p>No formula was prepared. Check this recovered text against your source, then paste corrected rows above with an explicit finished batch. No quantities or units were guessed.</p>
+          <pre id="failed-source-text"></pre>
+        </details>
 
       </section>
 

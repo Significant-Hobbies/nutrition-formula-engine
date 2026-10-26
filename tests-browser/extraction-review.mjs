@@ -27,6 +27,26 @@ try {
       if (url.pathname.startsWith("/api/")) return route.fulfill({ json: { workspaces: [], profiles: [] } });
       return route.continue();
     });
+    await page.goto(origin);
+    const failedText = "Salt\n10 g\nSugar 500 kg";
+    await page.locator("#formula-file").setInputFiles({ name: "ambiguous.txt", mimeType: "text/plain", buffer: Buffer.from(failedText) });
+    const beforeFailure = calculations.length;
+    await page.locator("#prepare-button").click();
+    await page.waitForFunction(() => !document.querySelector("#prepare-button").disabled);
+    assert.equal(await page.locator("#formula-review").isVisible(), false);
+    assert.equal(await page.locator("#failed-source-details").isVisible(), true);
+    assert.match(await page.locator("#failed-source-text").textContent(), /line 1\nSalt/);
+    assert.match(await page.locator("#failed-source-text").textContent(), /line 2\n10 g/);
+    assert.equal(calculations.length, beforeFailure);
+    await page.locator("#failed-source-details").screenshot({ path: fileURLToPath(new URL(`failed-${width}.png`, output)) });
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+    await page.locator("#formula-file").setInputFiles({ name: "corrected.txt", mimeType: "text/plain", buffer: Buffer.from("FINISHED BATCH 1000 L\nSugar 500 kg") });
+    await page.locator("#prepare-button").click();
+    await page.waitForFunction(() => !document.querySelector("#prepare-button").disabled);
+    assert.equal(await page.locator("#failed-source-details").isVisible(), false);
+    assert.equal(await page.locator("#formula-review").isVisible(), true);
+    assert.equal(calculations.length, beforeFailure);
+    evidence.push({ width, kind: "failed-recovered-source", preserved: true, retryPrepared: true, requestsBeforeConfirmation: 0 });
     for (const kind of ["paste", "damaged", "wrapped", "text", "json", "xlsx", "pdf", "pdf-blank", "published-match"]) {
       await page.goto(origin);
       const contents = "\nItem\tQuantity\tUnit\n\nFINISHED BATCH\t1000\tL\n\nSugar\t500\tkg\n";

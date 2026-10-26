@@ -44,3 +44,21 @@ test("recovered text before a detected header remains explicit uncertainty", () 
   assert.deepEqual(result.rows.map(row => row.item), ["FINISHED BATCH", "Sugar"]);
   assert.deepEqual(result.unparsedRows, [{ method: "image OCR", line: 1, text: "Salt 1O g" }]);
 });
+
+test("ambiguous leading labels reject without losing recovered source", () => {
+  for (const label of ["Cough Syrup Formula", "FINISHED BATCH", "Salt"]) {
+    const text = `${label}\n1000 L\nSugar 500 kg`;
+    assert.throws(() => normalizeText(text, "image OCR"), error => {
+      assert.match(error.message, /Could not identify/);
+      assert.deepEqual(error.recoveredRows.map(row => [row.method, row.line, row.text]), text.split("\n").map((line, index) => ["image OCR", index + 1, line]));
+      return true;
+    });
+  }
+});
+
+test("failed PDF normalization retains page-local evidence", () => {
+  assert.throws(() => normalizePages([{ text: "Salt" }, { text: "10 g\nSugar 500 kg" }], "PDF OCR"), error => {
+    assert.deepEqual(error.recoveredRows.map(row => [row.page, row.line, row.text]), [[1, 1, "Salt"], [2, 1, "10 g"], [2, 2, "Sugar 500 kg"]]);
+    return true;
+  });
+});

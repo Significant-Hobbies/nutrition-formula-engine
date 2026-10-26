@@ -599,6 +599,8 @@ async function prepareInput() {
   const inputKind = selectedFile ? "file" : "paste";
   currentInputBasis = document.querySelector("#input-basis").value;
   const normalization = currentInputBasis === "dose" ? { basisRow: { quantity: document.querySelector("#dose-volume").value, unit: "mL" } } : {};
+  document.querySelector("#failed-source-details").hidden = true;
+  document.querySelector("#failed-source-text").textContent = "";
   prepareButton.disabled = true;
   prepareButton.textContent = "Reading…";
   setStatus("Reading the formula in your browser…");
@@ -633,6 +635,11 @@ async function prepareInput() {
       error_type: error?.constructor?.name || "Error",
       duration_ms: durationSince(startedAt),
     });
+    if (error.recoveredRows?.length) {
+      document.querySelector("#failed-source-text").textContent = error.recoveredRows.map(source => `${inputSourceLabel(source)}\n${source.text ?? source.cells?.join(" · ") ?? ""}`).join("\n\n");
+      document.querySelector("#failed-source-details").hidden = false;
+      document.querySelector("#failed-source-details").open = true;
+    }
     setStatus(error.message, true);
   } finally {
     prepareButton.disabled = false;

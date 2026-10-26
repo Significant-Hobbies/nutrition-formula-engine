@@ -222,7 +222,16 @@ export function normalizeMatrix(rawMatrix, method = "table", options = {}) {
       rows.push(row);
     } else unparsedRows.push(inputSource);
   }
-  return { ...finalizeRows(rows, method, options), unparsedRows };
+  try {
+    return { ...finalizeRows(rows, method, options), unparsedRows };
+  } catch (error) {
+    error.recoveredRows = rawMatrix.map((raw, index) => ({
+      method, line: index + 1,
+      ...(options.worksheet ? { worksheet: options.worksheet } : {}),
+      ...(options.sourceRows?.[index] || { cells: (Array.isArray(raw) ? raw : [raw]).map((cell) => cell == null ? "" : String(cell)) }),
+    }));
+    throw error;
+  }
 }
 
 function finalizeRows(rows, method, options = {}) {
