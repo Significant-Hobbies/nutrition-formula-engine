@@ -119,6 +119,11 @@
           Prepare formula for review
         </button>
         <p id="status" class="status" role="status" aria-live="polite"></p>
+        <details id="failed-source-details" class="source-text-details" hidden open>
+          <summary>Recovered text needs correction</summary>
+          <p>No formula was prepared. Correct the issue above, then check this recovered text against your source before trying again. You can paste corrected rows above. No quantities or units were guessed.</p>
+          <pre id="failed-source-text"></pre>
+        </details>
 
       </section>
 
@@ -135,6 +140,11 @@
         <p class="review-intro">
           Fix any reading mistakes. We will calculate exactly what is shown here.
         </p>
+        <details id="unparsed-source-details" class="source-text-details" open hidden>
+          <summary>Recovered lines not added to the formula</summary>
+          <p>These lines could not be read as complete formula rows. Check them against your source and add any missing ingredients before confirming. No quantities or units were guessed.</p>
+          <pre id="unparsed-source-text"></pre>
+        </details>
         <div class="table-wrap draft-table-wrap">
           <table class="draft-table">
             <thead><tr><th>Item</th><th>Quantity</th><th>Unit</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
