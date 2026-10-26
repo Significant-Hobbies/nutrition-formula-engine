@@ -82,6 +82,7 @@ try {
       if (kind === "damaged" || kind === "wrapped") {
         assert.equal(await page.locator("#draft-body tr").count(), 2, "No fabricated batch or guessed ingredient");
         assert.equal(await page.locator("#unparsed-source-details").isVisible(), true);
+        assert.equal(await page.evaluate(() => document.querySelector("#unparsed-source-details").getBoundingClientRect().bottom <= document.querySelector("#draft-body").getBoundingClientRect().top), true, "Missing-row warning precedes editable rows and confirmation");
         assert.match(await page.locator("#unparsed-source-text").textContent(), /line 3\nSalt/);
         if (kind === "damaged") assert.match(await page.locator("#unparsed-source-text").textContent(), /Salt 1O g/);
         else assert.match(await page.locator("#unparsed-source-text").textContent(), /line 4\n10 g/);
