@@ -1,0 +1,343 @@
+# Formula Calculator - full content
+
+> Calculate theoretical nutrient and ingredient composition from a reviewed batch formula. Trace sources, missing data, and assumptions before using a result.
+
+Generated: 2026-10-27
+
+## Notes for agents
+
+Missing nutrient data is never treated as zero; calculations preserve source values and provenance.
+
+---
+<!-- source: https://formula.significanthobbies.com/ -->
+# Turn a formula into a printable label
+
+> Calculate theoretical nutrient and ingredient composition from a reviewed batch formula. Trace sources, missing data, and assumptions before using a result.
+
+Canonical: https://formula.significanthobbies.com/
+
+Formula calculator
+
+Paste your formula or upload a file. Generate the printable label with the best supported estimates.
+
+Formula input
+
+## Start with one formula
+
+Ingredient quantities are for
+- One dose / serving
+
+- A finished production batch
+
+Dose volume (mL): 15
+
+Enter amounts per dose. A dose-volume line is optional; this is not a production batch.
+
+Paste text, a table, or JSON
+
+```text
+PAPAIN 60 MG
+LYSINE 15 MG
+NIACINAMIDE 3 MG
+VITAMIN B1 1 MG
+VITAMIN B6 .75 MG
+```
+
+Upload a file instead
+
+Drop a formula here or choose a file Text, CSV, JSON, XLSX, PNG/JPEG/WebP/BMP, or PDF · Maximum 12 MiB
+
+Prepare formula for review
+
+Examples, references and activity log
+
+[Download sample](https://formula.significanthobbies.com/sample-tonic.tsv)
+
+Download activity log
+
+The activity log records actions and times without formula text. On the public site, Clarity measures visits and interactions with the application content masked.
+
+Tested with public products
+
+## 26 products and 55 published values checked
+
+See every value we compared, what our calculator returned, the difference, and the public source.
+
+- 26 products
+
+- 55 values
+
+- 125 tests
+
+[View all case studies](https://formula.significanthobbies.com/case-studies/)
+
+---
+<!-- source: https://formula.significanthobbies.com/case-studies/ -->
+# How our results compare
+
+> See how the formula calculator compares with published food and medicine values.
+
+Canonical: https://formula.significanthobbies.com/case-studies/
+
+Evidence as of: 2026-09-21
+
+Public checks
+
+We entered 26 public food and medicine formulas into the calculator. Below are all 55 ingredient and nutrient values that the public sources gave us enough information to check.
+
+- 26 products
+
+- 55 values compared
+
+- 3 public sources
+
+## How to read this page
+
+Published is the value shown by WHO, USDA, or DailyMed. Calculated is our result from the product formula. Difference shows how far apart they are.
+
+We compare every ingredient and nutrient amount supported by these checks. We do not compare acidity, tablet weight, or ingredients whose amounts were not published. We never guess a missing amount. These checks do not replace a laboratory test or show government approval.
+
+Full results
+
+## Every product and value
+
+[Try the calculator](https://formula.significanthobbies.com/)
+
+### WHO reduced-osmolarity ORS
+
+[View WHO source](https://pmnch.who.int/resources/publications/i/item/the-treatment-of-diarrhoea)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Glucose | 75 mmol/L | 74.9334 mmol/L | 0.089% |
+| Sodium | 75 mEq/L | 74.0719 mEq/L | 1.238% |
+| Chloride | 65 mEq/L | 64.6108 mEq/L | 0.599% |
+| Potassium | 20 mEq/L | 20.1207 mEq/L | 0.604% |
+| Citrate | 10 mmol/L | 9.8606 mmol/L | 1.394% |
+
+### 0.9% Sodium Chloride Injection
+
+[View DailyMed source](https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=a4edf2d5-a9ff-30d4-e053-2995a90a5650&type=display)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Sodium | 154 mEq/L | 154.0041 mEq/L | 0.003% |
+| Chloride | 154 mEq/L | 154.0041 mEq/L | 0.003% |
+
+### Lactated Ringer's Injection
+
+[View DailyMed source](https://www.dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d3d29c8f-c326-4097-814a-7f4e08c67068)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Sodium | 130 mEq/L | 130.3332 mEq/L | 0.256% |
+| Potassium | 4 mEq/L | 4.0241 mEq/L | 0.604% |
+| Calcium | 3 mEq/L | 2.7207 mEq/L | 9.309% |
+| Chloride | 109 mEq/L | 109.4143 mEq/L | 0.380% |
+| Lactate | 28 mEq/L | 27.6638 mEq/L | 1.201% |
+
+### Ringer's Injection
+
+[View DailyMed label source](https://dailymed.nlm.nih.gov/dailymed/)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Sodium | 147 mEq/L | 147.1595 mEq/L | 0.108% |
+| Potassium | 4 mEq/L | 4.0241 mEq/L | 0.604% |
+| Calcium | 4.5 mEq/L | 4.4892 mEq/L | 0.240% |
+| Chloride | 156 mEq/L | 155.6728 mEq/L | 0.210% |
+
+### 5% Dextrose Injection
+
+[View DailyMed label source](https://dailymed.nlm.nih.gov/dailymed/)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Dextrose | 5 g/100 mL | 5 g/100 mL | 0.000% |
+| Energy | 17 kcal/100 mL | 17 kcal/100 mL | 0.000% |
+
+### 10% Dextrose Injection
+
+[View DailyMed label source](https://dailymed.nlm.nih.gov/dailymed/)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Dextrose | 10 g/100 mL | 10 g/100 mL | 0.000% |
+| Energy | 34 kcal/100 mL | 34 kcal/100 mL | 0.000% |
+
+### Plasma-Lyte A
+
+[View DailyMed source](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6ec9e61c-2c26-402f-8604-f446b2e34058)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Sodium | 140 mEq/L | 140.0625 mEq/L | 0.045% |
+| Potassium | 5 mEq/L | 4.9631 mEq/L | 0.738% |
+| Magnesium | 3 mEq/L | 2.9513 mEq/L | 1.623% |
+| Chloride | 98 mEq/L | 97.9213 mEq/L | 0.080% |
+| Acetate | 27 mEq/L | 27.0429 mEq/L | 0.159% |
+| Gluconate | 23 mEq/L | 23.0127 mEq/L | 0.055% |
+
+### Sodium Bicarbonate Injection 8.4%
+
+[View DailyMed source](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9545d58c-1c49-79b3-e053-2995a90a9d40)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Sodium | 1 mEq/mL | 0.9999 mEq/mL | 0.008% |
+| Bicarbonate | 1 mEq/mL | 0.9999 mEq/mL | 0.008% |
+
+### WHO F-75 no-cereal recipe
+
+[View WHO source](https://iris.who.int/bitstream/handle/10665/41999/9241545312.pdf?sequence=1)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Energy | 75 kcal/100 mL | 71.518 kcal/100 mL | 4.643% |
+| Protein | 0.9 g/100 mL | 0.8775 g/100 mL | 2.500% |
+
+### WHO F-100 recipe
+
+[View WHO source](https://iris.who.int/bitstream/handle/10665/41999/9241545312.pdf?sequence=1)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Energy | 100 kcal/100 mL | 101.03 kcal/100 mL | 1.030% |
+| Protein | 2.9 g/100 mL | 2.808 g/100 mL | 3.172% |
+
+### Magnesium Oxide 400 mg tablet
+
+[View DailyMed source](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=31f417f0-1637-eefa-e063-6294a90a121b)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Elemental magnesium | 241.3 mg/tablet | 241.2168 mg/tablet | 0.034% |
+
+### Ferrous Sulfate 325 mg tablet
+
+[View DailyMed source](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4e88a847-397b-4ddb-83d7-42c9b963a0b7)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Elemental iron | 65 mg/tablet | 65.2850 mg/tablet | 0.438% |
+
+### Zinc Sulfate Injection
+
+[View DailyMed source](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c9d45d0e-a165-4112-81f9-c0e455572ecf)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Elemental zinc | 3 mg/mL | 3.0010 mg/mL | 0.033% |
+
+### Calcium Carbonate 1250 mg tablet
+
+[View DailyMed source](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=766b3f3f-8bd1-281c-e053-2991aa0af54b)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Elemental calcium | 500 mg/tablet | 500.5445 mg/tablet | 0.109% |
+
+### Potassium Chloride 750 mg tablet
+
+[View DailyMed source](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b19a3fbf-cdbb-4f86-ac61-5dfb07e0a51a)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Potassium | 10 mEq/tablet | 10.0604 mEq/tablet | 0.604% |
+
+### Magnesium Sulfate Injection 500 mg/mL
+
+[View DailyMed source](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5a0f9db9-b8be-c923-e063-6394a90a7dd7)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Magnesium | 4.06 mEq/mL | 4.0571 mEq/mL | 0.071% |
+
+### Calcium Chloride Injection 100 mg/mL
+
+[View DailyMed source](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3089499b-142d-482e-889d-1db4da7b1152)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Elemental calcium | 27 mg/mL | 27.2635 mg/mL | 0.976% |
+
+### Calcium Gluconate Injection 100 mg/mL
+
+[View DailyMed source](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=16307c00-d0d5-4e05-821f-17b0c1a29fc9)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Elemental calcium | 9.3 mg/mL | 9.3173 mg/mL | 0.186% |
+
+### Zinc Chloride Injection 2.09 mg/mL
+
+[View DailyMed source](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2bd646d2-2a2a-4376-8da0-c7f08b0511ac)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Elemental zinc | 1 mg/mL | 1.0025 mg/mL | 0.253% |
+
+### Cupric Chloride Injection 1.07 mg/mL
+
+[View DailyMed source](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=361d30f2-3c97-4a6c-b252-7fa864d0a625)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Elemental copper | 0.4 mg/mL | 0.3988 mg/mL | 0.290% |
+
+### Selenious Acid Injection 65.4 mcg/mL
+
+[View DailyMed source](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4adcba5d-74c7-4353-b54d-539ef89754d6)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Elemental selenium | 40 mcg/mL | 40.0492 mcg/mL | 0.123% |
+
+### Potassium Phosphates Injection
+
+[View DailyMed source](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=52f07402-1869-4a97-9c92-9729dc611f85)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Elemental potassium | 170 mg/mL | 170.3091 mg/mL | 0.182% |
+| Phosphorus | 3 mmol/mL | 3.0010 mmol/mL | 0.032% |
+
+### Sodium Phosphates Injection
+
+[View DailyMed source](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e6169d3b-39d2-47f9-8d5b-b53ec069a722)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Sodium | 4 mEq/mL | 4.0007 mEq/mL | 0.018% |
+| Phosphorus | 3 mmol/mL | 3.0004 mmol/mL | 0.014% |
+
+### Manganese Chloride Injection 0.36 mg/mL
+
+[View DailyMed source](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6e979070-5035-4076-e09c-b52466be3c68)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Elemental manganese | 0.1 mg/mL | 0.09994 mg/mL | 0.062% |
+
+### Chromic Chloride Injection 20.5 mcg/mL
+
+[View DailyMed source](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=da207ca8-7836-4c66-92fe-36cc89baf773)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Elemental chromium | 4 mcg/mL | 4.0006 mcg/mL | 0.015% |
+
+### USDA MyPlate Yogurt Smoothie in a Bag
+
+[View USDA MyPlate source](https://www.myplate.gov/recipes/yogurt-smoothie-bag)
+
+| Value | Published | Calculated | Difference |
+| --- | --- | --- | --- |
+| Energy | 77 kcal/recipe | 74.7608 kcal/recipe | 2.908% |
+| Protein | 4 g/recipe | 3.8267 g/recipe | 4.333% |
+| Carbohydrate | 14 g/recipe | 13.3681 g/recipe | 4.513% |
+| Calcium | 127 mg/recipe | 129.3642 mg/recipe | 1.862% |
+| Potassium | 237 mg/recipe | 234.0367 mg/recipe | 1.250% |
+| Vitamin C | 17 mg/recipe | 17.1583 mg/recipe | 0.931% |
+
+What we assumed: The recipe allows different kinds of yogurt. We used the USDA low-fat vanilla yogurt record and USDA serving weights for all three ingredients.

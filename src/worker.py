@@ -161,6 +161,17 @@ class Default(WorkerEntrypoint):
         return self._provider_search
 
     async def _fetch(self, request, parsed_url, path, method):
+        accept = request.headers.get("accept") or request.headers.get("Accept") or ""
+        public_candidate = (
+            path == "/api/ai" or path == "/api/md" or path.startswith("/api/md/")
+            or path.endswith(".md")
+            or ("text/markdown" in accept.lower() and not path.startswith("/api/"))
+        )
+        if public_candidate and method in {"GET", "HEAD", "OPTIONS"}:
+            from nutrition_formula.public_readability import public_response
+            representation = public_response(path, method, accept)
+            if representation is not None:
+                return Response(**representation)
 
         if path == "/api/health" and method == "GET":
             return _json(
