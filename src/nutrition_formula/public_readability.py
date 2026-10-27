@@ -51,13 +51,15 @@ def catalog():
 
 @lru_cache(maxsize=1)
 def documents():
+    notes = "## Notes for agents\n\nMissing nutrient data is never treated as zero; calculations preserve source values and provenance.\n\n"
     links = "\n".join(f'- [{r["title"]}]({r["md"]}): {r["description"]}' for r in routes())
     index = (f'# {IDENTITY["name"]}\n\n> {IDENTITY["description"]}\n\n'
              '<!-- Keep in sync with robots.txt and ai.txt. -->\n\n## Public pages\n\n' + links +
              f'\n\n## Machine-readable\n\n- [Full content]({ORIGIN}/llms-full.txt)\n'
              f'- [Markdown catalog]({ORIGIN}/api/md/_catalog)\n- [Agent catalog]({ORIGIN}/api/ai)\n'
-             f'- [Sitemap]({ORIGIN}/sitemap.xml)\n- [AI usage policy]({ORIGIN}/ai.txt)\n')
+             f'- [Sitemap]({ORIGIN}/sitemap.xml)\n- [AI usage policy]({ORIGIN}/ai.txt)\n\n' + notes)
     full = f'# {IDENTITY["name"]} - full content\n\n> {IDENTITY["description"]}\n\nGenerated: {IDENTITY["generated"]}\n\n'
+    full += notes
     for path, page in PAGES.items():
         full += f'---\n<!-- source: {ORIGIN}{path} -->\n{page["body"]}\n'
     if len(full) > 500000:
@@ -76,7 +78,7 @@ def documents():
                           "Allow: /api/ai\nAllow: /api/md\nDisallow: /admin/\nDisallow: /auth/\nDisallow: /dashboard/"
                           for bot in bots)
     robots += f"\n\n# Keep in sync with /llms.txt and /ai.txt.\nSitemap: {ORIGIN}/sitemap.xml\n"
-    return {"/llms.txt": index, "/llms-full.txt": full.rstrip() + "\n", "/ai.txt": policy, "/robots.txt": robots}
+    return {"/llms.txt": index.rstrip() + "\n", "/llms-full.txt": full.rstrip() + "\n", "/ai.txt": policy, "/robots.txt": robots}
 
 
 def public_response(path, method, accept=""):

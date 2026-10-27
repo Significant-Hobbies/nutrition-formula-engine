@@ -4,7 +4,6 @@ import json
 import re
 import shutil
 import sys
-from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
@@ -108,7 +107,7 @@ def main():
     identity = {
         "name": website["name"], "url": website["url"].rstrip("/"),
         "contact": "https://sarthakagrawal.dev", "updated": "2026-10-27",
-        "generated": datetime.now(timezone.utc).date().isoformat(),
+        "generated": "2026-10-27",  # Authored generation revision; builds are reproducible.
     }
     pages = {}
     for route, filename in {"/": "index.html", "/case-studies/": "case-studies/index.html"}.items():
@@ -139,7 +138,7 @@ def main():
         suffix = "/index.md" if route == "/" else route.rstrip("/") + ".md"
         tags = f'<meta name="ai-summary" content="{html.escape(parser.description, quote=True)}" />\n    <link rel="alternate" type="text/markdown" href="{identity["url"]}{suffix}" />'
         source = re.sub(r'\n?[ \t]*<meta name="ai-summary"[^>]*>\s*<link rel="alternate" type="text/markdown"[^>]*>\n?', "\n", source)
-        path.write_text(re.sub(r"[ \t]*</head>", "    " + tags + "\n  </head>", source))
+        path.write_text(re.sub(r"[ \t]*</head>", lambda _: "    " + tags + "\n  </head>", source))
     OUTPUT.write_text(json.dumps({"identity": identity, "pages": pages}, indent=2, ensure_ascii=False) + "\n")
     sys.path.insert(0, str(ROOT / "src"))
     from nutrition_formula.public_readability import documents, routes, markdown_path

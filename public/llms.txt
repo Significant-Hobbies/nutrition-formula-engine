@@ -16,3 +16,7 @@
 - [Agent catalog](https://formula.significanthobbies.com/api/ai)
 - [Sitemap](https://formula.significanthobbies.com/sitemap.xml)
 - [AI usage policy](https://formula.significanthobbies.com/ai.txt)
+
+## Notes for agents
+
+Missing nutrient data is never treated as zero; calculations preserve source values and provenance.

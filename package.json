@@ -6,10 +6,11 @@
   "type": "module",
   "scripts": {
     "build": "pnpm generate:readability && vite build && cp public/robots.txt public/sitemap.xml public/llms.txt dist/ && cp -R public/footer-art public/fonts dist/ && python3 scripts/generate-agent-pages.py --copy-to-dist && node scripts/check-deploy-assets.js",
-    "test": "node --test tests-web/*.test.js",
+    "test": "node --test tests-web/*.test.js && node --test scripts/check-public-readability-tests.mjs",
     "check": "pnpm test && node --check public/app.js && node --check public/recent-formulas.js && node --check public/case-studies.js && node --check vite.config.js && pnpm build",
     "deploy": "pnpm build && uv run pywrangler deploy --tag \"$(git rev-parse HEAD)\"",
-    "generate:readability": "python3 scripts/generate-agent-pages.py"
+    "generate:readability": "python3 scripts/generate-agent-pages.py",
+    "test:readability-runtime": "node scripts/check-public-readability-runtime.mjs"
   },
   "license": "UNLICENSED",
   "packageManager": "pnpm@10.33.2",

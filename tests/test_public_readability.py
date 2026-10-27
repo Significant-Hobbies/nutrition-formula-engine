@@ -3,6 +3,8 @@ import json
 import subprocess
 import sys
 import unittest
+import shutil
+import tempfile
 
 from nutrition_formula.public_readability import (
     IDENTITY, ORIGIN, PAGES, documents, markdown_path, public_response, routes, wants_markdown,
@@ -90,11 +92,21 @@ class PublicReadabilityTests(unittest.TestCase):
         self.assertTrue(all(route["url"].startswith(ORIGIN) for route in catalog))
 
     def test_generator_is_idempotent(self):
-        files = [ROOT / "public/index.html", ROOT / "public/case-studies/index.html",
-                 ROOT / "src/nutrition_formula/data/public_readability.json"]
-        before = [path.read_bytes() for path in files]
-        subprocess.run([sys.executable, "scripts/generate-agent-pages.py"], cwd=ROOT, check=True, capture_output=True)
-        self.assertEqual(before, [path.read_bytes() for path in files])
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            for name in ["public", "src/nutrition_formula", "scripts"]:
+                shutil.copytree(ROOT / name, target / name, ignore=shutil.ignore_patterns("__pycache__"))
+            files = [target / "public/index.html", target / "public/case-studies/index.html",
+                     target / "src/nutrition_formula/data/public_readability.json",
+                     target / "public/llms.txt", target / "public/llms-full.txt"]
+            before = [path.read_bytes() for path in files]
+            subprocess.run([sys.executable, "scripts/generate-agent-pages.py"], cwd=target, check=True, capture_output=True)
+            self.assertEqual(before, [path.read_bytes() for path in files])
+
+    def test_authored_missing_data_boundary(self):
+        for name in ["/llms.txt", "/llms-full.txt"]:
+            self.assertIn("Missing nutrient data is never treated as zero", documents()[name])
+
 
 
 if __name__ == "__main__":
