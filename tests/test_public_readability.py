@@ -96,9 +96,8 @@ class PublicReadabilityTests(unittest.TestCase):
             target = Path(directory)
             for name in ["public", "src/nutrition_formula", "scripts"]:
                 shutil.copytree(ROOT / name, target / name, ignore=shutil.ignore_patterns("__pycache__"))
-            files = [target / "public/index.html", target / "public/case-studies/index.html",
-                     target / "src/nutrition_formula/data/public_readability.json",
-                     target / "public/llms.txt", target / "public/llms-full.txt"]
+            files = [path for path in (target / "public").rglob("*") if path.is_file()]
+            files.append(target / "src/nutrition_formula/data/public_readability.json")
             before = [path.read_bytes() for path in files]
             subprocess.run([sys.executable, "scripts/generate-agent-pages.py"], cwd=target, check=True, capture_output=True)
             self.assertEqual(before, [path.read_bytes() for path in files])

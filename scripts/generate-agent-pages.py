@@ -107,7 +107,7 @@ def main():
     identity = {
         "name": website["name"], "url": website["url"].rstrip("/"),
         "contact": "https://sarthakagrawal.dev", "updated": "2026-10-27",
-        "generated": "2026-10-27",  # Authored generation revision; builds are reproducible.
+        "generated": "2026-10-27",  # Authored revision: bump with public content changes; builds stay reproducible.
     }
     pages = {}
     for route, filename in {"/": "index.html", "/case-studies/": "case-studies/index.html"}.items():
