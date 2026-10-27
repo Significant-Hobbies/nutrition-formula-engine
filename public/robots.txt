@@ -1,4 +1,132 @@
 User-agent: *
 Allow: /
+Disallow: /recent-formulas/
+Disallow: /api/
+Allow: /api/ai
+Allow: /api/md
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /dashboard/
 
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /recent-formulas/
+Disallow: /api/
+Allow: /api/ai
+Allow: /api/md
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /dashboard/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /recent-formulas/
+Disallow: /api/
+Allow: /api/ai
+Allow: /api/md
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /dashboard/
+
+User-agent: Claude-SearchBot
+Allow: /
+Disallow: /recent-formulas/
+Disallow: /api/
+Allow: /api/ai
+Allow: /api/md
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /dashboard/
+
+User-agent: Claude-User
+Allow: /
+Disallow: /recent-formulas/
+Disallow: /api/
+Allow: /api/ai
+Allow: /api/md
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /dashboard/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /recent-formulas/
+Disallow: /api/
+Allow: /api/ai
+Allow: /api/md
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /dashboard/
+
+User-agent: Perplexity-User
+Allow: /
+Disallow: /recent-formulas/
+Disallow: /api/
+Allow: /api/ai
+Allow: /api/md
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /dashboard/
+
+User-agent: GPTBot
+Allow: /
+Disallow: /recent-formulas/
+Disallow: /api/
+Allow: /api/ai
+Allow: /api/md
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /dashboard/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /recent-formulas/
+Disallow: /api/
+Allow: /api/ai
+Allow: /api/md
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /dashboard/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /recent-formulas/
+Disallow: /api/
+Allow: /api/ai
+Allow: /api/md
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /dashboard/
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /recent-formulas/
+Disallow: /api/
+Allow: /api/ai
+Allow: /api/md
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /dashboard/
+
+User-agent: CCBot
+Allow: /
+Disallow: /recent-formulas/
+Disallow: /api/
+Allow: /api/ai
+Allow: /api/md
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /dashboard/
+
+User-agent: Bytespider
+Allow: /
+Disallow: /recent-formulas/
+Disallow: /api/
+Allow: /api/ai
+Allow: /api/md
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /dashboard/
+
+# Keep in sync with /llms.txt and /ai.txt.
 Sitemap: https://formula.significanthobbies.com/sitemap.xml

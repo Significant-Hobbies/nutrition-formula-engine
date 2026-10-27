@@ -22,6 +22,13 @@ class Request:
 
 
 class Response:
+    def __new__(cls, body=None, status=200, headers=None):
+        headers = headers or {}
+        return types.SimpleNamespace(
+            body=body, status=status, headers=headers,
+            js_object=types.SimpleNamespace(headers=types.SimpleNamespace(set=headers.__setitem__)),
+        )
+
     @staticmethod
     def json(data: object, status: int = 200, headers: dict[str, str] | None = None):
         headers = headers or {}
@@ -64,6 +71,26 @@ def load_worker_module():
 
 
 class FormulaWorkerRouteTests(unittest.IsolatedAsyncioTestCase):
+    async def test_public_markdown_is_read_only_and_never_reads_formula_storage(self):
+        module = load_worker_module()
+        worker = module.Default()
+        worker.env = types.SimpleNamespace(FORMULA_DB=object())
+        with (
+            patch.object(module, "D1FormulaRepository", side_effect=AssertionError("no saved data")),
+            patch.object(module, "D1MaterialProfileRepository", side_effect=AssertionError("no profiles")),
+        ):
+            request = Request("GET", "/case-studies/")
+            request.headers["accept"] = "text/markdown"
+            result = await worker.fetch(request)
+            self.assertEqual(result.status, 200)
+            self.assertIn("WHO reduced-osmolarity ORS", result.body)
+            self.assertEqual(result.headers["Content-Location"], "https://formula.significanthobbies.com/case-studies/")
+            denied = await worker.fetch(Request("GET", "/api/md/recent-formulas/"))
+            self.assertEqual(denied.status, 404)
+            head = await worker.fetch(Request("HEAD", "/index.md"))
+            self.assertEqual(head.status, 200)
+            self.assertIsNone(head.body)
+
     async def test_timing_preserves_api_response_and_leaves_assets_unchanged(self) -> None:
         module = load_worker_module()
         worker = module.Default()

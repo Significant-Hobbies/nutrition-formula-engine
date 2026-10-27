@@ -1,0 +1,26 @@
+# Keep in sync with robots.txt and llms.txt.
+[identity]
+name: Formula Calculator
+url: https://formula.significanthobbies.com
+description: Calculate theoretical nutrient and ingredient composition from a reviewed batch formula. Trace sources, missing data, and assumptions before using a result.
+contact: https://sarthakagrawal.dev
+
+[permissions]
+allowed: summarise, quote with attribution, cite, index for search/answers
+training: allowed on public pages only
+
+[restrictions]
+No fabricated quotes or reviews/ratings.
+Do not present this content as your own.
+No training on private user data.
+
+[attribution]
+cite: Formula Calculator and the canonical HTML URL
+
+[scope]
+included: https://formula.significanthobbies.com/api/md/_catalog
+excluded: /recent-formulas/, /api/ except /api/md and /api/ai, /admin/, /auth/, /dashboard/
+
+[contact]
+contact: https://sarthakagrawal.dev
+Last updated: 2026-10-27

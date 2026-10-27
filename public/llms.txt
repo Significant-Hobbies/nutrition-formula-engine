@@ -1,17 +1,18 @@
-# Nutrition Formula Engine
+# Formula Calculator
 
-> A formulation calculator for nutrition products — decimal arithmetic, source-provenanced nutrient data, and explicit handling of missing values.
+> Calculate theoretical nutrient and ingredient composition from a reviewed batch formula. Trace sources, missing data, and assumptions before using a result.
 
-Site: https://formula.significanthobbies.com
+<!-- Keep in sync with robots.txt and ai.txt. -->
 
-## Pages
+## Public pages
 
-- `/` — the formula calculator
-- `/case-studies/` — worked formulation examples
+- [Turn a formula into a printable label](https://formula.significanthobbies.com/index.md): Calculate theoretical nutrient and ingredient composition from a reviewed batch formula. Trace sources, missing data, and assumptions before using a result.
+- [How our results compare](https://formula.significanthobbies.com/case-studies.md): See how the formula calculator compares with published food and medicine values.
 
-## Notes for agents
+## Machine-readable
 
-Missing nutrient data is never treated as zero; calculations preserve
-source values and provenance. The engine is a local-first prototype.
-
-Maintained by Sarthak Agrawal: https://sarthakagrawal.dev
+- [Full content](https://formula.significanthobbies.com/llms-full.txt)
+- [Markdown catalog](https://formula.significanthobbies.com/api/md/_catalog)
+- [Agent catalog](https://formula.significanthobbies.com/api/ai)
+- [Sitemap](https://formula.significanthobbies.com/sitemap.xml)
+- [AI usage policy](https://formula.significanthobbies.com/ai.txt)
