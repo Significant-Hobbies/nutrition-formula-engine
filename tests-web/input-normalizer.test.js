@@ -48,7 +48,12 @@ test("CSV with combined amounts remains comma-delimited", () => {
 });
 
 test("unsupported scientific notation requires correction instead of dropping the ingredient", () => {
-  assert.throws(() => normalizeText("Vitamin B12 4e-1 mcg\nSugar 200 mg", "pasted text", { basisRow: { quantity: "1", unit: "mL" } }), /Source row 1.*decimal quantity/);
+  const text = "Vitamin B12 4e-1 mcg\nSugar 200 mg";
+  assert.throws(() => normalizeText(text, "pasted text", { basisRow: { quantity: "1", unit: "mL" } }), (error) => {
+    assert.match(error.message, /Source row 1.*decimal quantity/);
+    assert.deepEqual(error.recoveredRows.map((row) => row.text), text.split("\n"));
+    return true;
+  });
 });
 
 test("normalizes OCR-style lines and infers a quantity-only batch row", () => {
