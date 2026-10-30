@@ -41,7 +41,7 @@ for (const item of cases) {
   item.contents = rowsToTsv(item.rows);
   item.aliases = Object.fromEntries(aliasesFor(item.rows).map((alias) => [alias.alias, alias.material_id]));
 }
-const calculated = JSON.parse(execFileSync("uv", ["run", "python", "-c", `
+const calculated = JSON.parse(execFileSync(process.env.PYTHON || "python3", ["-c", `
 import json,sys
 from nutrition_formula.upload_analysis import analyze_formula_upload
 out=[]
