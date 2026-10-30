@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import { readFile, readdir } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 import test from "node:test";
 import vm from "node:vm";
 import { normalizeText, rowsToTsv } from "../public/input-normalizer.js";
@@ -9,6 +11,8 @@ import { buildAssumptionScenario } from "../public/assumption-scenario.js";
 import { defaultIdentityRows, validateReviewedRows } from "../public/draft-result.js";
 
 const root = new URL("../", import.meta.url);
+const projectPython = fileURLToPath(new URL(".venv/bin/python", root));
+const python = process.env.PYTHON || (existsSync(projectPython) ? projectPython : "python3");
 const records = await Promise.all((await readdir(new URL("public/saved-products/", root))).filter((name) => name.endsWith(".json"))
   .map(async (name) => JSON.parse(await readFile(new URL(`public/saved-products/${name}`, root), "utf8"))));
 // Execute the shipped alias selection function; Vite's snapshot imports are
@@ -41,7 +45,7 @@ for (const item of cases) {
   item.contents = rowsToTsv(item.rows);
   item.aliases = Object.fromEntries(aliasesFor(item.rows).map((alias) => [alias.alias, alias.material_id]));
 }
-const calculated = JSON.parse(execFileSync(process.env.PYTHON || "python3", ["-c", `
+const calculated = JSON.parse(execFileSync(python, ["-c", `
 import json,sys
 from nutrition_formula.upload_analysis import analyze_formula_upload
 out=[]
