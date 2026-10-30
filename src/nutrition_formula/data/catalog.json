@@ -23,6 +23,7 @@
     "copper": {"name": "Copper", "class": "micro", "unit": "mg"},
     "manganese": {"name": "Manganese", "class": "micro", "unit": "mg"},
     "selenium": {"name": "Selenium", "class": "micro", "unit": "ug"},
+    "iodine": {"name": "Iodine", "class": "micro", "unit": "ug"},
     "vitamin_c": {"name": "Vitamin C", "class": "micro", "unit": "mg"},
     "thiamin": {"name": "Vitamin B1 (thiamin)", "class": "micro", "unit": "mg"},
     "riboflavin": {"name": "Vitamin B2 (riboflavin)", "class": "micro", "unit": "mg"},
@@ -259,7 +260,7 @@
     },
     "cyanocobalamin_pure": {
       "name": "Cyanocobalamin, pure",
-      "aliases": ["cyanocobalamin", "vitamin B12 cyanocobalamin"],
+      "aliases": ["cyanocobalamin"],
       "identity_status": "assumed",
       "identity_note": "Assumed pure cyanocobalamin rather than a carrier dilution or potency-standardized premix",
       "basis": {"value": "100", "unit": "g"},
@@ -671,7 +672,8 @@
       "name": "D-panthenol",
       "aliases": [
         "d panthenol",
-        "dexpanthenol"
+        "dexpanthenol",
+        "Vitamin B5 (D-Panthenol)"
       ],
       "label_category": "Vitamins",
       "identity_status": "assumed",
@@ -845,6 +847,231 @@
       "source": {
         "kind": "declared_active_assumption",
         "reference": "Entered folic acid is treated as active folic acid, not a diluted premix weight. Confirm assay and carrier composition. Label RDA uses dietary folate equivalents (1.7 times the folic acid amount); folic acid mass itself is unchanged."
+      }
+    },
+    "vitamin_c_ascorbic_declared": {
+      "name": "Vitamin C (Ascorbic acid), declared active amount",
+      "label_name": "Ascorbic acid",
+      "aliases": [
+        "Vitamin C (Ascorbic acid)"
+      ],
+      "identity_status": "assumed",
+      "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+      "missing_information": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "vitamin_c": {
+          "value": "100000",
+          "unit": "mg"
+        }
+      },
+      "unlisted_nutrients_are_zero": false,
+      "source": {
+        "kind": "declared_active_assumption",
+        "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "label_source": "Ascorbic acid"
+      }
+    },
+    "vitamin_b3_nicotinamide_declared": {
+      "name": "Vitamin B3 (Nicotinamide), declared active amount",
+      "label_name": "Nicotinamide",
+      "aliases": [
+        "Vitamin B3 (Nicotinamide)"
+      ],
+      "identity_status": "assumed",
+      "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+      "missing_information": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "niacin": {
+          "value": "100000",
+          "unit": "mg"
+        }
+      },
+      "unlisted_nutrients_are_zero": false,
+      "source": {
+        "kind": "declared_active_assumption",
+        "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "label_source": "Nicotinamide"
+      }
+    },
+    "vitamin_b2_phosphate_sodium_declared": {
+      "name": "Vitamin B2 (Riboflavin sodium phosphate), declared active amount",
+      "label_name": "Riboflavin sodium phosphate",
+      "aliases": [
+        "Vitamin B2 (Riboflavin sodium phosphate)"
+      ],
+      "identity_status": "assumed",
+      "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+      "missing_information": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "riboflavin": {
+          "value": "100000",
+          "unit": "mg"
+        },
+        "sodium": {
+          "value": "6108.451822722924859177383356",
+          "unit": "mg"
+        }
+      },
+      "unlisted_nutrients_are_zero": false,
+      "source": {
+        "kind": "declared_active_assumption",
+        "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers. Sodium estimate assumes one sodium per riboflavin equivalent: 22.98976928/376.36. Hydration and assay remain unverified.",
+        "label_source": "Riboflavin sodium phosphate",
+        "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Riboflavin"
+      }
+    },
+    "vitamin_b1_hydrochloride_declared": {
+      "name": "Vitamin B1 (Thiamine hydrochloride), declared active amount",
+      "label_name": "Thiamine hydrochloride",
+      "aliases": [
+        "Vitamin B1 (Thiamine hydrochloride)"
+      ],
+      "identity_status": "assumed",
+      "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+      "missing_information": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "thiamin": {
+          "value": "100000",
+          "unit": "mg"
+        }
+      },
+      "unlisted_nutrients_are_zero": false,
+      "source": {
+        "kind": "declared_active_assumption",
+        "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "label_source": "Thiamine hydrochloride"
+      }
+    },
+    "vitamin_b6_hydrochloride_declared": {
+      "name": "Vitamin B6 (Pyridoxine hydrochloride), declared active amount",
+      "label_name": "Pyridoxine hydrochloride",
+      "aliases": [
+        "Vitamin B6 (Pyridoxine hydrochloride)"
+      ],
+      "identity_status": "assumed",
+      "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+      "missing_information": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "vitamin_b6": {
+          "value": "100000",
+          "unit": "mg"
+        }
+      },
+      "unlisted_nutrients_are_zero": false,
+      "source": {
+        "kind": "declared_active_assumption",
+        "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "label_source": "Pyridoxine hydrochloride"
+      }
+    },
+    "vitamin_b12_cyanocobalamin_declared": {
+      "name": "Vitamin B12 (Cyanocobalamin), declared active amount",
+      "label_name": "Cyanocobalamin",
+      "aliases": [
+        "Vitamin B12 (Cyanocobalamin)"
+      ],
+      "identity_status": "assumed",
+      "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+      "missing_information": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "vitamin_b12": {
+          "value": "100000000",
+          "unit": "ug"
+        }
+      },
+      "unlisted_nutrients_are_zero": false,
+      "source": {
+        "kind": "declared_active_assumption",
+        "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "label_source": "Cyanocobalamin"
+      }
+    },
+    "iodine_potassium_iodide_declared": {
+      "name": "Iodine (as potassium iodide), declared active amount",
+      "label_name": "Potassium iodide",
+      "aliases": [
+        "Iodine (as potassium iodide)"
+      ],
+      "identity_status": "assumed",
+      "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+      "missing_information": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "iodine": {
+          "value": "100000000",
+          "unit": "ug"
+        }
+      },
+      "unlisted_nutrients_are_zero": false,
+      "source": {
+        "kind": "declared_active_assumption",
+        "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "label_source": "Potassium iodide",
+        "url": "https://ods.od.nih.gov/factsheets/Iodine-HealthProfessional/"
+      }
+    },
+    "sucrose_pure_assumed": {
+      "name": "Sugar (pure sucrose assumption)",
+      "label_name": "Sugar",
+      "aliases": [
+        "pure sucrose assumption"
+      ],
+      "identity_status": "assumed",
+      "identity_note": "Sugar is assumed pure sucrose without carriers, using 4 kcal/g carbohydrate; not a supplier assay.",
+      "missing_information": "Confirm pure sucrose, assay and carrier composition. Other nutrients remain unknown outside the explicit working-estimate scenario.",
+      "basis": {
+        "value": "100",
+        "unit": "g"
+      },
+      "nutrients": {
+        "energy": {
+          "value": "400",
+          "unit": "kcal"
+        },
+        "carbohydrate": {
+          "value": "100",
+          "unit": "g"
+        },
+        "total_sugars": {
+          "value": "100",
+          "unit": "g"
+        },
+        "added_sugars": {
+          "value": "100",
+          "unit": "g"
+        }
+      },
+      "unlisted_nutrients_are_zero": false,
+      "source": {
+        "kind": "operator_assumption",
+        "reference": "Pure sucrose assumed without carriers; carbohydrate at 4 kcal/g. Applied only to the named sugared multivitamin/mineral recipe or an explicitly selected profile."
       }
     }
   }

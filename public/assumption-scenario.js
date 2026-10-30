@@ -22,6 +22,27 @@ const MINERAL_AMINO_MATERIALS = new Set([
   "iron_fac_declared", "zinc_sulphate_declared", "lysine_free_pure_assumed",
   "vitamin_b6_declared", "vitamin_b12_declared", "folic_acid_declared",
 ]);
+const SUGARED_MULTIVITAMIN_MATERIALS = new Set([
+  "vitamin_c_ascorbic_declared", "vitamin_b3_nicotinamide_declared",
+  "d_panthenol_pure_assumed", "vitamin_b2_phosphate_sodium_declared",
+  "vitamin_b1_hydrochloride_declared", "vitamin_b6_hydrochloride_declared",
+  "vitamin_b12_cyanocobalamin_declared", "zinc_sulphate_declared",
+  "iodine_potassium_iodide_declared", "sucrose_pure_assumed",
+  "sodium_methylparaben_assumed", "propylparaben_assumed", "bronopol",
+  "sodium_benzoate", "benzoic_acid",
+]);
+export const SUGARED_MULTIVITAMIN_ASSUMPTIONS = [
+  "Water q.s. to the entered finished volume; no unlisted nutritive excipients or carriers.",
+  "Vitamin C, B3, B2, B1, B6 and B12 are declared active amounts, not raw salt or premix weights. Zinc and iodine are declared elemental amounts; named sources are retained. Confirm supplier assays and actual salt weights.",
+  "D-panthenol is the entered mass of pure D-isomer. B5 is its theoretical pantothenic-acid equivalent at 219.23/205.25, not measured bioavailability.",
+  "Sugar is assumed pure sucrose: carbohydrate, total sugars and added sugars equal its entered mass; energy uses 4 kcal/g. Other macro contributions are assigned zero only in this pure-ingredient scenario; estimated zeros are not measured zeros.",
+  "NEPAZENE is assumed sodium methylparaben; NEPASOL is propylparaben; BRONOPAL is bronopol; SOD BENZ is sodium benzoate. Supplier identities and permitted use require confirmation; bronopol has no verified food INS mapping here.",
+  "Sodium includes sodium benzoate, assumed sodium methylparaben and one sodium per declared riboflavin equivalent at 22.98976928/376.36. Assay, hydration and unreported carriers remain unverified.",
+];
+
+function isSugaredMultivitamin(result) {
+  return result?.formula_rows?.some((row) => row.material_id === "iodine_potassium_iodide_declared");
+}
 export const MINERAL_AMINO_ASSUMPTIONS = [
   "Water q.s. to the entered dose volume; no sugar syrup, oil or unlisted nutritive excipients.",
   "Iron and zinc quantities are declared elemental amounts, with ferric ammonium citrate and zinc sulphate as their sources. Salt weights, assay, hydrate and ingredient order require confirmation.",
@@ -40,6 +61,7 @@ export const PAPAIN_ASSUMPTIONS = [
 ];
 
 export function scenarioAssumptions(result) {
+  if (isSugaredMultivitamin(result)) return SUGARED_MULTIVITAMIN_ASSUMPTIONS;
   if (result?.formula_rows?.some((row) => ["iron_fac_declared", "zinc_sulphate_declared"].includes(row.material_id)))
     return MINERAL_AMINO_ASSUMPTIONS;
   return result?.formula_rows?.some((row) => row.material_id === "papain_pure_assumed")
@@ -71,9 +93,14 @@ function sumDecimals(...values) {
 export function scenarioEligibility(result, options = {}) {
   if (!result || result.basis_label !== "per 100 mL") return { allowed: false, reason: "This estimate requires a finished liquid volume." };
   const rows = (result.formula_rows || []).slice(1);
-  const supported = rows.some((row) => ["iron_fac_declared", "zinc_sulphate_declared"].includes(row.material_id))
+  const sugaredMultivitamin = isSugaredMultivitamin(result);
+  const recipeMaterial = (row) => sugaredMultivitamin && row.material_id === "granulated_sugar"
+    ? "sucrose_pure_assumed" : row.material_id;
+  const supported = sugaredMultivitamin ? SUGARED_MULTIVITAMIN_MATERIALS
+    : rows.some((row) => ["iron_fac_declared", "zinc_sulphate_declared"].includes(row.material_id))
     ? MINERAL_AMINO_MATERIALS : rows.some((row) => row.material_id === "papain_pure_assumed") ? PAPAIN_MATERIALS : SUPPORTED_MATERIALS;
-  if (!rows.length || rows.some((row) => !supported.has(row.material_id))) {
+  if (!rows.length || rows.some((row) => !supported.has(recipeMaterial(row))) ||
+    (sugaredMultivitamin && [...supported].some((id) => !rows.some((row) => recipeMaterial(row) === id)))) {
     return { allowed: false, reason: "This assumption recipe does not cover every ingredient. Supply composition data for the other ingredients." };
   }
   if (pendingIdentityRows(result, options.confirmedIdentities || new Set()).length) {
@@ -105,6 +132,28 @@ export function buildAssumptionScenario(result, options = {}) {
         : multiplyDivideDecimal(component.value, batch, "100", 28);
     }
     const assumedZeroMaterials = [...(component.unknown_materials || [])];
+    if (assumptions === SUGARED_MULTIVITAMIN_ASSUMPTIONS &&
+      ["energy", "carbohydrate", "total_sugars", "added_sugars"].includes(component.id) &&
+      component.contributions?.some((entry) => entry.input_material_id === "granulated_sugar")) {
+      // A shared accepted sugar profile keeps its original USDA values in the
+      // source report. Only this explicit recipe assumes pure sucrose instead.
+      const factor = component.id === "energy" ? "4" : "1";
+      component.contributions = component.contributions.map((entry) => {
+        if (entry.input_material_id !== "granulated_sugar") return entry;
+        const total = multiplyDivideDecimal(entry.input_mass_g, factor, "1", 28);
+        return { ...entry,
+          profile_basis: { value: "100", unit: "g" },
+          profile_value: component.id === "energy" ? "400" : "100",
+          profile_minimum: null, profile_maximum: null,
+          total_batch: total, minimum_total_batch: null, maximum_total_batch: null,
+          per_100_ml: multiplyDivideDecimal(total, "100", batch, 28),
+          per_100_g: null, per_serving: null, retention_factor: "1",
+          source: { kind: "operator_assumption", original_source: entry.source,
+            reference: "Pure sucrose assumed from the entered sugar mass: carbohydrate, total and added sugars at 1 g/g, energy at 4 kcal/g. The accepted granulated-sugar profile and original values remain in the source result; not a supplier assay." },
+        };
+      });
+      component.total_batch = sumDecimals("0", ...component.contributions.map((entry) => entry.total_batch));
+    }
     if (papain && ["energy", "protein"].includes(component.id)) {
       const total = component.id === "energy" ? papainEnergy : papainProtein;
       component.total_batch = sumDecimals(component.total_batch, total);

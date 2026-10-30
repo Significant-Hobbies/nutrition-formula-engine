@@ -29,7 +29,7 @@ for (const [kind, method, publishedMatch] of [["paste", "pasted text", false], [
       workspace: null, publishedProduct: null, publishedReviewSignature: null, sessionHistory: [], confirmedIdentities: new Set(),
       normalizeText, rowsToTsv, sha256: async () => "fixture-hash", durationSince: () => 1,
       ingestFile: async () => ({ ...normalizeText(contents, method), rawText: contents }),
-      setStatus() {}, recordAudit() {}, updateInputBasis() {}, validateDraftRows() {}, setReviewStatus() {},
+      setStatus() {}, recordAudit() {}, updateInputBasis() {}, validateDraftRows() {}, setReviewStatus() {}, cancelCalculation() {},
       savedProductForRows: () => publishedMatch ? { id: "published" } : null,
       openPublishedProduct: () => calls.push("opened without review"),
       analyzeContents: async (contents) => { calls.push(contents); return true; },

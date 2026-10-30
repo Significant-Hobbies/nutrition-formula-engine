@@ -17,6 +17,24 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class UploadWorkflowTests(unittest.TestCase):
+    def test_unidentified_carrier_never_acquires_water_composition(self) -> None:
+        text = "Item\tQuantity\tUnit\nFINISHED BATCH\t1\tmL\nUNIDENTIFIED CARRIER\t2\tmg\n"
+        result = analyze_formula_upload(text, "carrier.tsv")
+        row = result["formula_rows"][1]
+        self.assertTrue(row["unresolved"])
+        self.assertNotEqual(row["material_id"], "water")
+        self.assertTrue(all(metric["status"] == "partial" for metric in result["screened_components"]))
+        self.assertTrue(all(not metric["contributions"] for metric in result["screened_components"]))
+        self.assertTrue(result["missing_information"])
+
+    def test_explicit_accepted_alias_precedes_unknown_name_guard(self) -> None:
+        result = analyze_formula_upload(
+            "Item\tQuantity\tUnit\nFINISHED BATCH\t1\tmL\nUNKNOWN SUPPLIER C\t2\tmg\n",
+            "accepted.tsv", accepted_aliases={"UNKNOWN SUPPLIER C": "ascorbic_acid"},
+        )
+        self.assertEqual(result["formula_rows"][1]["material_id"], "ascorbic_acid")
+        self.assertFalse(result["formula_rows"][1]["unresolved"])
+
     def test_api_body_requires_reviewed_formula_fields(self) -> None:
         self.assertEqual(
             validate_analysis_body({"file_name": "batch.tsv", "contents": "reviewed rows"}),

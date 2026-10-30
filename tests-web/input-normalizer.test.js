@@ -32,6 +32,30 @@ test("normalizes semicolon-delimited decimal-comma quantities", () => {
   assert.equal(result.rows[1].quantity, "0.1");
 });
 
+test("whitespace decimal-comma amounts retain their ingredient name and full quantity", () => {
+  const result = normalizeText("Vitamin C 4,5 mg\nSugar 200 mg", "pasted text", { basisRow: { quantity: "1", unit: "mL" } });
+  assert.equal(result.rows[1].item, "Vitamin C");
+  assert.equal(result.rows[1].quantity, "4.5");
+  assert.equal(result.rows[1].unit, "mg");
+  assert.equal(result.rows[1].input_source.text, "Vitamin C 4,5 mg");
+  assert.equal(result.rows[2].quantity, "200");
+});
+
+test("CSV with combined amounts remains comma-delimited", () => {
+  const result = normalizeText('FINISHED BATCH,1 mL\nVitamin C,4.5 mg\nSugar,200 mg');
+  assert.equal(result.rows[1].item, "Vitamin C");
+  assert.equal(result.rows[1].quantity, "4.5");
+});
+
+test("unsupported scientific notation requires correction instead of dropping the ingredient", () => {
+  const text = "Vitamin B12 4e-1 mcg\nSugar 200 mg";
+  assert.throws(() => normalizeText(text, "pasted text", { basisRow: { quantity: "1", unit: "mL" } }), (error) => {
+    assert.match(error.message, /Source row 1.*decimal quantity/);
+    assert.deepEqual(error.recoveredRows.map((row) => row.text), text.split("\n"));
+    return true;
+  });
+});
+
 test("normalizes OCR-style lines and infers a quantity-only batch row", () => {
   const result = normalizeText("1000 LITRE\nFERRIC AMMONIUM CITRATE 13.4 KG\nCYANCOBALAMIN 0.085 GM", "image OCR");
   assert.deepEqual(result.rows.map(({ item, quantity, unit }) => ({ item, quantity, unit })), [

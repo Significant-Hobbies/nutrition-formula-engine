@@ -161,7 +161,7 @@ function amountLabel(component, multiplier, batchQuantity) {
 }
 
 function mineralSources(component, confirmedMaterialIds) {
-  if (!MINERAL_ORDER.includes(component.id) && component.id !== "sodium") return [];
+  if (!MINERAL_ORDER.includes(component.id)) return [];
   const unique = new Map();
   for (const contribution of component.contributions || []) {
     if (!isPositiveDecimal(contribution.total_batch)) continue;
@@ -222,7 +222,14 @@ export function buildNutritionLabel(result, options = {}) {
     .filter(({ component }) => REQUIRED_ORDER.includes(component.id) ||
       (component.value == null && (!result.declared_nutrient_ids || result.declared_nutrient_ids.includes(component.id))) ||
       (component.status === "partial" && (!result.declared_nutrient_ids || result.declared_nutrient_ids.includes(component.id))) || isNonZeroDecimal(component.value))
-    .map(({ component: original }) => {
+    .map(({ component: suppliedComponent }) => {
+      // Unaccepted fuzzy identities are suggestions, never label quantities.
+      const unconfirmedSource = (suppliedComponent.contributions || []).some((entry) => {
+        const row = formulaRows[entry.line_index];
+        return row && !confirmed(row);
+      });
+      const original = unconfirmedSource
+        ? { ...suppliedComponent, value: null, total_batch: null, status: "partial" } : suppliedComponent;
       // Keep the report's incomplete totals intact. A confirmed declared active
       // amount is a separate label basis, not a claim of complete assay coverage.
       const contributions = (original.contributions || []).filter((entry) => isPositiveDecimal(entry.total_batch));
@@ -266,19 +273,35 @@ export function buildNutritionLabel(result, options = {}) {
     status: "weighed", identityNote: entry.identity_note,
   }));
   const unavailableNutrients = nutrients.filter((nutrient) => nutrient.perServing === "Not established");
-  const visibleNutrients = options.includeUnavailable && !result.assumption_scenario?.active ? nutrients
-    : nutrients.filter((nutrient) => nutrient.perServing !== "Not established");
+  const visibleNutrients = nutrients.filter((nutrient) => nutrient.perServing !== "Not established");
   // Nutrition rows contain nutrient equivalents only. Raw formulation inputs
   // remain in the ingredient statement and calculation report.
   const groups = CATEGORY_ORDER.map((name) => ({ name, nutrients: visibleNutrients.filter((nutrient) => nutrient.category === name) }))
     .filter((group) => group.nutrients.length);
   const enzymes = weighedIngredients.filter((item) => item.category === "Enzymes");
   if (enzymes.length) groups.push({ name: "Enzymes (ingredient weight)", nutrients: enzymes });
+  const suppliedRows = result.input_only || !visibleNutrients.length ? formulaRows
+    : formulaRows.filter((row) => row.unresolved || !confirmed(row));
+  if (suppliedRows.length) groups.push({
+    name: `Ingredients supplied per entered ${result.input_basis === "dose" ? "dose" : "batch"} (${result.label_batch_quantity} ${basisUnit})`,
+    nutrients: suppliedRows.map((row, index) => ({
+      id: `supplied-${index}`, name: row.item, unit: displayUnit(row.submitted_unit || row.unit),
+      perServing: row.submitted_quantity ?? row.quantity, perBasis: row.submitted_quantity ?? row.quantity,
+      status: "supplied", supplied: true, rda: { men: "—", women: "—", children: "—" },
+    })),
+  });
 
   const ingredientInputs = result.label_ingredients?.length ? result.label_ingredients
     : formulaRows.map((row) => ({ ...row, name: labelIngredientName(row) }));
   const ingredientDetails = ingredientInputs.map((item) => {
     const matchingRows = formulaRows.filter((row) => row.material_id === item.material_id);
+    if (item.material_id && matchingRows.some((row) => row.unresolved || !confirmed(row))) {
+      const name = [...new Set(matchingRows.map((row) => row.item))].join(" / ");
+      return { materialId: item.material_id, name, ins: null, functionalClass: null,
+        statement: `${name} (identity/composition to confirm)`, identityBasis: "unconfirmed",
+        insStatus: "identity_required", insStatusLabel: "Confirm ingredient identity",
+        note: "The supplied name is retained; no nutrient identity or INS number is accepted for this ingredient.", source: null };
+    }
     return describeLabelIngredient(item, matchingRows.length > 0 && matchingRows.every((row) => !row.unresolved && confirmed(row)));
   });
   const ingredients = ingredientDetails.map((item) => item.statement);
@@ -292,8 +315,8 @@ export function buildNutritionLabel(result, options = {}) {
 
   return {
     productName,
-    basisLabel: `Per 100 ${basisUnit}`,
-    servingLabel: `Per serving (${servingSize} ${basisUnit})`,
+    basisLabel: result.input_only ? "Supplied quantity" : `Per 100 ${basisUnit}`,
+    servingLabel: result.input_only ? "Supplied quantity" : `Per serving (${servingSize} ${basisUnit})`,
     servingSize,
     servingUnit: basisUnit,
     servingsPerPack,
@@ -307,10 +330,13 @@ export function buildNutritionLabel(result, options = {}) {
     groups,
     weighedIngredients,
     unavailableNutrients,
+    inputOnly: Boolean(result.input_only),
+    unavailableSummary: result.input_only ? result.missing_information[0].needed : unavailableNutrients.length
+      ? `Not established: ${unavailableNutrients.map((nutrient) => nutrient.name).join(", ")}. Missing composition is unknown, not zero; supplier data is required.` : "",
     waterBase,
     hasDeclaredActives: nutrients.some((nutrient) => nutrient.status === "declared"),
     hasEstimatedActives: nutrients.some((nutrient) => nutrient.status === "estimated"),
-    hasIncompleteData: nutrients.some((nutrient) => nutrient.status === "partial"),
+    hasIncompleteData: Boolean(result.input_only) || nutrients.some((nutrient) => nutrient.status === "partial"),
     hasIdentityReview: pendingIdentityRows(result, confirmedIdentities).length > 0,
     hasDeclaredActiveAssumptions: formulaRows.some((row) =>
       (row.interpretation?.includes("declared active") || row.interpretation?.includes("pure active basis")) && !confirmed(row)),

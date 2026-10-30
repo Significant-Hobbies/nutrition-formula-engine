@@ -30,12 +30,16 @@ const REFERENCES = Object.freeze({
   ferric_ammonium_citrate_brown_mid: { ...additive("381", "Iron source"), source: FAC_REFERENCE, identifierOnly: true },
   lysine_hcl_pure_assumed: { ...additive("642", "Amino acid source"), identifierOnly: true },
   lysine_hcl_unassayed: { ...additive("642", "Amino acid source"), identifierOnly: true },
+  vitamin_b2_phosphate_sodium_declared: { ...additive("101(ii)", "Vitamin B2 source"), identifierOnly: true },
 });
 const NUTRIENTS = new Set([
   "vitamin_b1_declared", "vitamin_b6_declared", "vitamin_b12_declared",
   "niacinamide_pure", "d_panthenol_pure_assumed", "lysine_free_pure_assumed",
   "folic_acid_declared", "folic_acid_pure", "cyanocobalamin_pure",
   "pyridoxine_hydrochloride", "zinc_sulphate_declared", "zinc_sulphate_monohydrate_355",
+  "vitamin_c_ascorbic_declared", "vitamin_b3_nicotinamide_declared",
+  "vitamin_b1_hydrochloride_declared", "vitamin_b6_hydrochloride_declared",
+  "vitamin_b12_cyanocobalamin_declared", "iodine_potassium_iodide_declared",
 ]);
 
 export function describeLabelIngredient(item, identityAccepted) {
@@ -76,6 +80,11 @@ export function describeLabelIngredient(item, identityAccepted) {
   if (materialId === "mixed_fruit_essence") return {
     materialId, name, ins: null, functionalClass: "Flavour", statement: name,
     insStatus: "mixture", insStatusLabel: "Flavour mixture — no single INS",
+    note: "", source: null,
+  };
+  if (materialId === "sucrose_pure_assumed") return {
+    materialId, name, ins: null, functionalClass: null, statement: name,
+    insStatus: "not_applicable", insStatusLabel: "Food ingredient — INS not applicable",
     note: "", source: null,
   };
   if (materialId === "water") return {
