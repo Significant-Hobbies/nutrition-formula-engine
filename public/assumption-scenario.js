@@ -94,11 +94,13 @@ export function scenarioEligibility(result, options = {}) {
   if (!result || result.basis_label !== "per 100 mL") return { allowed: false, reason: "This estimate requires a finished liquid volume." };
   const rows = (result.formula_rows || []).slice(1);
   const sugaredMultivitamin = isSugaredMultivitamin(result);
+  const recipeMaterial = (row) => sugaredMultivitamin && row.material_id === "granulated_sugar"
+    ? "sucrose_pure_assumed" : row.material_id;
   const supported = sugaredMultivitamin ? SUGARED_MULTIVITAMIN_MATERIALS
     : rows.some((row) => ["iron_fac_declared", "zinc_sulphate_declared"].includes(row.material_id))
     ? MINERAL_AMINO_MATERIALS : rows.some((row) => row.material_id === "papain_pure_assumed") ? PAPAIN_MATERIALS : SUPPORTED_MATERIALS;
-  if (!rows.length || rows.some((row) => !supported.has(row.material_id)) ||
-    (sugaredMultivitamin && [...supported].some((id) => !rows.some((row) => row.material_id === id)))) {
+  if (!rows.length || rows.some((row) => !supported.has(recipeMaterial(row))) ||
+    (sugaredMultivitamin && [...supported].some((id) => !rows.some((row) => recipeMaterial(row) === id)))) {
     return { allowed: false, reason: "This assumption recipe does not cover every ingredient. Supply composition data for the other ingredients." };
   }
   if (pendingIdentityRows(result, options.confirmedIdentities || new Set()).length) {
@@ -130,6 +132,28 @@ export function buildAssumptionScenario(result, options = {}) {
         : multiplyDivideDecimal(component.value, batch, "100", 28);
     }
     const assumedZeroMaterials = [...(component.unknown_materials || [])];
+    if (assumptions === SUGARED_MULTIVITAMIN_ASSUMPTIONS &&
+      ["energy", "carbohydrate", "total_sugars", "added_sugars"].includes(component.id) &&
+      component.contributions?.some((entry) => entry.input_material_id === "granulated_sugar")) {
+      // A shared accepted sugar profile keeps its original USDA values in the
+      // source report. Only this explicit recipe assumes pure sucrose instead.
+      const factor = component.id === "energy" ? "4" : "1";
+      component.contributions = component.contributions.map((entry) => {
+        if (entry.input_material_id !== "granulated_sugar") return entry;
+        const total = multiplyDivideDecimal(entry.input_mass_g, factor, "1", 28);
+        return { ...entry,
+          profile_basis: { value: "100", unit: "g" },
+          profile_value: component.id === "energy" ? "400" : "100",
+          profile_minimum: null, profile_maximum: null,
+          total_batch: total, minimum_total_batch: null, maximum_total_batch: null,
+          per_100_ml: multiplyDivideDecimal(total, "100", batch, 28),
+          per_100_g: null, per_serving: null, retention_factor: "1",
+          source: { kind: "operator_assumption", original_source: entry.source,
+            reference: "Pure sucrose assumed from the entered sugar mass: carbohydrate, total and added sugars at 1 g/g, energy at 4 kcal/g. The accepted granulated-sugar profile and original values remain in the source result; not a supplier assay." },
+        };
+      });
+      component.total_batch = sumDecimals("0", ...component.contributions.map((entry) => entry.total_batch));
+    }
     if (papain && ["energy", "protein"].includes(component.id)) {
       const total = component.id === "energy" ? papainEnergy : papainProtein;
       component.total_batch = sumDecimals(component.total_batch, total);

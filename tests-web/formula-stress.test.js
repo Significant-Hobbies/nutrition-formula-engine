@@ -7,7 +7,7 @@ import test from "node:test";
 import vm from "node:vm";
 import { normalizeText, rowsToTsv } from "../public/input-normalizer.js";
 import { buildNutritionLabel, identityReviewKey } from "../public/nutrition-label.js";
-import { buildAssumptionScenario } from "../public/assumption-scenario.js";
+import { buildAssumptionScenario, scenarioEligibility } from "../public/assumption-scenario.js";
 import { defaultIdentityRows, validateReviewedRows } from "../public/draft-result.js";
 
 const root = new URL("../", import.meta.url);
@@ -39,11 +39,16 @@ cases.push(
   { id: "unknown ingredient only", text: "1 mL\nUNIDENTIFIED CARRIER 2 mg", unknown: true },
   { id: "mass batch and ingredient volume", text: "FINISHED BATCH 1 kg\nUNIDENTIFIED CARRIER 2 mL", density: true },
 );
+for (const amount of ["200", "225"]) cases.push({
+  id: `shared granulated-sugar profile ${amount} mg`,
+  text: original.contents.replace("SUGAR\t200\tmg", `SUGAR\t${amount}\tmg`), sharedSugar: amount,
+});
 for (const item of cases) {
   item.rows = normalizeText(item.text).rows;
   validateReviewedRows(item.rows);
   item.contents = rowsToTsv(item.rows);
   item.aliases = Object.fromEntries(aliasesFor(item.rows).map((alias) => [alias.alias, alias.material_id]));
+  if (item.sharedSugar) item.aliases.SUGAR = "granulated_sugar";
 }
 const calculated = JSON.parse(execFileSync(python, ["-c", `
 import json,sys
@@ -104,4 +109,31 @@ for (const [index, item] of cases.entries()) test(`normalization → Decimal eng
     assert.ok(label.ingredients.some((name) => name.includes("Vit C Ascorbic Acid (identity/composition to confirm)")));
   }
   if (item.partial) assert.equal(result.assumption_scenario, undefined);
+  if (item.sharedSugar) {
+    assert.equal(source.formula_rows.find((row) => row.item === "SUGAR").material_id, "granulated_sugar");
+    assert.equal(scenarioEligibility(source, options).allowed, true);
+    assert.equal(result.assumption_scenario?.active, true);
+    const sourceEnergy = source.screened_components.find((row) => row.id === "energy");
+    const sourceSugar = source.screened_components.find((row) => row.id === "total_sugars");
+    assert.equal(sourceEnergy.total_batch, item.sharedSugar === "200" ? "0.774" : "0.87075");
+    assert.equal(sourceSugar.total_batch, item.sharedSugar === "200" ? "0.1996" : "0.22455");
+    const energy = result.screened_components.find((row) => row.id === "energy");
+    assert.equal(energy.total_batch, item.sharedSugar === "200" ? "0.8" : "0.9");
+    assert.equal(label.nutrients.find((row) => row.id === "energy").perServing,
+      item.sharedSugar === "200" ? "≈0.8" : "≈0.9");
+    assert.equal(label.nutrients.find((row) => row.id === "total_sugars").perServing,
+      item.sharedSugar === "200" ? "≈0.2" : "≈0.23");
+    assert.equal(energy.contributions[0].source.kind, "operator_assumption");
+    assert.deepEqual(energy.contributions[0].source.original_source, sourceEnergy.contributions[0].source);
+    for (const id of ["carbohydrate", "total_sugars", "added_sugars"]) {
+      assert.equal(result.screened_components.find((row) => row.id === id).total_batch,
+        item.sharedSugar === "200" ? "0.2" : "0.225");
+    }
+    assert.equal(buildAssumptionScenario(source, { ...options, assumptionEstimate: false }), source);
+    assert.equal(buildNutritionLabel(source, options).nutrients.find((row) => row.id === "energy").perServing,
+      item.sharedSugar === "200" ? "≥0.774" : "≥0.8707");
+    assert.equal(sourceEnergy.contributions[0].source.kind, "reference_database");
+    const incompleteRecipe = { ...source, formula_rows: source.formula_rows.filter((row) => row.material_id !== "vitamin_c_ascorbic_declared") };
+    assert.equal(scenarioEligibility(incompleteRecipe, options).allowed, false);
+  }
 });
