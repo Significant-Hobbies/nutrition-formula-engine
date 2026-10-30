@@ -277,13 +277,17 @@ export function normalizeText(text, method = "pasted text", options = {}) {
   }
   const lines = source.split(/\r\n|\r|\n/);
   const firstLines = lines.filter((line) => cleanCell(line)).slice(0, 5).join("\n");
+  // A comma inside a complete whitespace amount is a numeric separator,
+  // not evidence of CSV ("Vitamin C 4,5 mg" must retain 4.5 mg).
+  const whitespaceDecimalComma = lines.some((line) => parseLine(line, 1) &&
+    /\d,\d[\d,]*\s*[a-zµμ]+\.?$/i.test(cleanCell(line)));
   const delimiter = firstLines.includes("\t")
     ? "\t"
     : firstLines.includes("|")
       ? "|"
       : firstLines.includes(";")
         ? ";"
-        : firstLines.includes(",")
+        : firstLines.includes(",") && !whitespaceDecimalComma
           ? ","
           : null;
   const matrix = lines.map((line) => delimiter ? parseCsvLine(line, delimiter) : [line]);
