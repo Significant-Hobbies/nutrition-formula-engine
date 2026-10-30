@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 import { createPreparationTasks } from "../public/preparation-task.js";
-import { normalizeText, rowsToTsv } from "../public/input-normalizer.js";
+import { normalizeText, normalizeMatrix, normalizePages, rowsToTsv, hasExplicitBatchSource } from "../public/input-normalizer.js";
 
 const app = await readFile(new URL("../public/app.js", import.meta.url), "utf8");
 // Execute the shipped preparation and confirmation controller against a small
@@ -29,7 +29,7 @@ for (const [kind, method, publishedMatch] of [["paste", "pasted text", false], [
       calculateButton: { addEventListener: (_event, handler) => { calculate = handler; } },
       currentInputBasis: "dose", latestFileName: "", draftRows: [],
       workspace: null, publishedProduct: null, publishedReviewSignature: null, sessionHistory: [], confirmedIdentities: new Set(),
-      normalizeText, rowsToTsv, sha256: async () => "fixture-hash", durationSince: () => 1,
+      normalizeText, rowsToTsv, hasExplicitBatchSource, sha256: async () => "fixture-hash", durationSince: () => 1,
       ingestFile: async () => ({ ...normalizeText(contents, method), rawText: contents }),
       setStatus() {}, recordAudit() {}, updateInputBasis() {}, validateDraftRows() {}, setReviewStatus() {}, cancelCalculation() {},
       savedProductForRows: () => publishedMatch ? { id: "published" } : null,
@@ -64,7 +64,7 @@ function preparationFixture({ timeoutMs = 10000, ingestFile, hash = async () => 
     formulaReview: node("#formula-review"), results: node("#results"), uploadPanel: node("#upload-panel"),
     currentInputBasis: "dose", latestFileName: "", latestResult: null, currentRows: [], draftRows: [], latestContents: "", sessionHistory: [],
     workspace: null, savedLabelReview: null, confirmedIdentities: new Set(), MAX_INPUT_BYTES: 12 * 1024 * 1024,
-    normalizeText, rowsToTsv, sha256: hash, durationSince: () => 1, ingestFile,
+    normalizeText, rowsToTsv, hasExplicitBatchSource, sha256: hash, durationSince: () => 1, ingestFile,
     setStatus(message) { context.message = message; }, recordAudit() {}, updateInputBasis() {}, setReviewStatus() {}, refreshSavedWorkspaceOffer() {},
   });
   context.renderPreparedFormula = (extraction) => { context.draftRows = extraction.rows; context.rendered = extraction; };
@@ -185,4 +185,42 @@ test("oversized UTF-8 paste is retained and rejected before hashing or parsing",
   assert.equal(context.draftRows.length, 0);
   assert.equal(context.prepareButton.disabled, false);
   assert.match(context.message, /12 MB.*input is retained/);
+});
+
+
+for (const label of ["FINISHED BATCH", "FINAL BATCH", "BATCH SIZE", "Final yield"]) {
+  test(`explicit ${label} XLSX source selects batch mode even without raw text`, async () => {
+    const recovered = { ...normalizeMatrix([[label, "1000", "L"], ["Sugar", "500", "kg"]], "XLSX spreadsheet"), rawText: "" };
+    const { context, node } = preparationFixture({ ingestFile: async () => recovered });
+    context.selectFile(fakeFile("blank-rows.xlsx"));
+    await context.prepareInput();
+    assert.equal(context.currentInputBasis, "batch");
+    assert.equal(node("#input-basis").value, "batch");
+    assert.equal(context.draftRows[0].quantity, "1000");
+    assert.equal(context.draftRows[0].unit, "L");
+  });
+}
+
+for (const [label, recovered] of [
+  ["pasted text", normalizeText("FINISHED BATCH 1000 L\nSugar 500 kg")],
+  ["TXT", normalizeText("FINAL BATCH 1000 L\nSugar 500 kg", "text file")],
+  ["PDF", normalizePages([{ text: "BATCH SIZE 1000 L\nSugar 500 kg" }], "PDF embedded text")],
+  ["JSON structural batch", normalizeText(JSON.stringify({ batch: { quantity: "1000", unit: "L" }, ingredients: [{ item: "Sugar", quantity: "500", unit: "kg" }] }))],
+  ["JSON explicit row", normalizeText(JSON.stringify([{ item: "FINISHED BATCH", quantity: "1000", unit: "L" }, { item: "Sugar", quantity: "500", unit: "kg" }]))],
+]) test(`${label} explicit batch evidence selects batch mode consistently`, async () => {
+  const { context } = preparationFixture({ ingestFile: async () => ({ ...recovered, rawText: "" }) });
+  context.selectFile(fakeFile("formula.dat"));
+  await context.prepareInput();
+  assert.equal(context.currentInputBasis, "batch");
+});
+
+for (const text of ["1 mL\nSugar 20 mg", "Sugar 20 mg"]) test(`implicit dose source preserves dose mode: ${text}`, async () => {
+  const { context, node } = preparationFixture();
+  node("#dose-volume").value = "1";
+  context.formulaText.value = text;
+  await context.prepareInput();
+  assert.equal(context.currentInputBasis, "dose");
+  assert.equal(node("#input-basis").value, "dose");
+  assert.equal(context.draftRows[0].quantity, "1");
+  assert.equal(context.draftRows[0].unit, "mL");
 });

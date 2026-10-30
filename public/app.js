@@ -1,6 +1,6 @@
 import { inputProvenance, sourceLabel as inputSourceLabel, sourceMarkdown } from "./input-provenance.js";
 import { lineReviewPanel } from "./line-review.js";
-import { normalizeText, rowsToTsv, normalizeUnit } from "./input-normalizer.js";
+import { normalizeText, rowsToTsv, normalizeUnit, hasExplicitBatchSource } from "./input-normalizer.js";
 import { createAuditLog, sha256 } from "./audit-log.js";
 import { buildNutritionLabel, identityReviewKey, multiplyDivideDecimal, pendingIdentityRows } from "./nutrition-label.js";
 import { buildResultReadiness, componentEvidence, readinessMarkdown, senderChecklist } from "./result-readiness.js";
@@ -649,7 +649,7 @@ async function prepareInput() {
       return { inputHash, extraction };
     });
     if (!task.isCurrent()) return;
-    if (/finished\s+batch|final\s+batch|batch\s+size/i.test(extraction.rawText || "")) currentInputBasis = "batch";
+    if (hasExplicitBatchSource(extraction)) currentInputBasis = "batch";
     document.querySelector("#input-basis").value = currentInputBasis;
     if (currentInputBasis === "dose" && extraction.rows[0].unit === "mL") document.querySelector("#dose-volume").value = extraction.rows[0].quantity;
     updateInputBasis();

@@ -40,6 +40,23 @@ function isFinishedBatch(value) {
   return ["finishedbatch", "finalbatch", "batchsize", "finalyield", "yield"].includes(key);
 }
 
+// A normalized FINISHED BATCH row can also represent an implicit dose. Only
+// source evidence of an explicit batch declaration overrides the chosen mode.
+export function hasExplicitBatchSource(extraction) {
+  const source = extraction.rows?.[0]?.input_source;
+  if (!source) return false;
+  if (["batch", "finished_batch", "final_batch"].includes(source.json_path)) return true;
+  if (source.method === "JSON" && source.text) {
+    try {
+      const evidence = JSON.parse(source.text);
+      return isFinishedBatch(Array.isArray(evidence) ? evidence[0] : evidence?.item);
+    } catch { return false; }
+  }
+  const explicit = /^(?:finished\s+batch|final\s+batch|batch\s+size|final\s+yield|yield)(?:\s|[|,;]|$)/i;
+  return [source.text, ...(source.cells || [])].some((value) =>
+    typeof value === "string" && explicit.test(cleanCell(value).replace(/^[•·*-]\s*/, "")));
+}
+
 function canonicalRow(item, quantity, unit, sourceLine) {
   const normalizedQuantity = normalizeQuantity(quantity);
   const normalizedUnit = normalizeUnit(unit);
