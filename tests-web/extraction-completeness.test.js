@@ -20,7 +20,7 @@ for (const ingredient of ["Water 1 g", "Sugar 200 mg"]) test(`actual extraction 
   assert.equal(label.nutrients.find((row) => row.id === "sodium").perServing, "Not established");
   assert.equal(label.nutrients.find((row) => row.id === "sodium").rdaPercent, "Not established");
   assert.equal(label.hasIncompleteData, true);
-  assert.match(label.unavailableSummary, /1 source lines not included; correct them/);
+  assert.match(label.unavailableSummary, /1 source line not included; correct it/);
   assert.equal(buildResultReadiness(report, options).partial, true);
   assert.equal(scenarioEligibility(report, options).allowed, false);
   assert.equal(buildAssumptionScenario(report, options), report);

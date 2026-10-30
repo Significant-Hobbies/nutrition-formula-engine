@@ -622,7 +622,8 @@ def analyze_formula_upload(
             })
     unparsed_rows = (input_provenance or {}).get("unparsed_rows", [])
     if unparsed_rows:
-        summary = f"{len(unparsed_rows)} source lines not included; correct them and prepare the formula again."
+        count = len(unparsed_rows)
+        summary = f"{count} source {'line' if count == 1 else 'lines'} not included; correct {'it' if count == 1 else 'them'} and prepare the formula again."
         missing_information.insert(0, {"item": "Source recovery", "needed": summary, "affects": [metric["name"] for metric in screened]})
         # The excluded lines have unknown identities and quantities. Parsed
         # contributions remain useful, but cannot establish a complete total.

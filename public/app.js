@@ -1445,7 +1445,7 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
       input_sha256: inputHash,
       result_sha256: resultHash,
     });
-    setReviewStatus(`Calculated ${data.formula_rows.length - 1} ingredients from the reviewed rows.${saveWarning}`);
+    setReviewStatus(`Calculated ${data.formula_rows.length - 1} ${data.formula_rows.length === 2 ? "ingredient" : "ingredients"} from the reviewed rows.${saveWarning}`);
     return true;
   } catch (error) {
     if (!request.isCurrent()) return null;

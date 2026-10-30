@@ -69,7 +69,7 @@ class InputProvenanceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(sodium["value"], "0")  # Known water contribution, never a complete total.
         self.assertEqual(sodium["status"], "partial")
         self.assertIsNone(report["coverage"]["characterized_percent"])
-        self.assertIn("1 source lines not included", report["missing_information"][0]["needed"])
+        self.assertIn("1 source line not included", report["missing_information"][0]["needed"])
         self.assertEqual(report["input_provenance"], provenance)
         for invalid in ([None], [{**unparsed, "text": "x" * 4097}], [unparsed] * 252, [{**unparsed, "local_path": "/private/source.png"}]):
             with self.subTest(invalid=str(invalid)[:80]), self.assertRaises(FormulaUploadError):

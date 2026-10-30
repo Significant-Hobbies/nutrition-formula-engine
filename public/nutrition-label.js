@@ -197,7 +197,7 @@ export function buildNutritionLabel(result, options = {}) {
   const confirmedIdentities = options.confirmedIdentities || new Set();
   const formulaRows = (result.formula_rows || []).slice(1);
   const excludedSourceCount = result.input_provenance?.unparsed_rows?.length || 0;
-  const excludedSummary = excludedSourceCount ? `${excludedSourceCount} source lines not included; correct them and prepare the formula again.` : "";
+  const excludedSummary = excludedSourceCount ? `${excludedSourceCount} source ${excludedSourceCount === 1 ? "line" : "lines"} not included; correct ${excludedSourceCount === 1 ? "it" : "them"} and prepare the formula again.` : "";
   const confirmed = (row) => !row.needs_review || confirmedIdentities.has(identityReviewKey(row));
   const servingSize = String(options.servingSize || "30").trim();
   if (!isPositiveDecimal(servingSize)) {
