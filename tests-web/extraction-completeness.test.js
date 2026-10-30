@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { normalizeText, rowsToTsv } from "../public/input-normalizer.js";
 import { inputProvenance, sourceMarkdown } from "../public/input-provenance.js";
@@ -7,12 +9,16 @@ import { buildNutritionLabel, identityReviewKey } from "../public/nutrition-labe
 import { buildResultReadiness } from "../public/result-readiness.js";
 import { scenarioEligibility, buildAssumptionScenario } from "../public/assumption-scenario.js";
 
+const root = new URL("../", import.meta.url);
+const projectPython = fileURLToPath(new URL(".venv/bin/python", root));
+const python = process.env.PYTHON || (existsSync(projectPython) ? projectPython : "python3");
+
 for (const ingredient of ["Water 1 g", "Sugar 200 mg"]) test(`actual extraction → Python engine → label retains excluded OCR source with ${ingredient}`, () => {
   const extraction = normalizeText(`FINISHED BATCH 1 mL\n${ingredient}\nSalt 1O g`, "image OCR");
   assert.equal(extraction.unparsedRows.length, 1);
   const payload = { contents: rowsToTsv(extraction.rows), provenance: inputProvenance(extraction.rows, extraction.unparsedRows) };
-  const report = JSON.parse(execFileSync("uv", ["run", "python", "-c", "import json,sys; from nutrition_formula.upload_analysis import analyze_formula_upload; p=json.load(sys.stdin); print(json.dumps(analyze_formula_upload(p['contents'],'ocr.tsv',input_provenance=p['provenance'])))"], {
-    cwd: new URL("..", import.meta.url), input: JSON.stringify(payload), encoding: "utf8", env: { ...process.env, PYTHONPATH: "src" },
+  const report = JSON.parse(execFileSync(python, ["-c", "import json,sys; from nutrition_formula.upload_analysis import analyze_formula_upload; p=json.load(sys.stdin); print(json.dumps(analyze_formula_upload(p['contents'],'ocr.tsv',input_provenance=p['provenance'])))"], {
+    cwd: root, input: JSON.stringify(payload), encoding: "utf8", env: { ...process.env, PYTHONPATH: "src" },
   }));
   const options = { servingSize: "1", waterBase: true, assumptionEstimate: true,
     confirmedIdentities: new Set(report.formula_rows.map(identityReviewKey)) };
