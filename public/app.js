@@ -1,14 +1,15 @@
 import { inputProvenance, sourceLabel as inputSourceLabel, sourceMarkdown } from "./input-provenance.js";
 import { lineReviewPanel } from "./line-review.js";
-import { normalizeText, rowsToTsv } from "./input-normalizer.js";
+import { normalizeText, rowsToTsv, normalizeUnit, hasExplicitBatchSource } from "./input-normalizer.js";
 import { createAuditLog, sha256 } from "./audit-log.js";
 import { buildNutritionLabel, identityReviewKey, multiplyDivideDecimal, pendingIdentityRows } from "./nutrition-label.js";
 import { buildResultReadiness, componentEvidence, readinessMarkdown, senderChecklist } from "./result-readiness.js";
 import { buildAssumptionScenario, scenarioEligibility, scenarioAssumptions } from "./assumption-scenario.js";
 import { LABEL_DETAIL_FIELDS } from "./label-details.js";
 import { savedProduct, bestEstimateAliases } from "./saved-products.js";
-import { buildInputOnlyResult, defaultIdentityRows, validateReviewedRows } from "./draft-result.js";
+import { buildInputOnlyResult, defaultIdentityRows, validateReviewedRows, validateCalculationSource } from "./draft-result.js";
 import { createCalculationRequests } from "./calculation-request.js";
+import { createPreparationTasks } from "./preparation-task.js";
 import sampleTsvUrl from "./sample-tonic.tsv?url";
 import {
   appendSessionVersion,
@@ -50,6 +51,7 @@ let latestResult = null;
 let latestFileName = "formula.tsv";
 let currentRows = [];
 let draftRows = [];
+let unparsedSourceRows = [];
 let latestContents = "";
 let sessionHistory = [];
 let workspace = null;
@@ -63,8 +65,14 @@ let currentInputBasis = "dose";
 const confirmedIdentities = new Set();
 const auditLog = createAuditLog();
 const calculationRequests = createCalculationRequests();
+const preparationTasks = createPreparationTasks();
+let inputGeneration = 0;
 
 function cancelCalculation() {
+  inputGeneration += 1;
+  preparationTasks.cancel();
+  prepareButton.disabled = false;
+  prepareButton.textContent = "Prepare formula for review";
   calculationRequests.cancel();
   calculateButton.disabled = false;
   calculateButton.textContent = "Confirm and calculate";
@@ -374,9 +382,8 @@ async function refreshDatabaseSync() {
   }
 }
 
-async function loadRemoteWorkspace(formulaId) {
+async function loadRemoteWorkspace(formulaId, generation = inputGeneration) {
   const savedReview = await loadBrowserWorkspace().catch(() => null);
-  if (savedReview?.formula_id === formulaId) savedLabelReview = savedReview.label_review;
   const historyResponse = await fetch(`/api/formulas/${encodeURIComponent(formulaId)}`);
   const historyPayload = await historyResponse.json();
   if (!historyResponse.ok) throw new Error(historyPayload.error || "The saved work could not be opened.");
@@ -387,6 +394,8 @@ async function loadRemoteWorkspace(formulaId) {
     if (!response.ok) throw new Error(payload.error || "A saved version could not be opened.");
     return payload;
   }));
+  if (generation !== inputGeneration) return;
+  if (savedReview?.formula_id === formulaId) savedLabelReview = savedReview.label_review;
   versions.sort((left, right) => left.version - right.version);
   sessionHistory = versions.map((version) => ({
     version: version.version,
@@ -412,11 +421,12 @@ async function loadRemoteWorkspace(formulaId) {
   recordAudit("workspace_resumed", { storage: "database", version: workspace.currentVersion });
 }
 
-async function loadSavedBrowserFormula() {
+async function loadSavedBrowserFormula(generation = inputGeneration) {
   const saved = await loadBrowserWorkspace();
+  if (generation !== inputGeneration) return;
   if (!saved) throw new Error("No formula is saved in this browser.");
   if (saved.storage === "server") {
-    await loadRemoteWorkspace(saved.formula_id);
+    await loadRemoteWorkspace(saved.formula_id, generation);
     return;
   }
   if (!saved.history?.length) throw new Error("The saved formula has no calculated result.");
@@ -597,6 +607,7 @@ function renderPreparedFormula(extraction) {
   document.querySelector("#recovered-source-text").textContent = extraction.rawText || "";
   sourceDetails.hidden = !extraction.rawText;
   const unparsedRows = extraction.unparsedRows || [];
+  unparsedSourceRows = structuredClone(unparsedRows);
   const unparsedDetails = document.querySelector("#unparsed-source-details");
   unparsedDetails.hidden = !unparsedRows.length;
   unparsedDetails.open = true;
@@ -611,7 +622,11 @@ function renderPreparedFormula(extraction) {
 async function prepareInput() {
   cancelCalculation();
   const startedAt = performance.now();
-  const inputKind = selectedFile ? "file" : "paste";
+  const task = preparationTasks.start();
+  const sourceFile = selectedFile;
+  const sourceText = formulaText.value;
+  const inputKind = sourceFile ? "file" : "paste";
+  const inputBytes = sourceFile?.size ?? new TextEncoder().encode(sourceText).byteLength;
   currentInputBasis = document.querySelector("#input-basis").value;
   const normalization = currentInputBasis === "dose" ? { basisRow: { quantity: document.querySelector("#dose-volume").value, unit: "mL" } } : {};
   document.querySelector("#failed-source-details").hidden = true;
@@ -621,20 +636,26 @@ async function prepareInput() {
   setStatus("Reading the formula in your browser…");
   recordAudit("ingestion_started", {
     input_kind: inputKind,
-    extension: selectedFile?.name.split(".").pop()?.toLowerCase() || null,
-    bytes: selectedFile?.size || new TextEncoder().encode(formulaText.value).byteLength,
+    extension: sourceFile?.name.split(".").pop()?.toLowerCase() || null,
+    bytes: inputBytes,
   });
   try {
-    const inputHash = await sha256(selectedFile ? await selectedFile.arrayBuffer() : formulaText.value);
-    const extraction = selectedFile
-      ? await import("./ingestion.js").then(({ ingestFile }) =>
-          ingestFile(selectedFile, (message) => setStatus(message), normalization))
-      : { ...normalizeText(formulaText.value, "pasted text", normalization), rawText: formulaText.value };
-    if (/finished\s+batch|final\s+batch|batch\s+size/i.test(extraction.rawText || "")) currentInputBasis = "batch";
+    if (inputBytes > MAX_INPUT_BYTES) throw new Error("The input must be 12 MB or smaller. Shorten the pasted formula or upload a smaller file; your input is retained.");
+    const { inputHash, extraction } = await task.run(async (signal) => {
+      const inputHash = await sha256(sourceFile ? await sourceFile.arrayBuffer() : sourceText).catch(() => null);
+      signal.throwIfAborted();
+      const extraction = sourceFile
+        ? await import("./ingestion.js").then(({ ingestFile }) =>
+            ingestFile(sourceFile, (message) => { if (task.isCurrent() && !signal.aborted) setStatus(message); }, { ...normalization, signal }))
+        : { ...normalizeText(sourceText, "pasted text", normalization), rawText: sourceText };
+      return { inputHash, extraction };
+    });
+    if (!task.isCurrent()) return;
+    if (hasExplicitBatchSource(extraction)) currentInputBasis = "batch";
     document.querySelector("#input-basis").value = currentInputBasis;
     if (currentInputBasis === "dose" && extraction.rows[0].unit === "mL") document.querySelector("#dose-volume").value = extraction.rows[0].quantity;
     updateInputBasis();
-    latestFileName = selectedFile?.name || "pasted-formula.tsv";
+    latestFileName = sourceFile?.name || "pasted-formula.tsv";
     renderPreparedFormula(extraction);
     recordAudit("ingestion_completed", {
       input_kind: inputKind,
@@ -645,20 +666,25 @@ async function prepareInput() {
     });
     setStatus("Check the recovered rows, then confirm and calculate.");
   } catch (error) {
+    if (!task.isCurrent()) return;
     recordAudit("ingestion_failed", {
       input_kind: inputKind,
       error_type: error?.constructor?.name || "Error",
       duration_ms: durationSince(startedAt),
     });
-    if (error.recoveredRows?.length) {
+    if (error?.recoveredRows?.length) {
       document.querySelector("#failed-source-text").textContent = error.recoveredRows.map(source => `${inputSourceLabel(source)}\n${source.text ?? source.cells?.join(" · ") ?? ""}`).join("\n\n");
       document.querySelector("#failed-source-details").hidden = false;
       document.querySelector("#failed-source-details").open = true;
     }
-    setStatus(error.message, true);
+    const message = typeof error?.message === "string" && error.message.trim() ? error.message
+      : "Could not read this file. Try a clearer image/PDF or paste the formula text, then prepare again. Your input is retained.";
+    setStatus(message, true);
   } finally {
-    prepareButton.disabled = false;
-    prepareButton.textContent = "Prepare formula for review";
+    if (task.isCurrent()) {
+      prepareButton.disabled = false;
+      prepareButton.textContent = "Prepare formula for review";
+    }
   }
 }
 
@@ -683,6 +709,7 @@ document.querySelector("#add-draft-row").addEventListener("click", () => {
 });
 
 document.querySelector("#edit-source").addEventListener("click", () => {
+  cancelCalculation();
   recordAudit("source_edit_requested", { existing_row_count: draftRows.length });
   formulaReview.hidden = true;
   results.hidden = true;
@@ -863,20 +890,22 @@ function renderIdentityReview(rows) {
       const previousName = currentRows[index].item;
       currentRows[index].item = replacementName;
       const source = custom.value.trim() ? "custom" : "suggested";
-      if (!(await reanalyzeCurrentRows("identity_replaced"))) {
+      const calculated = await reanalyzeCurrentRows("identity_replaced");
+      if (calculated === false) {
         currentRows[index].item = previousName;
         renderIdentityReview(currentRows);
-      } else {
+      } else if (calculated) {
         recordAudit("identity_replacement_applied", { row_index: index + 1, source });
       }
     });
     const remove = reviewButton("Remove row", async () => {
       confirmedIdentities.delete(key);
       const [removedRow] = currentRows.splice(index, 1);
-      if (!(await reanalyzeCurrentRows("identity_row_removed"))) {
+      const calculated = await reanalyzeCurrentRows("identity_row_removed");
+      if (calculated === false) {
         currentRows.splice(index, 0, removedRow);
         renderIdentityReview(currentRows);
-      } else {
+      } else if (calculated) {
         recordAudit("identity_row_removal_applied", { row_index: index + 1 });
       }
     });
@@ -1262,6 +1291,7 @@ function renderNutritionLabel() {
 function renderResult(result) {
   const hadResult = Boolean(latestResult);
   latestResult = result;
+  unparsedSourceRows = structuredClone(result.input_provenance?.unparsed_rows || []);
   currentInputBasis = result.input_basis || currentInputBasis;
   document.querySelector("#input-basis").value = currentInputBasis;
   updateInputBasis();
@@ -1271,6 +1301,11 @@ function renderResult(result) {
   document.querySelector("#coverage-known").textContent = known;
   document.querySelector("#coverage-bar").style.width = `${Math.min(100, Number(known))}%`;
   document.querySelector("#coverage-note").textContent = `${unknown}% of explicitly weighed input has no composition profile. A profile may cover just one nutrient; this percentage does not measure complete macros, accuracy or the unlisted liquid base.`;
+  if (unparsedSourceRows.length) {
+    document.querySelector("#coverage-known").textContent = "Incomplete source";
+    document.querySelector("#coverage-bar").style.width = "0%";
+    document.querySelector("#coverage-note").textContent = "Mass coverage is not established because source lines were not included.";
+  }
   if (result.input_only) {
     document.querySelector("#coverage-known").textContent = "Not calculated";
     document.querySelector("#coverage-bar").style.width = "0%";
@@ -1310,6 +1345,7 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
   let inputHash = null;
   const reviewedRows = structuredClone(trigger === "review_confirmed" ? draftRows : currentRows);
   const inputBasis = currentInputBasis;
+  const reviewedUnparsed = structuredClone(unparsedSourceRows);
   const acceptedRows = currentRows.filter((row) => confirmedIdentities.has(identityReviewKey(row)));
   let requestId = null;
   let responseStatus = null;
@@ -1325,8 +1361,8 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
   });
   try {
     validateReviewedRows(reviewedRows);
-    inputHash = await sha256(contents);
-    if (!request.isCurrent()) return false;
+    inputHash = await sha256(contents).catch(() => null);
+    if (!request.isCurrent()) return null;
     const endpoint = workspace?.mode === "server"
       ? `/api/formulas/${workspace.formulaId}/versions`
       : "/api/analyze";
@@ -1335,7 +1371,7 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
       contents,
       accepted_aliases: acceptedAliasPayload(),
       input_basis: inputBasis,
-      input_provenance: inputProvenance(reviewedRows),
+      input_provenance: inputProvenance(reviewedRows, reviewedUnparsed),
     };
     if (trigger === "review_confirmed") {
       requestBody.accepted_aliases = [...new Map([...bestEstimateAliases(draftRows), ...requestBody.accepted_aliases].map((item) => [item.alias, item])).values()];
@@ -1350,11 +1386,17 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestBody),
     });
-    if (!request.isCurrent()) return false;
+    if (!request.isCurrent()) return null;
     responseStatus = response.status;
     requestId = response.requestId;
     const payload = response.data;
     const data = payload.report || payload;
+    validateCalculationSource(data.formula_rows, reviewedRows);
+    if (JSON.stringify(data.input_provenance?.unparsed_rows || []) !== JSON.stringify(reviewedUnparsed)) {
+      const error = new Error("The calculation response omitted recovered source evidence. Your original input is retained; retry calculation.");
+      error.fallback = true;
+      throw error;
+    }
     if (workspace?.mode === "server" && payload.version) {
       workspace.currentVersion = payload.version.version;
       refreshDatabaseSync().catch(() => {});
@@ -1375,13 +1417,21 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
     formulaReview.hidden = true;
     renderResult(data);
     if (trigger === "review_confirmed") applyBestLabelDefaults();
-    await persistBrowserWorkspace();
-    if (!request.isCurrent()) return false;
-    window.appHealth?.track('formula_checked');
+    let saveWarning = "";
+    try { await persistBrowserWorkspace(); }
+    catch {
+      if (!request.isCurrent()) return null;
+      saveWarning = " The result is calculated, but could not be saved in this browser. Download JSON to keep it.";
+      updateStatus(document.querySelector("#history-status"), saveWarning.trim(), true);
+      document.querySelector("#save-workspace").textContent = workspace?.mode === "server"
+        ? "Saved online · browser copy unavailable" : "Latest result not saved · download JSON";
+    }
+    if (!request.isCurrent()) return null;
+    try { window.appHealth?.track('formula_checked'); } catch { /* Optional telemetry must not discard a result. */ }
     const resultForHash = { ...data };
     delete resultForHash.markdown;
-    const resultHash = await sha256(JSON.stringify(resultForHash));
-    if (!request.isCurrent()) return false;
+    const resultHash = await sha256(JSON.stringify(resultForHash)).catch(() => null);
+    if (!request.isCurrent()) return null;
     recordAudit("calculation_completed", {
       trigger,
       request_id: requestId,
@@ -1395,10 +1445,10 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
       input_sha256: inputHash,
       result_sha256: resultHash,
     });
-    setReviewStatus(`Calculated ${data.formula_rows.length - 1} ingredients from the reviewed rows.`);
+    setReviewStatus(`Calculated ${data.formula_rows.length - 1} ${data.formula_rows.length === 2 ? "ingredient" : "ingredients"} from the reviewed rows.${saveWarning}`);
     return true;
   } catch (error) {
-    if (!request.isCurrent()) return false;
+    if (!request.isCurrent()) return null;
     responseStatus ||= error.status || null;
     recordAudit("calculation_failed", {
       trigger,
@@ -1408,15 +1458,15 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
       error_type: error?.constructor?.name || "Error",
       input_sha256: inputHash,
     });
-    if (error.fallback) {
-      const draft = buildInputOnlyResult(reviewedRows, { fileName: uploadedName, inputBasis });
+    if (error.fallback || error.status) {
+      const draft = buildInputOnlyResult(reviewedRows, { fileName: uploadedName, inputBasis, unparsedRows: reviewedUnparsed, reason: error.message });
       publishedProduct = null;
       publishedReviewSignature = null;
       savedLabelReview = null;
       renderResult(draft);
       applyBestLabelDefaults();
       draftRows = reviewedRows.map((row) => ({ item: row.item,
-        quantity: String(row.submitted_quantity ?? row.quantity), unit: row.unit || row.submitted_unit,
+        quantity: String(row.submitted_quantity ?? row.quantity), unit: normalizeUnit(row.submitted_unit ?? row.unit),
         ...(row.input_source ? { input_source: row.input_source } : {}) }));
       renderDraftRows();
       formulaReview.hidden = false;
@@ -1451,7 +1501,7 @@ document.querySelector("#save-workspace").addEventListener("click", async () => 
           contents: latestContents,
           accepted_aliases: acceptedAliasPayload(),
           input_basis: currentInputBasis,
-          input_provenance: inputProvenance(latestResult.formula_rows),
+          input_provenance: inputProvenance(latestResult.formula_rows, unparsedSourceRows),
         }),
       });
       payload = await response.json();
@@ -1558,13 +1608,13 @@ function currentOutputMarkdown(snapshot) {
       `[${label.additiveReference.title}](${label.additiveReference.url})`, label.additiveReference.scope, "");
   } else lines.push("Serving details are invalid or missing; specify the dose before finalizing per-serving output.", "");
   if (snapshot.assumption_scenario?.active) lines.push("Original source results are retained separately in the JSON download. Assumed zero macros are not measured zeros.", "");
-  lines.push(sourceMarkdown(snapshot.formula_rows));
+  lines.push(sourceMarkdown(snapshot.formula_rows, snapshot.input_provenance?.unparsed_rows));
   return lines.join("\n");
 }
 
 document.querySelector("#download-report").addEventListener("click", () => {
   if (!latestResult) return;
-  window.appHealth?.track('report_downloaded');
+  try { window.appHealth?.track('report_downloaded'); } catch { /* Download remains available without telemetry. */ }
   recordAudit("report_downloaded", { format: "markdown" });
   const snapshot = currentOutputSnapshot();
   const blob = new Blob([currentOutputMarkdown(snapshot)], { type: "text/markdown;charset=utf-8" });
@@ -1635,11 +1685,13 @@ auditButton.addEventListener("click", () => {
 });
 
 document.querySelector("#start-over").addEventListener("click", () => {
+  cancelCalculation();
   recordAudit("new_analysis_started", { previous_result_present: Boolean(latestResult) });
   selectedFile = null;
   latestResult = null;
   currentRows = [];
   draftRows = [];
+  unparsedSourceRows = [];
   latestContents = "";
   sessionHistory = [];
   workspace = null;
@@ -1682,14 +1734,15 @@ addIngredientForm.addEventListener("submit", async (event) => {
   currentRows.push(addedRow);
   addIngredientForm.hidden = true;
   addIngredientForm.reset();
-  if (!(await reanalyzeCurrentRows("ingredient_added"))) {
+  const calculated = await reanalyzeCurrentRows("ingredient_added");
+  if (calculated === false) {
     currentRows.pop();
     document.querySelector("#new-item").value = item;
     document.querySelector("#new-quantity").value = quantity;
     document.querySelector("#new-unit").value = unit;
     addIngredientForm.hidden = false;
     renderIdentityReview(currentRows);
-  } else {
+  } else if (calculated) {
     recordAudit("ingredient_addition_applied", { row_count: currentRows.length });
   }
 });
@@ -1733,6 +1786,25 @@ function openPublishedProduct(product) {
   document.querySelector("#label-builder").scrollIntoView({ block: "start" });
 }
 
+function startInitialLoad(load, label) {
+  const generation = inputGeneration;
+  let timer;
+  Promise.race([
+    load(generation),
+    new Promise((_, reject) => {
+      timer = setTimeout(() => {
+        if (generation === inputGeneration) {
+          inputGeneration += 1; // Late initial data must not replace a retry.
+          setStatus(`${label} timed out. Your input is retained. Reload to retry, or paste/upload a formula.`, true);
+        }
+        reject(new Error("Initial load timed out."));
+      }, 10000);
+    }),
+  ]).catch((error) => {
+    if (generation === inputGeneration) setStatus(error.message, true);
+  }).finally(() => clearTimeout(timer));
+}
+
 if (requestedProduct) {
   const product = savedProduct(requestedProduct);
   if (!product) setStatus("This published product could not be found.", true);
@@ -1740,16 +1812,22 @@ if (requestedProduct) {
     openPublishedProduct(product);
   }
 } else if (requestedFormula || resumeBrowserFormula) {
-  (requestedFormula ? loadRemoteWorkspace(requestedFormula) : loadSavedBrowserFormula())
-    .catch((error) => setStatus(error.message, true));
+  startInitialLoad((generation) => requestedFormula
+    ? loadRemoteWorkspace(requestedFormula, generation) : loadSavedBrowserFormula(generation), "Opening the saved formula");
 }
 
 if (new URLSearchParams(window.location.search).get("sample") === "1") {
-  fetch(sampleTsvUrl)
-    .then((response) => response.text())
-    .then((contents) => {
-      formulaText.value = contents;
-      return prepareInput();
-    })
-    .catch(() => setStatus("The sample formula could not be loaded.", true));
+  startInitialLoad(async (generation) => {
+    const response = await fetch(sampleTsvUrl);
+    if (!response.ok) throw new Error("The sample formula could not be loaded. Reload to retry, or paste/upload a formula.");
+    const contents = await response.text();
+    if (generation !== inputGeneration) return;
+    formulaText.value = contents;
+    // The initial download deadline does not include the separate preparation job.
+    void prepareInput();
+  }, "Loading the sample formula");
 }
+
+// Core handlers are registered; optional integrations do not control readiness.
+window.formulaAppReady = true;
+document.querySelector("#app-load-status")?.setAttribute("hidden", "");

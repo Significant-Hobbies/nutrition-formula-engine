@@ -13,6 +13,7 @@ const IMAGE_TYPES = new Set(["image/png", "image/jpeg", "image/webp", "image/bmp
 const TEXT_EXTENSIONS = new Set(["tsv", "csv", "txt", "json", "md"]);
 
 let ocrWorkerPromise = null;
+let ocrProgress = () => {};
 
 function fileExtension(file) {
   return file.name.toLowerCase().split(".").pop() || "";
@@ -24,38 +25,72 @@ function progressLabel(message) {
   return `${label.charAt(0).toUpperCase()}${label.slice(1)}${progress}`;
 }
 
-async function getOcrWorker(onProgress) {
+function abortable(promise, signal, cleanup = () => {}) {
+  if (!signal) return promise;
+  if (signal.aborted) { cleanup(); return Promise.reject(signal.reason || new Error("Reading cancelled.")); }
+  let onAbort;
+  return Promise.race([promise, new Promise((_, reject) => {
+    onAbort = () => { cleanup(); reject(signal.reason || new Error("Reading cancelled.")); };
+    signal.addEventListener("abort", onAbort, { once: true });
+  })]).finally(() => signal.removeEventListener("abort", onAbort));
+}
+
+function resetOcrWorker(promise) {
+  if (ocrWorkerPromise === promise) {
+    ocrWorkerPromise = null;
+    ocrProgress = () => {};
+  }
+  // A cancelled initialization may settle after its replacement is ready.
+  // Terminate that attempt only, and never clear the replacement's cache.
+  if (promise?.worker) void promise.worker.terminate().catch(() => {});
+  else void promise?.then((worker) => worker.terminate()).catch(() => {});
+}
+
+async function getOcrWorker(onProgress, signal) {
+  ocrProgress = onProgress;
   if (!ocrWorkerPromise) {
-    ocrWorkerPromise = createWorker("eng", OEM.LSTM_ONLY, {
-      logger: (message) => onProgress(progressLabel(message)),
+    let attempt;
+    attempt = createWorker("eng", OEM.LSTM_ONLY, {
+      logger: (message) => { if (ocrWorkerPromise === attempt) ocrProgress(progressLabel(message)); },
       errorHandler: (error) => console.error("Browser OCR failed", error),
     }).then(async (worker) => {
+      attempt.worker = worker;
+      if (ocrWorkerPromise !== attempt) {
+        await worker.terminate().catch(() => {});
+        throw new Error("Reading cancelled.");
+      }
       try {
-        await worker.setParameters({
-          tessedit_pageseg_mode: PSM.SINGLE_BLOCK,
-          preserve_interword_spaces: "1",
-        });
+        await worker.setParameters({ tessedit_pageseg_mode: PSM.SINGLE_BLOCK, preserve_interword_spaces: "1" });
       } catch (error) {
-        // Cleanup must not hide the initialization failure reported to the user.
         await worker.terminate().catch(() => {});
         throw error;
       }
       return worker;
     }).catch((error) => {
-      ocrWorkerPromise = null;
+      if (ocrWorkerPromise === attempt) ocrWorkerPromise = null;
       throw error;
     });
+    ocrWorkerPromise = attempt;
   }
-  return ocrWorkerPromise;
+  const attempt = ocrWorkerPromise;
+  return abortable(attempt, signal, () => resetOcrWorker(attempt));
 }
 
-async function recognizeImage(image, onProgress) {
+async function recognizeImage(image, onProgress, signal) {
+  signal?.throwIfAborted();
   onProgress("Loading browser OCR…");
-  const worker = await getOcrWorker(onProgress);
-  const result = await worker.recognize(image);
-  const text = result.data.text;
-  if (!text.trim()) throw new Error("OCR did not recover any text from this image.");
-  return { text, ocr: { engine: "Tesseract.js 7 / LSTM", language: "eng", scope: "image", confidence: Number.isFinite(result.data.confidence) ? result.data.confidence : null } };
+  const worker = await getOcrWorker(onProgress, signal);
+  const attempt = ocrWorkerPromise;
+  try {
+    signal?.throwIfAborted();
+    const result = await abortable(worker.recognize(image), signal, () => resetOcrWorker(attempt));
+    const text = result.data.text;
+    if (!text.trim()) throw new Error("OCR did not recover any text from this image.");
+    return { text, ocr: { engine: "Tesseract.js 7 / LSTM", language: "eng", scope: "image", confidence: Number.isFinite(result.data.confidence) ? result.data.confidence : null } };
+  } catch (error) {
+    if (!signal?.aborted) resetOcrWorker(attempt);
+    throw error;
+  }
 }
 
 function pdfPageText(items) {
@@ -72,63 +107,81 @@ function pdfPageText(items) {
     .join("\n");
 }
 
-async function renderPdfPage(page) {
+async function renderPdfPage(page, signal) {
   const viewport = page.getViewport({ scale: 2 });
   const canvas = document.createElement("canvas");
   canvas.width = Math.ceil(viewport.width);
   canvas.height = Math.ceil(viewport.height);
   const context = canvas.getContext("2d", { alpha: false });
-  await page.render({ canvasContext: context, viewport }).promise;
+  const render = page.render({ canvasContext: context, viewport });
+  await abortable(render.promise, signal, () => render.cancel());
   return canvas;
 }
 
 async function ingestPdf(file, onProgress, options) {
   onProgress("Reading PDF in this browser…");
   const bytes = new Uint8Array(await file.arrayBuffer());
-  const pdf = await getDocument({ data: bytes }).promise;
-  if (pdf.numPages > MAX_PDF_PAGES) {
-    throw new Error(`This workspace reads up to ${MAX_PDF_PAGES} PDF pages; this file has ${pdf.numPages}.`);
-  }
+  options.signal?.throwIfAborted();
+  const loading = getDocument({ data: bytes });
+  let pdf;
+  let destroyed = false;
+  const destroy = () => {
+    if (!destroyed) { destroyed = true; void loading.destroy().catch(() => {}); }
+  };
+  try {
+    pdf = await abortable(loading.promise, options.signal, destroy);
+    if (pdf.numPages > MAX_PDF_PAGES) {
+      throw new Error(`This workspace reads up to ${MAX_PDF_PAGES} PDF pages; this file has ${pdf.numPages}.`);
+    }
 
-  const pageTexts = [];
-  const pages = [];
-  for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
-    onProgress(`Reading PDF page ${pageNumber} of ${pdf.numPages}…`);
-    const page = await pdf.getPage(pageNumber);
-    pages.push(page);
-    const content = await page.getTextContent();
-    const text = pdfPageText(content.items);
-    // Only a page with no drawing operators is provably empty. A scanned page
-    // or unrecognized nonblank content must still go through OCR.
-    const empty = !text && (await page.getOperatorList()).fnArray.length === 0;
-    pageTexts.push({ text, empty });
-  }
-  const embeddedText = pageTexts.map((page) => page.text).join("\n").trim();
-  if (embeddedText && pageTexts.every((page) => page.text.trim() || page.empty)) {
-    try {
-      return normalizePages(pageTexts, "PDF embedded text", options);
-    } catch {
-      // A scanned or layout-heavy PDF falls through to page OCR.
+    const pageTexts = [];
+    const pages = [];
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+      onProgress(`Reading PDF page ${pageNumber} of ${pdf.numPages}…`);
+      options.signal?.throwIfAborted();
+      const page = await abortable(pdf.getPage(pageNumber), options.signal, destroy);
+      pages.push(page);
+      const content = await abortable(page.getTextContent(), options.signal, destroy);
+      const text = pdfPageText(content.items);
+      // Only a page with no drawing operators is provably empty. A scanned page
+      // or unrecognized nonblank content must still go through OCR.
+      const empty = !text && (await abortable(page.getOperatorList(), options.signal, destroy)).fnArray.length === 0;
+      pageTexts.push({ text, empty });
     }
-  }
+    const embeddedText = pageTexts.map((page) => page.text).join("\n").trim();
+    if (embeddedText && pageTexts.every((page) => page.text.trim() || page.empty)) {
+      try {
+        return normalizePages(pageTexts, "PDF embedded text", options);
+      } catch {
+        // A scanned or layout-heavy PDF falls through to page OCR.
+      }
+    }
 
-  const ocrTexts = [];
-  for (let index = 0; index < pages.length; index += 1) {
-    if (pageTexts[index].empty) {
-      ocrTexts.push({ text: "" });
-      continue;
+    const ocrTexts = [];
+    for (let index = 0; index < pages.length; index += 1) {
+      if (pageTexts[index].empty) {
+        ocrTexts.push({ text: "" });
+        continue;
+      }
+      onProgress(`Rendering PDF page ${index + 1} of ${pages.length} for OCR…`);
+      const canvas = await renderPdfPage(pages[index], options.signal);
+      try {
+        const recognized = await recognizeImage(canvas, onProgress, options.signal);
+        recognized.ocr.scope = "page";
+        ocrTexts.push(recognized);
+      } catch {
+        options.signal?.throwIfAborted();
+        throw new Error(`Could not recover text from nonblank PDF page ${index + 1}. Check this page or enter its rows manually.`);
+      } finally {
+        canvas.width = 0;
+        canvas.height = 0;
+      }
     }
-    onProgress(`Rendering PDF page ${index + 1} of ${pages.length} for OCR…`);
-    const canvas = await renderPdfPage(pages[index]);
-    try {
-      const recognized = await recognizeImage(canvas, onProgress);
-      recognized.ocr.scope = "page";
-      ocrTexts.push(recognized);
-    } catch {
-      throw new Error(`Could not recover text from nonblank PDF page ${index + 1}. Check this page or enter its rows manually.`);
-    }
+    return normalizePages(ocrTexts, "PDF OCR", options);
+  } finally {
+    // PDF.js owns page/render resources; release on success, error and abort.
+    destroy();
   }
-  return normalizePages(ocrTexts, "PDF OCR", options);
 }
 
 async function ingestSpreadsheet(file, onProgress, options) {
@@ -138,13 +191,14 @@ async function ingestSpreadsheet(file, onProgress, options) {
 }
 
 export async function ingestFile(file, onProgress = () => {}, options = {}) {
+  options.signal?.throwIfAborted();
   if (!file) throw new Error("Choose a file or paste a formula.");
   if (file.size > MAX_INPUT_BYTES) throw new Error("The input must be 12 MB or smaller.");
   const extension = fileExtension(file);
   if (extension === "xlsx") return ingestSpreadsheet(file, onProgress, options);
   if (extension === "pdf" || file.type === "application/pdf") return ingestPdf(file, onProgress, options);
   if (IMAGE_TYPES.has(file.type) || ["png", "jpg", "jpeg", "webp", "bmp"].includes(extension)) {
-    const recognized = await recognizeImage(file, onProgress);
+    const recognized = await recognizeImage(file, onProgress, options.signal);
     const rawText = recognized.text;
     const sourceRows = rawText.split(/\r\n|\r|\n/).map(() => ({ ocr: recognized.ocr }));
     return { ...normalizeText(rawText, "image OCR", { ...options, sourceRows }), rawText };

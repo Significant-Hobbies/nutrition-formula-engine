@@ -29,10 +29,10 @@ export function componentEvidence(component, result, confirmedIdentities = new S
 export function buildResultReadiness(result, options = {}) {
   if (result.input_only) return {
     title: "Input-only draft — nutrition not calculated",
-    summary: "The calculation service is unavailable. Your reviewed ingredient quantities are ready to print or download; nutrient totals and RDA have not been calculated.",
+    summary: `${result.input_only_reason || "Nutrition could not be calculated."} Your reviewed ingredient quantities are ready to print or download; nutrient totals and RDA have not been calculated.`,
     requests: result.missing_information, pendingIdentityCount: 0, incompleteMacros: [], incompleteNutrients: [],
     availableCount: 0, partial: true, scenario: false, assumptions: [],
-    nextAction: "Retry Confirm and calculate when the service is available. Reviewed input is retained.",
+    nextAction: "Resolve the calculation correction above, then retry Confirm and calculate. Reviewed input is retained.",
     legend: "As supplied = ingredient quantity from your reviewed formula. No ingredient identity, nutrient equivalent, zero value or RDA has been inferred.",
   };
   const confirmedIdentities = options.confirmedIdentities || new Set();

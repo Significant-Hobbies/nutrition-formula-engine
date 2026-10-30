@@ -196,6 +196,8 @@ export function pendingIdentityRows(result, confirmedIdentities = new Set()) {
 export function buildNutritionLabel(result, options = {}) {
   const confirmedIdentities = options.confirmedIdentities || new Set();
   const formulaRows = (result.formula_rows || []).slice(1);
+  const excludedSourceCount = result.input_provenance?.unparsed_rows?.length || 0;
+  const excludedSummary = excludedSourceCount ? `${excludedSourceCount} source ${excludedSourceCount === 1 ? "line" : "lines"} not included; correct ${excludedSourceCount === 1 ? "it" : "them"} and prepare the formula again.` : "";
   const confirmed = (row) => !row.needs_review || confirmedIdentities.has(identityReviewKey(row));
   const servingSize = String(options.servingSize || "30").trim();
   if (!isPositiveDecimal(servingSize)) {
@@ -241,7 +243,8 @@ export function buildNutritionLabel(result, options = {}) {
         entry.source?.kind === "theoretical_conversion_assumption" &&
         formulaRows.some((row) => row.material_id === entry.input_material_id &&
           result.formula_rows.indexOf(row) === entry.line_index + 1 && confirmed(row)));
-      const component = isDeclared ? { ...original, status: "declared" }
+      const component = excludedSourceCount ? { ...original, status: "partial",
+        ...(original.value != null && !isNonZeroDecimal(original.value) ? { value: null, total_batch: null } : {}) } : isDeclared ? { ...original, status: "declared" }
         : isEstimated ? { ...original, status: "estimated" } : original;
       const sources = mineralSources(component, new Set(formulaRows.filter(confirmed).map((row) => row.material_id)));
       const rda = Object.fromEntries(Object.keys(DEMOGRAPHIC_RDA).map((demographic) => [demographic, rdaLabel(component, servingSize, demographic, result.label_batch_quantity)]));
@@ -331,12 +334,12 @@ export function buildNutritionLabel(result, options = {}) {
     weighedIngredients,
     unavailableNutrients,
     inputOnly: Boolean(result.input_only),
-    unavailableSummary: result.input_only ? result.missing_information[0].needed : unavailableNutrients.length
-      ? `Not established: ${unavailableNutrients.map((nutrient) => nutrient.name).join(", ")}. Missing composition is unknown, not zero; supplier data is required.` : "",
+    unavailableSummary: excludedSummary + (excludedSummary ? " " : "") + (result.input_only ? result.missing_information[0].needed : unavailableNutrients.length
+      ? `Not established: ${unavailableNutrients.map((nutrient) => nutrient.name).join(", ")}. Missing composition is unknown, not zero; supplier data is required.` : ""),
     waterBase,
     hasDeclaredActives: nutrients.some((nutrient) => nutrient.status === "declared"),
     hasEstimatedActives: nutrients.some((nutrient) => nutrient.status === "estimated"),
-    hasIncompleteData: Boolean(result.input_only) || nutrients.some((nutrient) => nutrient.status === "partial"),
+    hasIncompleteData: Boolean(result.input_only) || excludedSourceCount > 0 || nutrients.some((nutrient) => nutrient.status === "partial"),
     hasIdentityReview: pendingIdentityRows(result, confirmedIdentities).length > 0,
     hasDeclaredActiveAssumptions: formulaRows.some((row) =>
       (row.interpretation?.includes("declared active") || row.interpretation?.includes("pure active basis")) && !confirmed(row)),

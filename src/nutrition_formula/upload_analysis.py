@@ -620,6 +620,24 @@ def analyze_formula_upload(
                 "identity_note": material.get("identity_note"),
                 "needs_review": row["needs_review"],
             })
+    unparsed_rows = (input_provenance or {}).get("unparsed_rows", [])
+    if unparsed_rows:
+        count = len(unparsed_rows)
+        summary = f"{count} source {'line' if count == 1 else 'lines'} not included; correct {'it' if count == 1 else 'them'} and prepare the formula again."
+        missing_information.insert(0, {"item": "Source recovery", "needed": summary, "affects": [metric["name"] for metric in screened]})
+        # The excluded lines have unknown identities and quantities. Parsed
+        # contributions remain useful, but cannot establish a complete total.
+        for metric in screened:
+            metric["status"] = "partial"
+            lower = (metric.get("range") or {}).get("lower")
+            lower = metric["value"] if lower is None else lower
+            metric["range"] = {"kind": "lower_bound" if metric["value"] is not None else "not_estimated",
+                               "lower": lower, "upper": None, "unit": metric["unit"],
+                               "basis": "Unparsed source lines may add unknown contributions"}
+            metric["range_label"] = _range_label(metric)
+        coverage = {**coverage, "characterized_percent": None, "uncharacterized_percent": None,
+                    "basis": "Unparsed source lines prevent complete mass coverage"}
+
     result = {
         "schema_version": 1,
         "calculation": {
@@ -651,5 +669,5 @@ def analyze_formula_upload(
         result["input_provenance"] = input_provenance
         for row, source in zip(formula_rows, input_provenance["rows"], strict=True):
             row["input_source"] = source
-    result["markdown"] = _markdown(result) + provenance_markdown(formula_rows)
+    result["markdown"] = _markdown(result) + provenance_markdown(formula_rows, unparsed_rows)
     return result

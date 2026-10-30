@@ -15,7 +15,25 @@ export function validateReviewedRows(rows) {
   }
 }
 
-export function buildInputOnlyResult(rows, { fileName = "formula.tsv", inputBasis = "dose" } = {}) {
+export function validateCalculationSource(actual, reviewed) {
+  const decimalKey = (value) => {
+    const [whole, fraction = ""] = String(value).split(".");
+    return `${whole.replace(/^0+/, "") || "0"}.${fraction.replace(/0+$/, "")}`;
+  };
+  const nameKey = (value) => value.trim().replace(/\s+/g, " ").toLocaleLowerCase("en");
+  if (actual.length !== reviewed.length || actual.some((row, index) => {
+    const source = reviewed[index];
+    return nameKey(row.item) !== nameKey(source.item) ||
+      decimalKey(row.submitted_quantity) !== decimalKey(source.submitted_quantity ?? source.quantity) ||
+      normalizeUnit(row.submitted_unit) !== normalizeUnit(source.submitted_unit ?? source.unit);
+  })) {
+    const error = new Error("The calculation response did not match your reviewed formula. Your original quantities are retained; retry calculation.");
+    error.fallback = true;
+    throw error;
+  }
+}
+
+export function buildInputOnlyResult(rows, { fileName = "formula.tsv", inputBasis = "dose", unparsedRows = [], reason = "The calculation service is unavailable." } = {}) {
   validateReviewedRows(rows);
   const sourceRows = rows.map((row, index) => {
     const quantity = String(row.submitted_quantity ?? row.quantity).trim();
@@ -34,16 +52,16 @@ export function buildInputOnlyResult(rows, { fileName = "formula.tsv", inputBasi
   const quantity = multiplyDivideDecimal(batch.quantity, factors[batch.unit], "1", precision);
   const note = "Nutrient amounts and % RDA are not established. Quantities below are ingredients as supplied, not nutrient totals; obtain ingredient identities, composition and assays, then retry calculation.";
   return {
-    schema_version: 1, input_only: true, input_basis: inputBasis,
+    schema_version: 1, input_only: true, input_only_reason: reason, input_basis: inputBasis,
     product_name: "Formula — input-only draft", file_name: fileName,
-    calculation: { engine_version: "input-only fallback", arithmetic: "Decimal quantity scaling only", source: { kind: "operator_provided", reference: "Reviewed input; calculation service unavailable." } },
+    calculation: { engine_version: "input-only fallback", arithmetic: "Decimal quantity scaling only", source: { kind: "operator_provided", reference: `Reviewed input; nutrition not calculated. ${reason}` } },
     basis_label: volume ? "per 100 mL" : "per 100 g", label_batch_quantity: quantity,
     formula_rows: sourceRows, label_ingredients: sourceRows.slice(1).map((row) => ({ name: row.item })),
     label_entries: [], declared_nutrient_ids: [], screened_components: [], present_components: [], ingredient_assumptions: [],
     coverage: { characterized_percent: null, uncharacterized_percent: null },
-    report_assumptions: ["Input-only draft: the calculation service is unavailable. Original reviewed quantities and units are retained; no nutrient values or ingredient identities have been inferred."],
-    missing_information: [{ item: "Nutrition composition", needed: note, affects: [] }], warnings: [note],
-    input_provenance: inputProvenance(sourceRows),
+    report_assumptions: [`Input-only draft: ${reason} Original reviewed quantities and units are retained; no nutrient values or ingredient identities have been inferred.`],
+    missing_information: [{ item: "Nutrition composition", needed: `${reason} ${note}`, affects: [] }, { item: "Calculation correction", needed: reason, affects: [] }], warnings: [note],
+    input_provenance: inputProvenance(sourceRows, unparsedRows),
   };
 }
 
