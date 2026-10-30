@@ -52,7 +52,7 @@ function fixture(fetchImpl = async () => { throw new Error("offline"); }) {
     workspace: null, sessionHistory: [], results: node("#results"),
     performance, structuredClone, normalizeUnit, buildInputOnlyResult, validateReviewedRows, validateCalculationSource, inputProvenance, appendSessionVersion,
     calculationRequests: createCalculationRequests({ fetchImpl }),
-    draftRows: rows, latestFileName: "", latestContents: "", calculateButton: node("#calculate-button"), formulaReview: node("#formula-review"),
+    unparsedSourceRows: [], draftRows: rows, latestFileName: "", latestContents: "", calculateButton: node("#calculate-button"), formulaReview: node("#formula-review"),
     window: {}, sha256: async () => "hash", durationSince: () => 1, acceptedAliasPayload: () => [], bestEstimateAliases: () => [],
     persistBrowserWorkspace: async () => {}, renderDraftRows() {}, refreshDatabaseSync: async () => {},
     setReviewStatus(message) { node("#review-status").textContent = message; },

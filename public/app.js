@@ -51,6 +51,7 @@ let latestResult = null;
 let latestFileName = "formula.tsv";
 let currentRows = [];
 let draftRows = [];
+let unparsedSourceRows = [];
 let latestContents = "";
 let sessionHistory = [];
 let workspace = null;
@@ -606,6 +607,7 @@ function renderPreparedFormula(extraction) {
   document.querySelector("#recovered-source-text").textContent = extraction.rawText || "";
   sourceDetails.hidden = !extraction.rawText;
   const unparsedRows = extraction.unparsedRows || [];
+  unparsedSourceRows = structuredClone(unparsedRows);
   const unparsedDetails = document.querySelector("#unparsed-source-details");
   unparsedDetails.hidden = !unparsedRows.length;
   unparsedDetails.open = true;
@@ -670,12 +672,14 @@ async function prepareInput() {
       error_type: error?.constructor?.name || "Error",
       duration_ms: durationSince(startedAt),
     });
-    if (error.recoveredRows?.length) {
+    if (error?.recoveredRows?.length) {
       document.querySelector("#failed-source-text").textContent = error.recoveredRows.map(source => `${inputSourceLabel(source)}\n${source.text ?? source.cells?.join(" · ") ?? ""}`).join("\n\n");
       document.querySelector("#failed-source-details").hidden = false;
       document.querySelector("#failed-source-details").open = true;
     }
-    setStatus(error.message, true);
+    const message = typeof error?.message === "string" && error.message.trim() ? error.message
+      : "Could not read this file. Try a clearer image/PDF or paste the formula text, then prepare again. Your input is retained.";
+    setStatus(message, true);
   } finally {
     if (task.isCurrent()) {
       prepareButton.disabled = false;
@@ -1287,6 +1291,7 @@ function renderNutritionLabel() {
 function renderResult(result) {
   const hadResult = Boolean(latestResult);
   latestResult = result;
+  unparsedSourceRows = structuredClone(result.input_provenance?.unparsed_rows || []);
   currentInputBasis = result.input_basis || currentInputBasis;
   document.querySelector("#input-basis").value = currentInputBasis;
   updateInputBasis();
@@ -1296,6 +1301,11 @@ function renderResult(result) {
   document.querySelector("#coverage-known").textContent = known;
   document.querySelector("#coverage-bar").style.width = `${Math.min(100, Number(known))}%`;
   document.querySelector("#coverage-note").textContent = `${unknown}% of explicitly weighed input has no composition profile. A profile may cover just one nutrient; this percentage does not measure complete macros, accuracy or the unlisted liquid base.`;
+  if (unparsedSourceRows.length) {
+    document.querySelector("#coverage-known").textContent = "Incomplete source";
+    document.querySelector("#coverage-bar").style.width = "0%";
+    document.querySelector("#coverage-note").textContent = "Mass coverage is not established because source lines were not included.";
+  }
   if (result.input_only) {
     document.querySelector("#coverage-known").textContent = "Not calculated";
     document.querySelector("#coverage-bar").style.width = "0%";
@@ -1335,6 +1345,7 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
   let inputHash = null;
   const reviewedRows = structuredClone(trigger === "review_confirmed" ? draftRows : currentRows);
   const inputBasis = currentInputBasis;
+  const reviewedUnparsed = structuredClone(unparsedSourceRows);
   const acceptedRows = currentRows.filter((row) => confirmedIdentities.has(identityReviewKey(row)));
   let requestId = null;
   let responseStatus = null;
@@ -1360,7 +1371,7 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
       contents,
       accepted_aliases: acceptedAliasPayload(),
       input_basis: inputBasis,
-      input_provenance: inputProvenance(reviewedRows),
+      input_provenance: inputProvenance(reviewedRows, reviewedUnparsed),
     };
     if (trigger === "review_confirmed") {
       requestBody.accepted_aliases = [...new Map([...bestEstimateAliases(draftRows), ...requestBody.accepted_aliases].map((item) => [item.alias, item])).values()];
@@ -1381,6 +1392,11 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
     const payload = response.data;
     const data = payload.report || payload;
     validateCalculationSource(data.formula_rows, reviewedRows);
+    if (JSON.stringify(data.input_provenance?.unparsed_rows || []) !== JSON.stringify(reviewedUnparsed)) {
+      const error = new Error("The calculation response omitted recovered source evidence. Your original input is retained; retry calculation.");
+      error.fallback = true;
+      throw error;
+    }
     if (workspace?.mode === "server" && payload.version) {
       workspace.currentVersion = payload.version.version;
       refreshDatabaseSync().catch(() => {});
@@ -1443,7 +1459,7 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
       input_sha256: inputHash,
     });
     if (error.fallback || error.status) {
-      const draft = buildInputOnlyResult(reviewedRows, { fileName: uploadedName, inputBasis, reason: error.message });
+      const draft = buildInputOnlyResult(reviewedRows, { fileName: uploadedName, inputBasis, unparsedRows: reviewedUnparsed, reason: error.message });
       publishedProduct = null;
       publishedReviewSignature = null;
       savedLabelReview = null;
@@ -1485,7 +1501,7 @@ document.querySelector("#save-workspace").addEventListener("click", async () => 
           contents: latestContents,
           accepted_aliases: acceptedAliasPayload(),
           input_basis: currentInputBasis,
-          input_provenance: inputProvenance(latestResult.formula_rows),
+          input_provenance: inputProvenance(latestResult.formula_rows, unparsedSourceRows),
         }),
       });
       payload = await response.json();
@@ -1592,7 +1608,7 @@ function currentOutputMarkdown(snapshot) {
       `[${label.additiveReference.title}](${label.additiveReference.url})`, label.additiveReference.scope, "");
   } else lines.push("Serving details are invalid or missing; specify the dose before finalizing per-serving output.", "");
   if (snapshot.assumption_scenario?.active) lines.push("Original source results are retained separately in the JSON download. Assumed zero macros are not measured zeros.", "");
-  lines.push(sourceMarkdown(snapshot.formula_rows));
+  lines.push(sourceMarkdown(snapshot.formula_rows, snapshot.input_provenance?.unparsed_rows));
   return lines.join("\n");
 }
 
@@ -1675,6 +1691,7 @@ document.querySelector("#start-over").addEventListener("click", () => {
   latestResult = null;
   currentRows = [];
   draftRows = [];
+  unparsedSourceRows = [];
   latestContents = "";
   sessionHistory = [];
   workspace = null;

@@ -91,6 +91,7 @@ function sumDecimals(...values) {
 }
 
 export function scenarioEligibility(result, options = {}) {
+  if (result?.input_provenance?.unparsed_rows?.length) return { allowed: false, reason: "Source lines were not included. Correct them and prepare the formula again before using an assumption estimate." };
   if (!result || result.basis_label !== "per 100 mL") return { allowed: false, reason: "This estimate requires a finished liquid volume." };
   const rows = (result.formula_rows || []).slice(1);
   const sugaredMultivitamin = isSugaredMultivitamin(result);

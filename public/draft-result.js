@@ -33,7 +33,7 @@ export function validateCalculationSource(actual, reviewed) {
   }
 }
 
-export function buildInputOnlyResult(rows, { fileName = "formula.tsv", inputBasis = "dose", reason = "The calculation service is unavailable." } = {}) {
+export function buildInputOnlyResult(rows, { fileName = "formula.tsv", inputBasis = "dose", unparsedRows = [], reason = "The calculation service is unavailable." } = {}) {
   validateReviewedRows(rows);
   const sourceRows = rows.map((row, index) => {
     const quantity = String(row.submitted_quantity ?? row.quantity).trim();
@@ -61,7 +61,7 @@ export function buildInputOnlyResult(rows, { fileName = "formula.tsv", inputBasi
     coverage: { characterized_percent: null, uncharacterized_percent: null },
     report_assumptions: [`Input-only draft: ${reason} Original reviewed quantities and units are retained; no nutrient values or ingredient identities have been inferred.`],
     missing_information: [{ item: "Nutrition composition", needed: `${reason} ${note}`, affects: [] }, { item: "Calculation correction", needed: reason, affects: [] }], warnings: [note],
-    input_provenance: inputProvenance(sourceRows),
+    input_provenance: inputProvenance(sourceRows, unparsedRows),
   };
 }
 

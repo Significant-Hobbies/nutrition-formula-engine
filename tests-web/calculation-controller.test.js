@@ -18,7 +18,7 @@ function fixture(fetchImpl, timeoutMs = 10000, persistFailure = false) {
   const context = vm.createContext({
     performance, structuredClone, normalizeUnit, buildInputOnlyResult, validateReviewedRows, validateCalculationSource, inputProvenance, identityReviewKey, appendSessionVersion,
     calculationRequests: createCalculationRequests({ fetchImpl, timeoutMs }),
-    currentRows: rows, draftRows: rows, currentInputBasis: "dose", confirmedIdentities: new Set(),
+    currentRows: rows, unparsedSourceRows: [], draftRows: rows, currentInputBasis: "dose", confirmedIdentities: new Set(),
     workspace: null, publishedProduct: null, publishedReviewSignature: null, savedLabelReview: null,
     sessionHistory: [], latestResult: null, latestContents: "", latestFileName: "",
     calculateButton: {}, results: { hidden: true }, formulaReview: { hidden: false }, window: {},
@@ -167,4 +167,21 @@ test("the shipped start-over handler cancels a pending calculation so its late o
   assert.equal(context.latestResult, null);
   assert.equal(context.results.hidden, true);
   assert.equal(rendered.length, 0);
+});
+
+test("shipped controller sends excluded recovery evidence and refuses a service response that drops it", async () => {
+  let received;
+  const { context, contents } = fixture(async (_url, options) => {
+    received = JSON.parse(options.body);
+    const report = buildInputOnlyResult(normalizeText("1 mL\nSugar 200 mg").rows);
+    delete report.input_only;
+    return new Response(JSON.stringify(report));
+  });
+  context.unparsedSourceRows = [{ method: "image OCR", line: 3, text: "Salt 1O g" }];
+  assert.equal(await context.analyzeContents(contents, "ocr.tsv"), true);
+  assert.equal(received.input_provenance.unparsed_rows[0].text, "Salt 1O g");
+  assert.equal(context.latestResult.input_only, true);
+  assert.equal(context.latestResult.input_provenance.unparsed_rows[0].text, "Salt 1O g");
+  assert.equal(context.sessionHistory.length, 0);
+  assert.match(context.reviewMessage, /omitted recovered source evidence/);
 });

@@ -26,19 +26,25 @@ def _text(value: object, limit: int) -> None:
 def validate_input_provenance(value: object, row_count: int) -> dict[str, Any] | None:
     if value is None:
         return None
-    if not isinstance(value, dict) or set(value) != {"version", "rows"}:
+    if not isinstance(value, dict) or not {"version", "rows"} <= set(value) or set(value) - {"version", "rows", "unparsed_rows"}:
         _invalid()
     if type(value["version"]) is not int or value["version"] != 1:
         _invalid()
     rows = value["rows"]
     if not isinstance(rows, list) or len(rows) != row_count or len(rows) > 251:
         _invalid()
-    for source in rows:
+    unparsed = value.get("unparsed_rows", [])
+    if not isinstance(unparsed, list) or len(unparsed) > 251:
+        _invalid()
+    for source, needs_original in [(row, True) for row in rows] + [(row, False) for row in unparsed]:
         if source is None:
+            if not needs_original:
+                _invalid()
             continue
         if not isinstance(source, dict):
             _invalid()
-        if not {"method", "original"} <= source.keys() or set(source) - SOURCE_FIELDS:
+        required = {"method", "original"} if needs_original else {"method"}
+        if not required <= source.keys() or set(source) - SOURCE_FIELDS:
             _invalid()
         _text(source["method"], 80)
         if not source["method"] or not any(key in source for key in ("line", "json_path")):
@@ -56,11 +62,14 @@ def validate_input_provenance(value: object, row_count: int) -> dict[str, Any] |
                 _invalid()
             for cell in source["cells"]:
                 _text(cell, 4096)
-        original = source["original"]
-        if not isinstance(original, dict) or set(original) != {"item", "quantity", "unit"}:
+        if not needs_original and not ("text" in source or "cells" in source):
             _invalid()
-        for key, limit in (("item", 1024), ("quantity", 80), ("unit", 32)):
-            _text(original[key], limit)
+        if needs_original or "original" in source:
+            original = source["original"]
+            if not isinstance(original, dict) or set(original) != {"item", "quantity", "unit"}:
+                _invalid()
+            for key, limit in (("item", 1024), ("quantity", 80), ("unit", 32)):
+                _text(original[key], limit)
         if "ocr" in source:
             _validate_ocr(source["ocr"])
     if len(json.dumps(value, ensure_ascii=False).encode("utf-8")) > 131072:
@@ -91,7 +100,7 @@ def _markdown_text(value: object) -> str:
     )
 
 
-def provenance_markdown(rows: list[dict[str, Any]]) -> str:
+def provenance_markdown(rows: list[dict[str, Any]], unparsed_rows: list[dict[str, Any]] | None = None) -> str:
     lines = []
     for index, row in enumerate(rows, 1):
         source = row.get("input_source")
@@ -113,6 +122,10 @@ def provenance_markdown(rows: list[dict[str, Any]]) -> str:
             f"{confidence}. Original recovered values: {_markdown_text(original)}. "
             f"Source: {_markdown_text(raw)}."
         )
+    for source in unparsed_rows or []:
+        raw = source.get("text", " · ".join(source.get("cells", [])))
+        location = ", ".join(f"{key} {source[key]}" for key in ("worksheet", "page", "line", "json_path") if key in source)
+        lines.append(f"- Source line not included: {_markdown_text(location)}. Source: {_markdown_text(raw)}.")
     if not lines:
         return ""
     return (

@@ -61,18 +61,36 @@ class InputProvenanceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(validate_input_provenance(PROVENANCE, 2), PROVENANCE)
         self.assertIsNone(validate_input_provenance(None, 2))
 
+    def test_unparsed_evidence_is_bounded_and_does_not_claim_complete_zeros(self):
+        unparsed = {"method": "image OCR", "line": 3, "text": "Salt 1O g"}
+        provenance = {"version": 1, "rows": [None, None], "unparsed_rows": [unparsed]}
+        report = analyze_formula_upload("Item\tQuantity\tUnit\nFINISHED BATCH\t1\tmL\nWater\t1\tg\n", "ocr.tsv", input_provenance=provenance)
+        sodium = next(metric for metric in report["screened_components"] if metric["id"] == "sodium")
+        self.assertEqual(sodium["value"], "0")  # Known water contribution, never a complete total.
+        self.assertEqual(sodium["status"], "partial")
+        self.assertIsNone(report["coverage"]["characterized_percent"])
+        self.assertIn("1 source lines not included", report["missing_information"][0]["needed"])
+        self.assertEqual(report["input_provenance"], provenance)
+        for invalid in ([None], [{**unparsed, "text": "x" * 4097}], [unparsed] * 252, [{**unparsed, "local_path": "/private/source.png"}]):
+            with self.subTest(invalid=str(invalid)[:80]), self.assertRaises(FormulaUploadError):
+                validate_input_provenance({**provenance, "unparsed_rows": invalid}, 2)
+
     async def test_worker_create_append_reload_restore_and_analysis_retain_source(self):
         module = load_worker_module()
         worker = module.Default()
         database = FakeD1()
         self.addCleanup(database.connection.close)
         worker.env = types.SimpleNamespace(FORMULA_DB=database)
-        body = {"file_name": "fixture.tsv", "contents": CONTENTS, "input_provenance": deepcopy(PROVENANCE)}
+        provenance = {**deepcopy(PROVENANCE), "unparsed_rows": [{"method": "image OCR", "line": 4, "text": "Salt 1O g"}]}
+        body = {"file_name": "fixture.tsv", "contents": CONTENTS, "input_provenance": provenance}
         logged = []
         with patch.object(module, "_log", side_effect=lambda *args, **kwargs: logged.append((args, kwargs))):
             analysis = await worker.fetch(Request("POST", "/api/analyze", body))
             self.assertEqual(analysis.status, 200)
             self.assertEqual(analysis.data["formula_rows"][1]["input_source"], SOURCE)
+            self.assertEqual(analysis.data["input_provenance"]["unparsed_rows"], provenance["unparsed_rows"])
+            self.assertTrue(all(metric["status"] == "partial" for metric in analysis.data["screened_components"]))
+            self.assertIn("Salt 1O g", analysis.data["markdown"])
             created = await worker.fetch(Request("POST", "/api/formulas", body))
             self.assertEqual(created.status, 201)
             formula_id = created.data["version"]["formula_id"]
@@ -81,12 +99,12 @@ class InputProvenanceTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(updated.status, 200)
             self.assertEqual(updated.data["report"]["formula_rows"][1]["input_source"], SOURCE)
             readback = await worker.fetch(Request("GET", f"/api/formulas/{formula_id}/versions/1"))
-            self.assertEqual(readback.data["normalized_input"]["input_provenance"], PROVENANCE)
+            self.assertEqual(readback.data["normalized_input"]["input_provenance"], provenance)
             self.assertEqual(readback.data["report"]["formula_rows"][1]["submitted_quantity"], "400")
             restored = await worker.fetch(Request("POST", f"/api/formulas/{formula_id}/restore", {"expected_version": 2, "target_version": 1}))
             self.assertEqual(restored.status, 200)
             self.assertEqual(restored.data["report"], readback.data["report"])
-            self.assertEqual(restored.data["version"]["normalized_input"]["input_provenance"], PROVENANCE)
+            self.assertEqual(restored.data["version"]["normalized_input"]["input_provenance"], provenance)
             for path in ("/api/analyze", "/api/formulas", f"/api/formulas/{formula_id}/versions"):
                 invalid = await worker.fetch(Request("POST", path, {**changed_body, "input_provenance": {"version": 1, "rows": []}}))
                 self.assertEqual(invalid.status, 400)

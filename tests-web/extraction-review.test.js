@@ -224,3 +224,13 @@ for (const text of ["1 mL\nSugar 20 mg", "Sugar 20 mg"]) test(`implicit dose sou
   assert.equal(context.draftRows[0].quantity, "1");
   assert.equal(context.draftRows[0].unit, "mL");
 });
+
+
+for (const rejection of ["Error attempting to read image", null, {}]) test(`library rejection ${JSON.stringify(rejection)} produces a readable retained-input retry`, async () => {
+  const { context } = preparationFixture({ ingestFile: async () => { throw rejection; } });
+  context.selectFile(fakeFile("broken-image.png"));
+  await context.prepareInput();
+  assert.equal(context.selectedFile.name, "broken-image.png");
+  assert.equal(context.prepareButton.disabled, false);
+  assert.match(context.message, /Could not read this file.*clearer image\/PDF.*paste.*input is retained/);
+});
