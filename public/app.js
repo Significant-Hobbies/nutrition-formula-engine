@@ -1080,6 +1080,10 @@ function renderNutritionLabel() {
       ? "Assumption-based working estimate — supplier data needed" : readiness.partial
       ? "Partial draft — macros/nutrient totals incomplete" : "Calculated draft — source and regulatory review required";
     document.querySelector("#label-preview-name").textContent = label.productName;
+    document.querySelector("#label-info-title").textContent = active.input_only
+      ? "Supplied ingredient quantities" : "Nutritional Information (Approximate Values)";
+    document.querySelector("#label-nutrient-heading").textContent = active.input_only ? "Ingredient" : "Nutrient";
+    document.querySelector("#label-nutrition-reference").hidden = Boolean(active.input_only);
     document.querySelector("#label-preview-serving").textContent = active.input_only
       ? `${active.label_batch_quantity} ${label.servingUnit} entered ${active.input_basis === "dose" ? "dose" : "batch"}`
       : `${label.servingSize} ${label.servingUnit}`;
@@ -1536,7 +1540,7 @@ function currentOutputMarkdown(snapshot) {
     lines.push(`## ${label.inputOnly ? "Input-only ingredient sheet" : "Nutrition label"} — ${basis === "perServing" ? label.servingLabel : label.basisLabel}`, "",
       label.inputOnly ? "Original ingredient quantities and units are shown as supplied. Nutrient totals and RDA have not been calculated."
         : `RDA percentages use the ${label.servingSize} ${label.servingUnit} dose. Men/women: moderate work; child reference: boys aged 10–12. B5 uses adequate intake (AI).`, "",
-      "| Nutrient | Amount | Men | Women | Boys 10–12 |", "|---|---:|---:|---:|---:|");
+      `| ${label.inputOnly ? "Ingredient" : "Nutrient"} | Amount | Men | Women | Boys 10–12 |`, "|---|---:|---:|---:|---:|");
     for (const group of label.groups) {
       lines.push(`| **${group.name}** | | | | |`);
       for (const nutrient of group.nutrients) lines.push(`| ${nutrient.name}${nutrient.sourceLabel ? ` (${nutrient.sourceLabel})` : ""} | ${nutrient[basis]} ${nutrient.unit} | ${nutrient.rda.men} | ${nutrient.rda.women} | ${nutrient.rda.children} |`);

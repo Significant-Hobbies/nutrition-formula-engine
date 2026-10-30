@@ -17,12 +17,13 @@ export function validateReviewedRows(rows) {
 
 export function buildInputOnlyResult(rows, { fileName = "formula.tsv", inputBasis = "dose" } = {}) {
   validateReviewedRows(rows);
-  const sourceRows = rows.map((row) => {
+  const sourceRows = rows.map((row, index) => {
     const quantity = String(row.submitted_quantity ?? row.quantity).trim();
     const unit = row.submitted_unit ?? row.unit;
     return { item: row.item, quantity, unit: normalizeUnit(unit), submitted_quantity: quantity, submitted_unit: unit,
       normalized_equivalent: `${quantity} ${unit} (as supplied)`, interpretation: "As supplied; composition not calculated",
-      material_id: null, confidence: "unresolved", unresolved: true, needs_review: true,
+      material_id: null, confidence: index === 0 ? "exact" : "unresolved", unresolved: index > 0, needs_review: index > 0,
+      alternatives: [], identity_note: null, profile_version: null, reusable_profile: false,
       source: "Operator-provided quantity; no ingredient identity or nutrient profile assigned.",
       ...(row.input_source ? { input_source: structuredClone(row.input_source) } : {}) };
   });
