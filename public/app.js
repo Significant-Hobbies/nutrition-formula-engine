@@ -7,6 +7,8 @@ import { buildResultReadiness, componentEvidence, readinessMarkdown, senderCheck
 import { buildAssumptionScenario, scenarioEligibility, scenarioAssumptions } from "./assumption-scenario.js";
 import { LABEL_DETAIL_FIELDS } from "./label-details.js";
 import { savedProduct, bestEstimateAliases } from "./saved-products.js";
+import { buildInputOnlyResult, defaultIdentityRows, validateReviewedRows } from "./draft-result.js";
+import { createCalculationRequests } from "./calculation-request.js";
 import sampleTsvUrl from "./sample-tonic.tsv?url";
 import {
   appendSessionVersion,
@@ -60,6 +62,13 @@ let publishedReviewSignature = null;
 let currentInputBasis = "dose";
 const confirmedIdentities = new Set();
 const auditLog = createAuditLog();
+const calculationRequests = createCalculationRequests();
+
+function cancelCalculation() {
+  calculationRequests.cancel();
+  calculateButton.disabled = false;
+  calculateButton.textContent = "Confirm and calculate";
+}
 
 function labelReviewOptions() {
   return {
@@ -131,12 +140,12 @@ function renderReadiness() {
   if (!latestResult) return;
   const active = displayedResult();
   const readiness = buildResultReadiness(active, labelReviewOptions());
-  document.querySelector("#result-state").textContent = readiness.scenario ? "Calculation finished · assumption estimate" : readiness.partial ? "Calculation finished · partial result" : "Calculation finished · draft result";
+  document.querySelector("#result-state").textContent = active.input_only ? "Input-only draft · nutrition not calculated" : readiness.scenario ? "Calculation finished · assumption estimate" : readiness.partial ? "Calculation finished · partial result" : "Calculation finished · draft result";
   document.querySelector("#inference-name").textContent = readiness.title;
   document.querySelector("#inference-reason").textContent = readiness.summary;
   document.querySelector("#inference-boundary").textContent = readiness.nextAction;
   document.querySelector("#inference-confidence").textContent = `${readiness.requests.length} information requests · ${readiness.pendingIdentityCount} identities to review`;
-  document.querySelector("#component-legend").textContent = readiness.scenario ? readiness.legend
+  document.querySelector("#component-legend").textContent = readiness.scenario || active.input_only ? readiness.legend
     : `${readiness.legend} Only nonzero known contributions appear in this table; omitted values are not confirmed zeros.`;
   renderList("#assumptions-list", active.report_assumptions, "No extra assumptions were used.");
   renderList("#missing-list", readiness.requests, "No additional information requests.");
@@ -144,6 +153,7 @@ function renderReadiness() {
 }
 
 async function persistBrowserWorkspace() {
+  if (latestResult?.input_only) return;
   if (workspace?.mode === "server") {
     await saveBrowserWorkspace({ ...serverWorkspaceRecord({
       formulaId: workspace.formulaId,
@@ -431,6 +441,7 @@ async function loadSavedBrowserFormula() {
 
 function selectFile(file) {
   if (!file) return;
+  cancelCalculation();
   if (file.size > MAX_INPUT_BYTES) {
     selectedFile = null;
     fileSummary.hidden = true;
@@ -454,6 +465,7 @@ function selectFile(file) {
 
 fileInput.addEventListener("change", () => selectFile(fileInput.files[0]));
 formulaText.addEventListener("input", () => {
+  cancelCalculation();
   if (!formulaText.value.trim()) return;
   selectedFile = null;
   fileInput.value = "";
@@ -502,7 +514,7 @@ function draftInput(value, label, onInput, auditDetails) {
   input.value = value;
   input.required = true;
   input.setAttribute("aria-label", label);
-  input.addEventListener("input", () => onInput(input.value));
+  input.addEventListener("input", () => { cancelCalculation(); onInput(input.value); });
   input.addEventListener("change", () => recordAudit("draft_field_edited", auditDetails));
   return input;
 }
@@ -553,6 +565,7 @@ function renderDraftRows() {
       unit.append(option);
     }
     unit.addEventListener("change", () => {
+      cancelCalculation();
       row.unit = unit.value;
       recordAudit("draft_field_edited", { row_index: index + 1, field: "unit" });
     });
@@ -565,6 +578,7 @@ function renderDraftRows() {
     remove.textContent = "Remove";
     remove.setAttribute("aria-label", `Remove row ${index + 1}`);
     remove.addEventListener("click", () => {
+      cancelCalculation();
       draftRows.splice(index, 1);
       recordAudit("draft_row_removed", { row_index: index + 1, remaining_rows: draftRows.length });
       renderDraftRows();
@@ -595,6 +609,7 @@ function renderPreparedFormula(extraction) {
 }
 
 async function prepareInput() {
+  cancelCalculation();
   const startedAt = performance.now();
   const inputKind = selectedFile ? "file" : "paste";
   currentInputBasis = document.querySelector("#input-basis").value;
@@ -656,9 +671,11 @@ function updateInputBasis() {
     ? "Enter amounts per dose. A dose-volume line is optional; this is not a production batch."
     : "Enter the finished batch quantity followed by ingredient amounts for that entire batch.";
 }
-document.querySelector("#input-basis").addEventListener("change", updateInputBasis);
+document.querySelector("#input-basis").addEventListener("change", () => { cancelCalculation(); updateInputBasis(); });
+document.querySelector("#dose-volume").addEventListener("input", cancelCalculation);
 
 document.querySelector("#add-draft-row").addEventListener("click", () => {
+  cancelCalculation();
   draftRows.push({ item: "", quantity: "", unit: "kg" });
   recordAudit("draft_row_added", { row_index: draftRows.length, row_count: draftRows.length });
   renderDraftRows();
@@ -675,13 +692,7 @@ document.querySelector("#edit-source").addEventListener("click", () => {
 });
 
 function validateDraftRows() {
-  if (draftRows.length < 2) throw new Error("Keep a finished-batch row and at least one ingredient.");
-  if (draftRows.some((row) => !row.item.trim() || !row.quantity.trim() || !row.unit)) {
-    throw new Error("Every reviewed row needs an item, quantity, and unit.");
-  }
-  if (!/^finished\s+batch$/i.test(draftRows[0].item.trim())) {
-    throw new Error("The first row must be FINISHED BATCH. Correct the recovered item before calculating.");
-  }
+  validateReviewedRows(draftRows);
 }
 
 function renderFormula(rows) {
@@ -1005,6 +1016,10 @@ function renderHistory() {
       ? "This formula and its earlier versions are saved online."
       : "This formula and its earlier versions are saved in this browser."
     : "Save this formula to keep it and its earlier versions.";
+  if (latestResult?.input_only) {
+    document.querySelector("#report-version").textContent = "Input-only draft · not saved";
+    document.querySelector("#history-status").textContent = "This input-only draft is available for download and print. It has not been saved as a calculated version.";
+  }
 }
 
 function renderList(selector, items, fallback) {
@@ -1060,11 +1075,14 @@ function renderNutritionLabel() {
     });
     preview.hidden = false;
     printButton.disabled = false;
-    document.querySelector("#label-preview-status").textContent = readiness.scenario
+    document.querySelector("#label-preview-status").textContent = active.input_only
+      ? "Input-only draft — ingredient quantities, nutrition not calculated" : readiness.scenario
       ? "Assumption-based working estimate — supplier data needed" : readiness.partial
       ? "Partial draft — macros/nutrient totals incomplete" : "Calculated draft — source and regulatory review required";
     document.querySelector("#label-preview-name").textContent = label.productName;
-    document.querySelector("#label-preview-serving").textContent = `${label.servingSize} ${label.servingUnit}`;
+    document.querySelector("#label-preview-serving").textContent = active.input_only
+      ? `${active.label_batch_quantity} ${label.servingUnit} entered ${active.input_basis === "dose" ? "dose" : "batch"}`
+      : `${label.servingSize} ${label.servingUnit}`;
     const perServing = document.querySelector("#label-amount-basis").value === "serving";
     const amountHeading = perServing ? label.servingLabel : label.basisLabel;
     document.querySelector("#label-amount-heading").textContent = amountHeading;
@@ -1181,7 +1199,7 @@ function renderNutritionLabel() {
         const amount = document.createElement("td");
         amount.dataset.label = amountHeading;
         const value = perServing ? nutrient.perServing : nutrient.perBasis;
-        amount.textContent = `${value} ${nutrient.unit}`;
+        amount.textContent = `${value} ${nutrient.unit}${nutrient.supplied ? " (as supplied)" : ""}`;
         row.append(name, amount);
         for (const [key, title] of [["men", "Men"], ["women", "Women"], ["children", "10–12 years"]]) {
           const rda = document.createElement("td");
@@ -1197,7 +1215,7 @@ function renderNutritionLabel() {
     if (readiness.scenario) warnings.push(...active.assumption_scenario.assumptions,
       ...(latestResult.formula_rows.some((row) => row.material_id === "lysine_hcl_pure_assumed") ? ["Chloride shown is the lysine-HCl contribution only; unreported vitamin salts may add chloride. B5 percentages use adequate intake (AI)."] : []),
       "Original composition data remains unchanged. Obtain the sender specifications before finalizing declarations.");
-    if (!readiness.scenario && label.hasIncompleteData) {
+    if (!readiness.scenario && !active.input_only && label.hasIncompleteData) {
       warnings.push("≥ is the known contribution under the selected ingredient profiles, with incomplete composition coverage; unverified purity and identities can change it.");
     }
     if (label.unavailableSummary) warnings.push(label.unavailableSummary);
@@ -1249,6 +1267,11 @@ function renderResult(result) {
   document.querySelector("#coverage-known").textContent = known;
   document.querySelector("#coverage-bar").style.width = `${Math.min(100, Number(known))}%`;
   document.querySelector("#coverage-note").textContent = `${unknown}% of explicitly weighed input has no composition profile. A profile may cover just one nutrient; this percentage does not measure complete macros, accuracy or the unlisted liquid base.`;
+  if (result.input_only) {
+    document.querySelector("#coverage-known").textContent = "Not calculated";
+    document.querySelector("#coverage-bar").style.width = "0%";
+    document.querySelector("#coverage-note").textContent = "Input-only draft: no ingredient composition, mass coverage or nutrient totals have been calculated.";
+  }
   document.querySelector("#basis-label").textContent = `Calculated ${result.basis_label}`;
   document.querySelector("#engine-version").textContent = `Calculator ${result.calculation?.engine_version || "version not shown"}`;
   document.querySelector("#report-fingerprint").textContent = result.calculation?.nutrition_catalog_fingerprint
@@ -1270,16 +1293,19 @@ function renderResult(result) {
   renderIdentityReview(currentRows);
   renderNutritionLabel();
   const saveButton = document.querySelector("#save-workspace");
-  saveButton.disabled = Boolean(workspace);
-  saveButton.textContent = workspace ? workspace.mode === "browser" ? "Saved in this browser" : "Saved online" : "Save formula";
+  saveButton.disabled = Boolean(workspace) || Boolean(result.input_only);
+  saveButton.textContent = result.input_only ? "Input-only draft · download to keep" : workspace ? workspace.mode === "browser" ? "Saved in this browser" : "Saved online" : "Save formula";
   results.hidden = false;
   results.scrollIntoView({ behavior: "smooth", block: "start" });
   document.querySelector("#results-title").focus();
 }
 
 async function analyzeContents(contents, uploadedName, trigger = "review_confirmed", decisions = []) {
+  const request = calculationRequests.start();
   const startedAt = performance.now();
-  const inputHash = await sha256(contents);
+  let inputHash = null;
+  const reviewedRows = structuredClone(trigger === "review_confirmed" ? draftRows : currentRows);
+  const inputBasis = currentInputBasis;
   const acceptedRows = currentRows.filter((row) => confirmedIdentities.has(identityReviewKey(row)));
   let requestId = null;
   let responseStatus = null;
@@ -1294,6 +1320,9 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
     input_sha256: inputHash,
   });
   try {
+    validateReviewedRows(reviewedRows);
+    inputHash = await sha256(contents);
+    if (!request.isCurrent()) return false;
     const endpoint = workspace?.mode === "server"
       ? `/api/formulas/${workspace.formulaId}/versions`
       : "/api/analyze";
@@ -1301,8 +1330,8 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
       file_name: uploadedName.endsWith(".tsv") ? uploadedName : `${uploadedName}.tsv`,
       contents,
       accepted_aliases: acceptedAliasPayload(),
-      input_basis: currentInputBasis,
-      input_provenance: inputProvenance(trigger === "review_confirmed" ? draftRows : currentRows),
+      input_basis: inputBasis,
+      input_provenance: inputProvenance(reviewedRows),
     };
     if (trigger === "review_confirmed") {
       requestBody.accepted_aliases = [...new Map([...bestEstimateAliases(draftRows), ...requestBody.accepted_aliases].map((item) => [item.alias, item])).values()];
@@ -1312,19 +1341,19 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
       requestBody.cause = trigger;
       requestBody.decisions = decisions;
     }
-    const response = await fetch(endpoint, {
+    const response = await request.fetchJson(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestBody),
     });
+    if (!request.isCurrent()) return false;
     responseStatus = response.status;
-    requestId = response.headers.get("x-request-id");
-    const payload = await response.json();
-    if (!response.ok) throw new Error(payload.error || "The formula could not be analyzed.");
+    requestId = response.requestId;
+    const payload = response.data;
     const data = payload.report || payload;
     if (workspace?.mode === "server" && payload.version) {
       workspace.currentVersion = payload.version.version;
-      await refreshDatabaseSync();
+      refreshDatabaseSync().catch(() => {});
     }
     sessionHistory = appendSessionVersion(
       sessionHistory,
@@ -1343,9 +1372,12 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
     renderResult(data);
     if (trigger === "review_confirmed") applyBestLabelDefaults();
     await persistBrowserWorkspace();
+    if (!request.isCurrent()) return false;
     window.appHealth?.track('formula_checked');
     const resultForHash = { ...data };
     delete resultForHash.markdown;
+    const resultHash = await sha256(JSON.stringify(resultForHash));
+    if (!request.isCurrent()) return false;
     recordAudit("calculation_completed", {
       trigger,
       request_id: requestId,
@@ -1357,11 +1389,13 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
       identity_review_count: data.formula_rows.filter((row) => row.needs_review).length,
       characterized_percent: data.coverage.characterized_percent,
       input_sha256: inputHash,
-      result_sha256: await sha256(JSON.stringify(resultForHash)),
+      result_sha256: resultHash,
     });
     setReviewStatus(`Calculated ${data.formula_rows.length - 1} ingredients from the reviewed rows.`);
     return true;
   } catch (error) {
+    if (!request.isCurrent()) return false;
+    responseStatus ||= error.status || null;
     recordAudit("calculation_failed", {
       trigger,
       request_id: requestId,
@@ -1370,17 +1404,34 @@ async function analyzeContents(contents, uploadedName, trigger = "review_confirm
       error_type: error?.constructor?.name || "Error",
       input_sha256: inputHash,
     });
+    if (error.fallback) {
+      const draft = buildInputOnlyResult(reviewedRows, { fileName: uploadedName, inputBasis });
+      publishedProduct = null;
+      publishedReviewSignature = null;
+      savedLabelReview = null;
+      renderResult(draft);
+      applyBestLabelDefaults();
+      draftRows = reviewedRows.map((row) => ({ item: row.item,
+        quantity: String(row.submitted_quantity ?? row.quantity), unit: row.unit || row.submitted_unit,
+        ...(row.input_source ? { input_source: row.input_source } : {}) }));
+      renderDraftRows();
+      formulaReview.hidden = false;
+      setReviewStatus(`${error.message} Print or download the input-only sheet below, or retry Confirm and calculate.`, true);
+      return true;
+    }
     if (!latestResult) results.hidden = true;
     setReviewStatus(error.message, true);
     return false;
   } finally {
-    calculateButton.disabled = false;
-    calculateButton.textContent = "Confirm and calculate";
+    if (request.isCurrent()) {
+      calculateButton.disabled = false;
+      calculateButton.textContent = "Confirm and calculate";
+    }
   }
 }
 
 document.querySelector("#save-workspace").addEventListener("click", async () => {
-  if (!latestResult || !latestContents || workspace) return;
+  if (!latestResult || latestResult.input_only || !latestContents || workspace) return;
   const button = document.querySelector("#save-workspace");
   button.disabled = true;
   button.textContent = "Saving…";
@@ -1482,8 +1533,9 @@ function currentOutputMarkdown(snapshot) {
     readinessMarkdown(snapshot.readiness, snapshot.product_name), "", "## Output assumptions", "",
     ...(snapshot.report_assumptions || []).map((assumption) => `- ${assumption}`), ""];
   if (label) {
-    lines.push(`## Nutrition label — ${basis === "perServing" ? label.servingLabel : label.basisLabel}`, "",
-      `RDA percentages use the ${label.servingSize} ${label.servingUnit} dose. Men/women: moderate work; child reference: boys aged 10–12. B5 uses adequate intake (AI).`, "",
+    lines.push(`## ${label.inputOnly ? "Input-only ingredient sheet" : "Nutrition label"} — ${basis === "perServing" ? label.servingLabel : label.basisLabel}`, "",
+      label.inputOnly ? "Original ingredient quantities and units are shown as supplied. Nutrient totals and RDA have not been calculated."
+        : `RDA percentages use the ${label.servingSize} ${label.servingUnit} dose. Men/women: moderate work; child reference: boys aged 10–12. B5 uses adequate intake (AI).`, "",
       "| Nutrient | Amount | Men | Women | Boys 10–12 |", "|---|---:|---:|---:|---:|");
     for (const group of label.groups) {
       lines.push(`| **${group.name}** | | | | |`);
@@ -1644,13 +1696,13 @@ const requestedFormula = new URLSearchParams(window.location.search).get("formul
 const requestedProduct = new URLSearchParams(window.location.search).get("product");
 const resumeBrowserFormula = new URLSearchParams(window.location.search).get("resume") === "browser";
 function applyBestLabelDefaults() {
-  for (const row of latestResult.formula_rows) if (row.material_id && !row.unresolved)
+  for (const row of defaultIdentityRows(latestResult))
     confirmedIdentities.add(identityReviewKey(row));
   const liquid = latestResult.basis_label === "per 100 mL";
   const smallDose = currentInputBasis === "dose";
   document.querySelector("#label-serving-size").value = smallDose ? latestResult.label_batch_quantity : "100";
   document.querySelector("#label-amount-basis").value = smallDose ? "serving" : "100";
-  document.querySelector("#label-base").value = liquid ? "water" : "unspecified";
+  document.querySelector("#label-base").value = liquid && !latestResult.input_only ? "water" : "unspecified";
   document.querySelector("#label-assumption-estimate").checked = scenarioEligibility(latestResult, labelReviewOptions()).allowed;
   renderNutritionLabel();
 }

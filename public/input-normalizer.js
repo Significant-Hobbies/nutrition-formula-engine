@@ -160,7 +160,8 @@ export function normalizeJson(value, options = {}) {
     const normalized = Array.isArray(row)
       ? canonicalRow(row[0], row[1], row[2], index + 1)
       : rowFromObject(row, index + 1);
-    if (normalized) rows.push(normalized);
+    if (!normalized) throw new Error(`Ingredient row ${index + 1}: enter an item, decimal quantity and supported mass or volume unit.`);
+    rows.push(normalized);
   }
   const container = Array.isArray(parsed) ? "" : ["rows", "ingredients", "items", "formula", "materials"].find((key) => Array.isArray(parsed?.[key]));
   for (const row of rows) {
@@ -195,34 +196,43 @@ export function normalizeMatrix(rawMatrix, method = "table", options = {}) {
   const rows = [];
   const unparsedRows = [];
   const start = header ? header.index + 1 : 0;
-  for (let index = 0; index < matrix.length; index += 1) {
-    if (header && index === header.index) continue;
-    const cells = matrix[index];
-    const sourceLine = entries[index].index + 1;
-    let row = null;
-    if (index < start) {
-      row = null;
-    } else if (header) {
-      row = canonicalRow(
-        cells[header.item], cells[header.quantity], cells[header.unit], sourceLine,
-      );
-    } else if (cells.length >= 3) {
-      row = canonicalRow(cells[0], cells[1], cells[2], sourceLine);
-    } else if (cells.length === 2) {
-      const combined = parseQuantityAndUnit(cells[1]);
-      if (combined) row = canonicalRow(cells[0], combined.quantity, combined.unit, sourceLine);
-    } else if (cells.length === 1) row = parseLine(cells[0], sourceLine, index === start);
-    const supplied = options.sourceRows?.[entries[index].index];
-    const inputSource = { method, line: sourceLine,
-      ...(options.worksheet ? { worksheet: options.worksheet } : {}),
-      ...(supplied || { cells: (Array.isArray(entries[index].raw) ? entries[index].raw : [entries[index].raw]).map((cell) => cell == null ? "" : String(cell)) }) };
-    if (row) {
-      row.input_source = { ...inputSource, original: originalValues(row) };
-      row.source_line = row.input_source.line;
-      rows.push(row);
-    } else unparsedRows.push(inputSource);
-  }
   try {
+    for (let index = 0; index < matrix.length; index += 1) {
+      if (header && index === header.index) continue;
+      const cells = matrix[index];
+      const sourceLine = entries[index].index + 1;
+      let row = null;
+      if (index < start) {
+        row = null;
+      } else if (header) {
+        row = canonicalRow(
+          cells[header.item], cells[header.quantity], cells[header.unit], sourceLine,
+        );
+      } else if (cells.length >= 3) {
+        row = canonicalRow(cells[0], cells[1], cells[2], sourceLine);
+      } else if (cells.length === 2) {
+        const combined = parseQuantityAndUnit(cells[1]);
+        if (combined) row = canonicalRow(cells[0], combined.quantity, combined.unit, sourceLine);
+      } else if (cells.length === 1) row = parseLine(cells[0], sourceLine, index === start);
+      const supplied = options.sourceRows?.[entries[index].index];
+      const inputSource = { method, line: sourceLine,
+        ...(options.worksheet ? { worksheet: options.worksheet } : {}),
+        ...(supplied || { cells: (Array.isArray(entries[index].raw) ? entries[index].raw : [entries[index].raw]).map((cell) => cell == null ? "" : String(cell)) }) };
+      if (row) {
+        row.input_source = { ...inputSource, original: originalValues(row) };
+        row.source_line = row.input_source.line;
+        rows.push(row);
+      } else {
+        // OCR/PDF uncertainty stays reviewable with its original coordinates.
+        // Typed malformed quantities need a correction, never silent omission.
+        if (!/OCR|PDF/i.test(method) && (cells.length > 1 ||
+          /\s[+-]?(?:\d[\d,.]*|\.\d+)\s*(?:[a-zµμ]+)?$/i.test(cells[0]) ||
+          /\s(?:kg|g|mg|ug|mcg|[µμ]g|ml|l)\.?$/i.test(cells[0]))) {
+          throw new Error(`Source row ${sourceLine}: enter an item followed by a decimal quantity and supported mass or volume unit. Correct the source text or use a three-column Item, Quantity, Unit table.`);
+        }
+        unparsedRows.push(inputSource);
+      }
+    }
     return { ...finalizeRows(rows, method, options), unparsedRows };
   } catch (error) {
     error.recoveredRows = rawMatrix.map((raw, index) => ({

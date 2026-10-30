@@ -153,7 +153,11 @@ def _retain_unresolved_ingredients(
                 )
             continue
         try:
-            resolved_id, _ = resolve_material(catalog, query)
+            # Weak lexical resemblance is a search suggestion, not ingredient
+            # composition. In particular an unidentified carrier is not water.
+            if {"unknown", "unidentified"} & set(normalize_name(query).split()):
+                raise ValueError("The supplied identity is explicitly unknown")
+            resolved_id, _ = resolve_material(catalog, query, minimum_score=0.72)
         except ValueError:
             material_id = f"unresolved_input_{index}"
             catalog["materials"][material_id] = {
