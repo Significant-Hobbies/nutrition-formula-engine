@@ -1,0 +1,4610 @@
+{
+  "id": "multivitamin-mineral-1ml",
+  "name": "Multivitamin & mineral liquid",
+  "summary": "1 mL \u00b7 Seven vitamins, zinc and iodine \u00b7 200 mg sugar \u00b7 Water-base working estimate",
+  "savedAt": "2026-10-30T08:42:47.085623Z",
+  "contents": "Item\tQuantity\tUnit\nFINISHED BATCH\t1\tmL\nVitamin C (Ascorbic acid)\t4\tmg\nVitamin B3 (Nicotinamide)\t4\tmg\nVitamin B5 (D-Panthenol)\t1.5\tmg\nVitamin B2 (Riboflavin sodium phosphate)\t400\tug\nVitamin B1 (Thiamine hydrochloride)\t300\tug\nVitamin B6 (Pyridoxine hydrochloride)\t200\tug\nVitamin B12 (Cyanocobalamin)\t0.4\tug\nZinc (as Zinc sulfate)\t3\tmg\nIodine (as potassium iodide)\t45\tug\nSUGAR\t200\tmg\nNEPAZENE\t1\tmg\nNEPASOL\t.4\tmg\nBRONOPAL\t.1\tmg\nSOD BENZ\t3\tmg\nBENZOIC ACID\t1\tmg\n",
+  "fileName": "multivitamin-mineral-1ml.tsv",
+  "report": {
+    "schema_version": 1,
+    "calculation": {
+      "engine_version": "2.0.0-pilot",
+      "nutrition_catalog_fingerprint": "a08e83ca3b392d23f3b10b40a3ec900843b243887ed624abaaa6127e2b0b79ca",
+      "chemical_catalog_fingerprint": "a53c0ce426a12e22882754af48fa5d19e57cea0de42c7fe0d8ba2a1d1422eacc",
+      "accepted_profile_count": 0,
+      "arithmetic": "Python Decimal"
+    },
+    "product_name": "pasted formula",
+    "file_name": "pasted-formula.tsv",
+    "basis_label": "per 100 mL",
+    "label_batch_quantity": "1",
+    "declared_nutrient_ids": [
+      "added_sugars",
+      "carbohydrate",
+      "energy",
+      "iodine",
+      "niacin",
+      "pantothenic_acid",
+      "riboflavin",
+      "sodium",
+      "thiamin",
+      "total_sugars",
+      "vitamin_b12",
+      "vitamin_b6",
+      "vitamin_c",
+      "zinc"
+    ],
+    "label_entries": [
+      {
+        "name": "Vitamin B5 (D-Panthenol)",
+        "interpretation": "D-panthenol",
+        "category": "Vitamins",
+        "batch_amount": "1.5",
+        "unit": "mg",
+        "source": {
+          "kind": "theoretical_conversion_assumption",
+          "reference": "SCF 2002: panthenol can be oxidised in vivo to pantothenic acid; pantothenic acid MW 219.23. PubChem CID 131204: D-panthenol MW 205.25. Assumes pure D-isomer and complete 1:1 molar conversion; not a bioavailability claim.",
+          "url": "https://food.ec.europa.eu/system/files/2020-12/sci-com_scf_out80k_en.pdf"
+        },
+        "identity_note": "Calculation scenario: pure D-panthenol, 100% assay. Theoretical pantothenic-acid equivalent = mass \u00d7 219.23/205.25 for 1:1 molar oxidation. This is not measured bioavailability or a finished-product assay.",
+        "needs_review": true
+      },
+      {
+        "name": "NEPAZENE",
+        "interpretation": "Sodium methylparaben, assumed from Nepazene",
+        "category": "Preservatives",
+        "batch_amount": "1",
+        "unit": "mg",
+        "source": {
+          "kind": "stoichiometric_assumption",
+          "reference": "PubChem CID 23663626 molecular formula and molecular weight; identity assumed"
+        },
+        "identity_note": "Leading Nepazene candidate selected for the complete scenario; supplier label or CoA is still required",
+        "needs_review": false
+      },
+      {
+        "name": "NEPASOL",
+        "interpretation": "Propylparaben, assumed from Nepasol",
+        "category": "Preservatives",
+        "batch_amount": "0.4",
+        "unit": "mg",
+        "source": {
+          "kind": "assumption",
+          "reference": "Non-nutritive propylparaben scenario"
+        },
+        "identity_note": "Nepasol treated as likely Nipasol; public sources conflict between propylparaben and sodium propylparaben, so the sodium salt is not assumed",
+        "needs_review": false
+      },
+      {
+        "name": "BRONOPAL",
+        "interpretation": "Bronopol",
+        "category": "Preservatives",
+        "batch_amount": "0.1",
+        "unit": "mg",
+        "source": {
+          "kind": "chemical_identity",
+          "reference": "Bronopol treated as non-nutritive"
+        },
+        "identity_note": null,
+        "needs_review": false
+      },
+      {
+        "name": "SOD BENZ",
+        "interpretation": "Sodium benzoate",
+        "category": "Preservatives",
+        "batch_amount": "3",
+        "unit": "mg",
+        "source": {
+          "kind": "stoichiometric",
+          "reference": "Sodium fraction from sodium benzoate molecular mass"
+        },
+        "identity_note": null,
+        "needs_review": false
+      },
+      {
+        "name": "BENZOIC ACID",
+        "interpretation": "Benzoic acid",
+        "category": "Preservatives",
+        "batch_amount": "1",
+        "unit": "mg",
+        "source": {
+          "kind": "chemical_identity",
+          "reference": "Benzoic acid treated as non-nutritive"
+        },
+        "identity_note": null,
+        "needs_review": false
+      }
+    ],
+    "product_inference": {
+      "name": "Food or beverage formulation",
+      "confidence": "moderate",
+      "reason": "The calculated result is led by conventional macronutrients.",
+      "boundary": "Product category and regulatory status require intended use and claims."
+    },
+    "coverage": {
+      "characterized_percent": "100",
+      "uncharacterized_percent": "0",
+      "uncharacterized_mass_g": "0",
+      "uncharacterized_materials": [],
+      "basis": "explicitly quantified formula input mass"
+    },
+    "formula_rows": [
+      {
+        "source_row": 2,
+        "item": "FINISHED BATCH",
+        "submitted_quantity": "1",
+        "submitted_unit": "mL",
+        "quantity": "1",
+        "unit": "ml",
+        "normalized_equivalent": "1 mL",
+        "interpretation": "Final batch basis",
+        "confidence": "exact",
+        "needs_review": false,
+        "alternatives": [],
+        "input_source": {
+          "method": "pasted text",
+          "line": 1,
+          "text": "1 ML",
+          "original": {
+            "item": "FINISHED BATCH",
+            "quantity": "1",
+            "unit": "mL"
+          }
+        }
+      },
+      {
+        "source_row": 3,
+        "item": "Vitamin C (Ascorbic acid)",
+        "submitted_quantity": "4",
+        "submitted_unit": "mg",
+        "quantity": "4",
+        "unit": "mg",
+        "normalized_equivalent": "0.004 g",
+        "interpretation": "Vitamin C (Ascorbic acid), declared active amount",
+        "material_id": "vitamin_c_ascorbic_declared",
+        "confidence": "low",
+        "source": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Folic acid, pure",
+          "Ascorbic acid",
+          "Vitamin B3 (Nicotinamide), declared active amount"
+        ],
+        "input_source": {
+          "method": "pasted text",
+          "line": 2,
+          "text": "Vitamin C (Ascorbic acid)\t4 mg",
+          "original": {
+            "item": "Vitamin C (Ascorbic acid)",
+            "quantity": "4",
+            "unit": "mg"
+          }
+        }
+      },
+      {
+        "source_row": 4,
+        "item": "Vitamin B3 (Nicotinamide)",
+        "submitted_quantity": "4",
+        "submitted_unit": "mg",
+        "quantity": "4",
+        "unit": "mg",
+        "normalized_equivalent": "0.004 g",
+        "interpretation": "Vitamin B3 (Nicotinamide), declared active amount",
+        "material_id": "vitamin_b3_nicotinamide_declared",
+        "confidence": "low",
+        "source": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Niacinamide, pure active basis",
+          "Folic acid, pure",
+          "Vitamin B12 (Cyanocobalamin), declared active amount"
+        ],
+        "input_source": {
+          "method": "pasted text",
+          "line": 3,
+          "text": "Vitamin B3 (Nicotinamide)\t4 mg",
+          "original": {
+            "item": "Vitamin B3 (Nicotinamide)",
+            "quantity": "4",
+            "unit": "mg"
+          }
+        }
+      },
+      {
+        "source_row": 5,
+        "item": "Vitamin B5 (D-Panthenol)",
+        "submitted_quantity": "1.5",
+        "submitted_unit": "mg",
+        "quantity": "1.5",
+        "unit": "mg",
+        "normalized_equivalent": "0.0015 g",
+        "interpretation": "D-panthenol",
+        "material_id": "d_panthenol_pure_assumed",
+        "confidence": "low",
+        "source": "SCF 2002: panthenol can be oxidised in vivo to pantothenic acid; pantothenic acid MW 219.23. PubChem CID 131204: D-panthenol MW 205.25. Assumes pure D-isomer and complete 1:1 molar conversion; not a bioavailability claim.",
+        "identity_note": "Calculation scenario: pure D-panthenol, 100% assay. Theoretical pantothenic-acid equivalent = mass \u00d7 219.23/205.25 for 1:1 molar oxidation. This is not measured bioavailability or a finished-product assay.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Pyridoxine hydrochloride",
+          "Vitamin B1, declared active amount"
+        ],
+        "input_source": {
+          "method": "pasted text",
+          "line": 4,
+          "text": "Vitamin B5 (D-Panthenol)\t1.5 mg",
+          "original": {
+            "item": "Vitamin B5 (D-Panthenol)",
+            "quantity": "1.5",
+            "unit": "mg"
+          }
+        }
+      },
+      {
+        "source_row": 6,
+        "item": "Vitamin B2 (Riboflavin sodium phosphate)",
+        "submitted_quantity": "400",
+        "submitted_unit": "ug",
+        "quantity": "400",
+        "unit": "ug",
+        "normalized_equivalent": "0.0004 g",
+        "interpretation": "Vitamin B2 (Riboflavin sodium phosphate), declared active amount",
+        "material_id": "vitamin_b2_phosphate_sodium_declared",
+        "confidence": "low",
+        "source": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers. Sodium estimate assumes one sodium per riboflavin equivalent: 22.98976928/376.36. Hydration and assay remain unverified.",
+        "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Vitamin B2, declared active amount",
+          "Vitamin B3 (Nicotinamide), declared active amount",
+          "Vitamin B6 (Pyridoxine hydrochloride), declared active amount"
+        ],
+        "input_source": {
+          "method": "pasted text",
+          "line": 5,
+          "text": "Vitamin B2 (Riboflavin sodium phosphate)\t400 mcg",
+          "original": {
+            "item": "Vitamin B2 (Riboflavin sodium phosphate)",
+            "quantity": "400",
+            "unit": "ug"
+          }
+        }
+      },
+      {
+        "source_row": 7,
+        "item": "Vitamin B1 (Thiamine hydrochloride)",
+        "submitted_quantity": "300",
+        "submitted_unit": "ug",
+        "quantity": "300",
+        "unit": "ug",
+        "normalized_equivalent": "0.0003 g",
+        "interpretation": "Vitamin B1 (Thiamine hydrochloride), declared active amount",
+        "material_id": "vitamin_b1_hydrochloride_declared",
+        "confidence": "low",
+        "source": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Vitamin B6 (Pyridoxine hydrochloride), declared active amount",
+          "Lysine hydrochloride"
+        ],
+        "input_source": {
+          "method": "pasted text",
+          "line": 6,
+          "text": "Vitamin B1 (Thiamine hydrochloride)\t300 mcg",
+          "original": {
+            "item": "Vitamin B1 (Thiamine hydrochloride)",
+            "quantity": "300",
+            "unit": "ug"
+          }
+        }
+      },
+      {
+        "source_row": 8,
+        "item": "Vitamin B6 (Pyridoxine hydrochloride)",
+        "submitted_quantity": "200",
+        "submitted_unit": "ug",
+        "quantity": "200",
+        "unit": "ug",
+        "normalized_equivalent": "0.0002 g",
+        "interpretation": "Vitamin B6 (Pyridoxine hydrochloride), declared active amount",
+        "material_id": "vitamin_b6_hydrochloride_declared",
+        "confidence": "low",
+        "source": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Vitamin B1 (Thiamine hydrochloride), declared active amount",
+          "Pyridoxine hydrochloride",
+          "Lysine hydrochloride"
+        ],
+        "input_source": {
+          "method": "pasted text",
+          "line": 7,
+          "text": "Vitamin B6 (Pyridoxine hydrochloride)\t200 mcg",
+          "original": {
+            "item": "Vitamin B6 (Pyridoxine hydrochloride)",
+            "quantity": "200",
+            "unit": "ug"
+          }
+        }
+      },
+      {
+        "source_row": 9,
+        "item": "Vitamin B12 (Cyanocobalamin)",
+        "submitted_quantity": "0.4",
+        "submitted_unit": "ug",
+        "quantity": "0.4",
+        "unit": "ug",
+        "normalized_equivalent": "0.0000004 g",
+        "interpretation": "Vitamin B12 (Cyanocobalamin), declared active amount",
+        "material_id": "vitamin_b12_cyanocobalamin_declared",
+        "confidence": "low",
+        "source": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Vitamin B12, declared active amount",
+          "Cyanocobalamin, pure",
+          "Vitamin B3 (Nicotinamide), declared active amount"
+        ],
+        "input_source": {
+          "method": "pasted text",
+          "line": 8,
+          "text": "Vitamin B12 (Cyanocobalamin)\t0.4 mcg",
+          "original": {
+            "item": "Vitamin B12 (Cyanocobalamin)",
+            "quantity": "0.4",
+            "unit": "ug"
+          }
+        }
+      },
+      {
+        "source_row": 10,
+        "item": "Zinc (as Zinc sulfate)",
+        "submitted_quantity": "3",
+        "submitted_unit": "mg",
+        "quantity": "3",
+        "unit": "mg",
+        "normalized_equivalent": "0.003 g",
+        "interpretation": "Zinc (as zinc sulphate), declared elemental basis",
+        "material_id": "zinc_sulphate_declared",
+        "confidence": "low",
+        "source": "Entered Zinc (as Zinc Sulphate) is treated as elemental zinc, not the weighed zinc sulphate mass. Confirm elemental versus salt basis, hydrate, zinc assay, actual salt weight and carriers. No hydrate or salt-weight conversion is assumed.",
+        "identity_note": "Entered Zinc (as Zinc Sulphate) is treated as elemental zinc, not the weighed zinc sulphate mass. Confirm elemental versus salt basis, hydrate, zinc assay, actual salt weight and carriers. No hydrate or salt-weight conversion is assumed.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Zinc sulphate monohydrate at 35.5% zinc",
+          "Iron (as ferric ammonium citrate), declared elemental basis",
+          "Vitamin C (Ascorbic acid), declared active amount"
+        ],
+        "input_source": {
+          "method": "pasted text",
+          "line": 9,
+          "text": "Zinc (as Zinc sulfate)\t3 mg",
+          "original": {
+            "item": "Zinc (as Zinc sulfate)",
+            "quantity": "3",
+            "unit": "mg"
+          }
+        }
+      },
+      {
+        "source_row": 11,
+        "item": "Iodine (as potassium iodide)",
+        "submitted_quantity": "45",
+        "submitted_unit": "ug",
+        "quantity": "45",
+        "unit": "ug",
+        "normalized_equivalent": "0.000045 g",
+        "interpretation": "Iodine (as potassium iodide), declared active amount",
+        "material_id": "iodine_potassium_iodide_declared",
+        "confidence": "low",
+        "source": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": true,
+        "unresolved": false,
+        "alternatives": [
+          "Food-grade potassium chloride",
+          "Food-grade sodium chloride",
+          "Iron (as ferric ammonium citrate), declared elemental basis"
+        ],
+        "input_source": {
+          "method": "pasted text",
+          "line": 10,
+          "text": "Iodine (as potassium iodide)\t45 mcg",
+          "original": {
+            "item": "Iodine (as potassium iodide)",
+            "quantity": "45",
+            "unit": "ug"
+          }
+        }
+      },
+      {
+        "source_row": 12,
+        "item": "SUGAR",
+        "submitted_quantity": "200",
+        "submitted_unit": "mg",
+        "quantity": "200",
+        "unit": "mg",
+        "normalized_equivalent": "0.2 g",
+        "interpretation": "Sugar (pure sucrose assumption)",
+        "material_id": "sucrose_pure_assumed",
+        "confidence": "exact",
+        "source": "Pure sucrose assumed without carriers; carbohydrate at 4 kcal/g. Applied only to the named sugared multivitamin/mineral recipe or an explicitly selected profile.",
+        "identity_note": "Sugar is assumed pure sucrose without carriers, using 4 kcal/g carbohydrate; not a supplier assay.",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": false,
+        "unresolved": false,
+        "alternatives": [],
+        "input_source": {
+          "method": "pasted text",
+          "line": 11,
+          "text": "SUGAR\t200 MG",
+          "original": {
+            "item": "SUGAR",
+            "quantity": "200",
+            "unit": "mg"
+          }
+        }
+      },
+      {
+        "source_row": 13,
+        "item": "NEPAZENE",
+        "submitted_quantity": "1",
+        "submitted_unit": "mg",
+        "quantity": "1",
+        "unit": "mg",
+        "normalized_equivalent": "0.001 g",
+        "interpretation": "Sodium methylparaben, assumed from Nepazene",
+        "material_id": "sodium_methylparaben_assumed",
+        "confidence": "exact",
+        "source": "PubChem CID 23663626 molecular formula and molecular weight; identity assumed",
+        "identity_note": "Leading Nepazene candidate selected for the complete scenario; supplier label or CoA is still required",
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": false,
+        "unresolved": false,
+        "alternatives": [],
+        "input_source": {
+          "method": "pasted text",
+          "line": 12,
+          "text": "NEPAZENE\t1 MG",
+          "original": {
+            "item": "NEPAZENE",
+            "quantity": "1",
+            "unit": "mg"
+          }
+        }
+      },
+      {
+        "source_row": 14,
+        "item": "NEPASOL",
+        "submitted_quantity": ".4",
+        "submitted_unit": "mg",
+        "quantity": "0.4",
+        "unit": "mg",
+        "normalized_equivalent": "0.0004 g",
+        "interpretation": "Propylparaben, assumed from Nepasol",
+        "material_id": "propylparaben_assumed",
+        "confidence": "exact",
+        "source": "Non-nutritive propylparaben scenario",
+        "identity_note": "Nepasol treated as likely Nipasol; public sources conflict between propylparaben and sodium propylparaben, so the sodium salt is not assumed",
+        "profile_version": null,
+        "reusable_profile": false,
+        "needs_review": false,
+        "unresolved": false,
+        "alternatives": [],
+        "input_source": {
+          "method": "pasted text",
+          "line": 13,
+          "text": "NEPASOL\t.4 MG",
+          "original": {
+            "item": "NEPASOL",
+            "quantity": ".4",
+            "unit": "mg"
+          }
+        }
+      },
+      {
+        "source_row": 15,
+        "item": "BRONOPAL",
+        "submitted_quantity": ".1",
+        "submitted_unit": "mg",
+        "quantity": "0.1",
+        "unit": "mg",
+        "normalized_equivalent": "0.0001 g",
+        "interpretation": "Bronopol",
+        "material_id": "bronopol",
+        "confidence": "exact",
+        "source": "Bronopol treated as non-nutritive",
+        "identity_note": null,
+        "profile_version": null,
+        "reusable_profile": false,
+        "needs_review": false,
+        "unresolved": false,
+        "alternatives": [],
+        "input_source": {
+          "method": "pasted text",
+          "line": 14,
+          "text": "BRONOPAL\t.1 MG",
+          "original": {
+            "item": "BRONOPAL",
+            "quantity": ".1",
+            "unit": "mg"
+          }
+        }
+      },
+      {
+        "source_row": 16,
+        "item": "SOD BENZ",
+        "submitted_quantity": "3",
+        "submitted_unit": "mg",
+        "quantity": "3",
+        "unit": "mg",
+        "normalized_equivalent": "0.003 g",
+        "interpretation": "Sodium benzoate",
+        "material_id": "sodium_benzoate",
+        "confidence": "exact",
+        "source": "Sodium fraction from sodium benzoate molecular mass",
+        "identity_note": null,
+        "profile_version": null,
+        "reusable_profile": true,
+        "needs_review": false,
+        "unresolved": false,
+        "alternatives": [],
+        "input_source": {
+          "method": "pasted text",
+          "line": 15,
+          "text": "SOD BENZ\t3 MG",
+          "original": {
+            "item": "SOD BENZ",
+            "quantity": "3",
+            "unit": "mg"
+          }
+        }
+      },
+      {
+        "source_row": 17,
+        "item": "BENZOIC ACID",
+        "submitted_quantity": "1",
+        "submitted_unit": "mg",
+        "quantity": "1",
+        "unit": "mg",
+        "normalized_equivalent": "0.001 g",
+        "interpretation": "Benzoic acid",
+        "material_id": "benzoic_acid",
+        "confidence": "exact",
+        "source": "Benzoic acid treated as non-nutritive",
+        "identity_note": null,
+        "profile_version": null,
+        "reusable_profile": false,
+        "needs_review": false,
+        "unresolved": false,
+        "alternatives": [],
+        "input_source": {
+          "method": "pasted text",
+          "line": 16,
+          "text": "BENZOIC ACID\t1 MG",
+          "original": {
+            "item": "BENZOIC ACID",
+            "quantity": "1",
+            "unit": "mg"
+          }
+        }
+      }
+    ],
+    "label_ingredients": [
+      {
+        "material_id": "sucrose_pure_assumed",
+        "name": "Sugar (pure sucrose assumption)",
+        "mass_g": "0.2",
+        "minimum_mass_g": "0.2",
+        "maximum_mass_g": "0.2",
+        "input_mass_percent": "91.34697509059336254609596731",
+        "label_name": "Sugar"
+      },
+      {
+        "material_id": "vitamin_b3_nicotinamide_declared",
+        "name": "Vitamin B3 (Nicotinamide), declared active amount",
+        "mass_g": "0.004",
+        "minimum_mass_g": "0.004",
+        "maximum_mass_g": "0.004",
+        "input_mass_percent": "1.826939501811867250921919346",
+        "label_name": "Nicotinamide"
+      },
+      {
+        "material_id": "vitamin_c_ascorbic_declared",
+        "name": "Vitamin C (Ascorbic acid), declared active amount",
+        "mass_g": "0.004",
+        "minimum_mass_g": "0.004",
+        "maximum_mass_g": "0.004",
+        "input_mass_percent": "1.826939501811867250921919346",
+        "label_name": "Ascorbic acid"
+      },
+      {
+        "material_id": "sodium_benzoate",
+        "name": "Sodium benzoate",
+        "mass_g": "0.003",
+        "minimum_mass_g": "0.003",
+        "maximum_mass_g": "0.003",
+        "input_mass_percent": "1.37020462635890043819143951",
+        "label_name": "Sodium benzoate"
+      },
+      {
+        "material_id": "zinc_sulphate_declared",
+        "name": "Zinc (as zinc sulphate), declared elemental basis",
+        "mass_g": "0.003",
+        "minimum_mass_g": "0.003",
+        "maximum_mass_g": "0.003",
+        "input_mass_percent": "1.37020462635890043819143951",
+        "label_name": "Zinc sulphate"
+      },
+      {
+        "material_id": "d_panthenol_pure_assumed",
+        "name": "D-panthenol",
+        "mass_g": "0.0015",
+        "minimum_mass_g": "0.0015",
+        "maximum_mass_g": "0.0015",
+        "input_mass_percent": "0.6851023131794502190957197548",
+        "label_name": "D-panthenol"
+      },
+      {
+        "material_id": "benzoic_acid",
+        "name": "Benzoic acid",
+        "mass_g": "0.001",
+        "minimum_mass_g": "0.001",
+        "maximum_mass_g": "0.001",
+        "input_mass_percent": "0.4567348754529668127304798365",
+        "label_name": "Benzoic acid"
+      },
+      {
+        "material_id": "sodium_methylparaben_assumed",
+        "name": "Sodium methylparaben, assumed from Nepazene",
+        "mass_g": "0.001",
+        "minimum_mass_g": "0.001",
+        "maximum_mass_g": "0.001",
+        "input_mass_percent": "0.4567348754529668127304798365",
+        "label_name": "Sodium methylparaben"
+      },
+      {
+        "material_id": "propylparaben_assumed",
+        "name": "Propylparaben, assumed from Nepasol",
+        "mass_g": "0.0004",
+        "minimum_mass_g": "0.0004",
+        "maximum_mass_g": "0.0004",
+        "input_mass_percent": "0.1826939501811867250921919346",
+        "label_name": "Propylparaben"
+      },
+      {
+        "material_id": "vitamin_b2_phosphate_sodium_declared",
+        "name": "Vitamin B2 (Riboflavin sodium phosphate), declared active amount",
+        "mass_g": "0.0004",
+        "minimum_mass_g": "0.0004",
+        "maximum_mass_g": "0.0004",
+        "input_mass_percent": "0.1826939501811867250921919346",
+        "label_name": "Riboflavin sodium phosphate"
+      },
+      {
+        "material_id": "vitamin_b1_hydrochloride_declared",
+        "name": "Vitamin B1 (Thiamine hydrochloride), declared active amount",
+        "mass_g": "0.0003",
+        "minimum_mass_g": "0.0003",
+        "maximum_mass_g": "0.0003",
+        "input_mass_percent": "0.137020462635890043819143951",
+        "label_name": "Thiamine hydrochloride"
+      },
+      {
+        "material_id": "vitamin_b6_hydrochloride_declared",
+        "name": "Vitamin B6 (Pyridoxine hydrochloride), declared active amount",
+        "mass_g": "0.0002",
+        "minimum_mass_g": "0.0002",
+        "maximum_mass_g": "0.0002",
+        "input_mass_percent": "0.09134697509059336254609596731",
+        "label_name": "Pyridoxine hydrochloride"
+      },
+      {
+        "material_id": "bronopol",
+        "name": "Bronopol",
+        "mass_g": "0.0001",
+        "minimum_mass_g": "0.0001",
+        "maximum_mass_g": "0.0001",
+        "input_mass_percent": "0.04567348754529668127304798365",
+        "label_name": "Bronopol"
+      },
+      {
+        "material_id": "iodine_potassium_iodide_declared",
+        "name": "Iodine (as potassium iodide), declared active amount",
+        "mass_g": "0.000045",
+        "minimum_mass_g": "0.000045",
+        "maximum_mass_g": "0.000045",
+        "input_mass_percent": "0.02055306939538350657287159264",
+        "label_name": "Potassium iodide"
+      },
+      {
+        "material_id": "vitamin_b12_cyanocobalamin_declared",
+        "name": "Vitamin B12 (Cyanocobalamin), declared active amount",
+        "mass_g": "0.0000004",
+        "minimum_mass_g": "0.0000004",
+        "maximum_mass_g": "0.0000004",
+        "input_mass_percent": "0.0001826939501811867250921919346",
+        "label_name": "Cyanocobalamin"
+      }
+    ],
+    "present_components": [
+      {
+        "id": "energy",
+        "name": "Energy",
+        "value": "80",
+        "total_batch": "0.8",
+        "unit": "kcal",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "80",
+          "upper": null,
+          "unit": "kcal",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 80 kcal",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 9,
+            "input_material_id": "sucrose_pure_assumed",
+            "input_material_name": "Sugar (pure sucrose assumption)",
+            "material_id": "sucrose_pure_assumed",
+            "material_name": "Sugar (pure sucrose assumption)",
+            "material_path": [
+              "sucrose_pure_assumed"
+            ],
+            "input_mass_g": "0.2",
+            "minimum_input_mass_g": "0.2",
+            "maximum_input_mass_g": "0.2",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "400",
+            "profile_minimum": "400",
+            "profile_maximum": "400",
+            "profile_unit": "kcal",
+            "total_batch": "0.8",
+            "minimum_total_batch": "0.8",
+            "maximum_total_batch": "0.8",
+            "unit": "kcal",
+            "source": {
+              "kind": "operator_assumption",
+              "reference": "Pure sucrose assumed without carriers; carbohydrate at 4 kcal/g. Applied only to the named sugared multivitamin/mineral recipe or an explicitly selected profile."
+            },
+            "per_100_g": null,
+            "per_100_ml": "80",
+            "per_serving": "80",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "carbohydrate",
+        "name": "Carbohydrate",
+        "value": "20",
+        "total_batch": "0.2",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "20",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 20 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 9,
+            "input_material_id": "sucrose_pure_assumed",
+            "input_material_name": "Sugar (pure sucrose assumption)",
+            "material_id": "sucrose_pure_assumed",
+            "material_name": "Sugar (pure sucrose assumption)",
+            "material_path": [
+              "sucrose_pure_assumed"
+            ],
+            "input_mass_g": "0.2",
+            "minimum_input_mass_g": "0.2",
+            "maximum_input_mass_g": "0.2",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100",
+            "profile_minimum": "100",
+            "profile_maximum": "100",
+            "profile_unit": "g",
+            "total_batch": "0.2",
+            "minimum_total_batch": "0.2",
+            "maximum_total_batch": "0.2",
+            "unit": "g",
+            "source": {
+              "kind": "operator_assumption",
+              "reference": "Pure sucrose assumed without carriers; carbohydrate at 4 kcal/g. Applied only to the named sugared multivitamin/mineral recipe or an explicitly selected profile."
+            },
+            "per_100_g": null,
+            "per_100_ml": "20",
+            "per_serving": "20",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "total_sugars",
+        "name": "Total sugars",
+        "value": "20",
+        "total_batch": "0.2",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "20",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 20 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 9,
+            "input_material_id": "sucrose_pure_assumed",
+            "input_material_name": "Sugar (pure sucrose assumption)",
+            "material_id": "sucrose_pure_assumed",
+            "material_name": "Sugar (pure sucrose assumption)",
+            "material_path": [
+              "sucrose_pure_assumed"
+            ],
+            "input_mass_g": "0.2",
+            "minimum_input_mass_g": "0.2",
+            "maximum_input_mass_g": "0.2",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100",
+            "profile_minimum": "100",
+            "profile_maximum": "100",
+            "profile_unit": "g",
+            "total_batch": "0.2",
+            "minimum_total_batch": "0.2",
+            "maximum_total_batch": "0.2",
+            "unit": "g",
+            "source": {
+              "kind": "operator_assumption",
+              "reference": "Pure sucrose assumed without carriers; carbohydrate at 4 kcal/g. Applied only to the named sugared multivitamin/mineral recipe or an explicitly selected profile."
+            },
+            "per_100_g": null,
+            "per_100_ml": "20",
+            "per_serving": "20",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "added_sugars",
+        "name": "Added sugars",
+        "value": "20",
+        "total_batch": "0.2",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "20",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 20 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 9,
+            "input_material_id": "sucrose_pure_assumed",
+            "input_material_name": "Sugar (pure sucrose assumption)",
+            "material_id": "sucrose_pure_assumed",
+            "material_name": "Sugar (pure sucrose assumption)",
+            "material_path": [
+              "sucrose_pure_assumed"
+            ],
+            "input_mass_g": "0.2",
+            "minimum_input_mass_g": "0.2",
+            "maximum_input_mass_g": "0.2",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100",
+            "profile_minimum": "100",
+            "profile_maximum": "100",
+            "profile_unit": "g",
+            "total_batch": "0.2",
+            "minimum_total_batch": "0.2",
+            "maximum_total_batch": "0.2",
+            "unit": "g",
+            "source": {
+              "kind": "operator_assumption",
+              "reference": "Pure sucrose assumed without carriers; carbohydrate at 4 kcal/g. Applied only to the named sugared multivitamin/mineral recipe or an explicitly selected profile."
+            },
+            "per_100_g": null,
+            "per_100_ml": "20",
+            "per_serving": "20",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "sodium",
+        "name": "Sodium",
+        "value": "63.50202776291447287826005344",
+        "total_batch": "0.6350202776291447287826005344",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "63.50202776291447287826005344",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 63.50202776291447287826005344 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 3,
+            "input_material_id": "vitamin_b2_phosphate_sodium_declared",
+            "input_material_name": "Vitamin B2 (Riboflavin sodium phosphate), declared active amount",
+            "material_id": "vitamin_b2_phosphate_sodium_declared",
+            "material_name": "Vitamin B2 (Riboflavin sodium phosphate), declared active amount",
+            "material_path": [
+              "vitamin_b2_phosphate_sodium_declared"
+            ],
+            "input_mass_g": "0.0004",
+            "minimum_input_mass_g": "0.0004",
+            "maximum_input_mass_g": "0.0004",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "6108.451822722924859177383356",
+            "profile_minimum": "6108.451822722924859177383356",
+            "profile_maximum": "6108.451822722924859177383356",
+            "profile_unit": "mg",
+            "total_batch": "0.02443380729089169943670953342",
+            "minimum_total_batch": "0.02443380729089169943670953342",
+            "maximum_total_batch": "0.02443380729089169943670953342",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers. Sodium estimate assumes one sodium per riboflavin equivalent: 22.98976928/376.36. Hydration and assay remain unverified.",
+              "label_source": "Riboflavin sodium phosphate",
+              "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Riboflavin"
+            },
+            "per_100_g": null,
+            "per_100_ml": "2.443380729089169943670953342",
+            "per_serving": "2.443380729089169943670953342",
+            "retention_factor": "1"
+          },
+          {
+            "line_index": 10,
+            "input_material_id": "sodium_methylparaben_assumed",
+            "input_material_name": "Sodium methylparaben, assumed from Nepazene",
+            "material_id": "sodium_methylparaben_assumed",
+            "material_name": "Sodium methylparaben, assumed from Nepazene",
+            "material_path": [
+              "sodium_methylparaben_assumed"
+            ],
+            "input_mass_g": "0.001",
+            "minimum_input_mass_g": "0.001",
+            "maximum_input_mass_g": "0.001",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "13202.6470338253029345891001",
+            "profile_minimum": "13202.6470338253029345891001",
+            "profile_maximum": "13202.6470338253029345891001",
+            "profile_unit": "mg",
+            "total_batch": "0.132026470338253029345891001",
+            "minimum_total_batch": "0.132026470338253029345891001",
+            "maximum_total_batch": "0.132026470338253029345891001",
+            "unit": "mg",
+            "source": {
+              "kind": "stoichiometric_assumption",
+              "reference": "PubChem CID 23663626 molecular formula and molecular weight; identity assumed"
+            },
+            "per_100_g": null,
+            "per_100_ml": "13.2026470338253029345891001",
+            "per_serving": "13.2026470338253029345891001",
+            "retention_factor": "1"
+          },
+          {
+            "line_index": 13,
+            "input_material_id": "sodium_benzoate",
+            "input_material_name": "Sodium benzoate",
+            "material_id": "sodium_benzoate",
+            "material_name": "Sodium benzoate",
+            "material_path": [
+              "sodium_benzoate"
+            ],
+            "input_mass_g": "0.003",
+            "minimum_input_mass_g": "0.003",
+            "maximum_input_mass_g": "0.003",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "15952",
+            "profile_minimum": "15952",
+            "profile_maximum": "15952",
+            "profile_unit": "mg",
+            "total_batch": "0.47856",
+            "minimum_total_batch": "0.47856",
+            "maximum_total_batch": "0.47856",
+            "unit": "mg",
+            "source": {
+              "kind": "stoichiometric",
+              "reference": "Sodium fraction from sodium benzoate molecular mass"
+            },
+            "per_100_g": null,
+            "per_100_ml": "47.856",
+            "per_serving": "47.856",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "zinc",
+        "name": "Zinc",
+        "value": "300",
+        "total_batch": "3",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "300",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 300 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 7,
+            "input_material_id": "zinc_sulphate_declared",
+            "input_material_name": "Zinc (as zinc sulphate), declared elemental basis",
+            "material_id": "zinc_sulphate_declared",
+            "material_name": "Zinc (as zinc sulphate), declared elemental basis",
+            "material_path": [
+              "zinc_sulphate_declared"
+            ],
+            "input_mass_g": "0.003",
+            "minimum_input_mass_g": "0.003",
+            "maximum_input_mass_g": "0.003",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "3",
+            "minimum_total_batch": "3",
+            "maximum_total_batch": "3",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered Zinc (as Zinc Sulphate) is treated as elemental zinc, not the weighed zinc sulphate mass. Confirm elemental versus salt basis, hydrate, zinc assay, actual salt weight and carriers. No hydrate or salt-weight conversion is assumed.",
+              "label_source": "Zinc sulphate",
+              "url": "https://ods.od.nih.gov/factsheets/Zinc-HealthProfessional/"
+            },
+            "per_100_g": null,
+            "per_100_ml": "300",
+            "per_serving": "300",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "vitamin_c",
+        "name": "Vitamin C",
+        "value": "400",
+        "total_batch": "4",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "400",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 400 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 0,
+            "input_material_id": "vitamin_c_ascorbic_declared",
+            "input_material_name": "Vitamin C (Ascorbic acid), declared active amount",
+            "material_id": "vitamin_c_ascorbic_declared",
+            "material_name": "Vitamin C (Ascorbic acid), declared active amount",
+            "material_path": [
+              "vitamin_c_ascorbic_declared"
+            ],
+            "input_mass_g": "0.004",
+            "minimum_input_mass_g": "0.004",
+            "maximum_input_mass_g": "0.004",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "4",
+            "minimum_total_batch": "4",
+            "maximum_total_batch": "4",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+              "label_source": "Ascorbic acid"
+            },
+            "per_100_g": null,
+            "per_100_ml": "400",
+            "per_serving": "400",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "thiamin",
+        "name": "Vitamin B1 (thiamin)",
+        "value": "30",
+        "total_batch": "0.3",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "30",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 30 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 4,
+            "input_material_id": "vitamin_b1_hydrochloride_declared",
+            "input_material_name": "Vitamin B1 (Thiamine hydrochloride), declared active amount",
+            "material_id": "vitamin_b1_hydrochloride_declared",
+            "material_name": "Vitamin B1 (Thiamine hydrochloride), declared active amount",
+            "material_path": [
+              "vitamin_b1_hydrochloride_declared"
+            ],
+            "input_mass_g": "0.0003",
+            "minimum_input_mass_g": "0.0003",
+            "maximum_input_mass_g": "0.0003",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "0.3",
+            "minimum_total_batch": "0.3",
+            "maximum_total_batch": "0.3",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+              "label_source": "Thiamine hydrochloride"
+            },
+            "per_100_g": null,
+            "per_100_ml": "30",
+            "per_serving": "30",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "riboflavin",
+        "name": "Vitamin B2 (riboflavin)",
+        "value": "40",
+        "total_batch": "0.4",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "40",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 40 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 3,
+            "input_material_id": "vitamin_b2_phosphate_sodium_declared",
+            "input_material_name": "Vitamin B2 (Riboflavin sodium phosphate), declared active amount",
+            "material_id": "vitamin_b2_phosphate_sodium_declared",
+            "material_name": "Vitamin B2 (Riboflavin sodium phosphate), declared active amount",
+            "material_path": [
+              "vitamin_b2_phosphate_sodium_declared"
+            ],
+            "input_mass_g": "0.0004",
+            "minimum_input_mass_g": "0.0004",
+            "maximum_input_mass_g": "0.0004",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "0.4",
+            "minimum_total_batch": "0.4",
+            "maximum_total_batch": "0.4",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers. Sodium estimate assumes one sodium per riboflavin equivalent: 22.98976928/376.36. Hydration and assay remain unverified.",
+              "label_source": "Riboflavin sodium phosphate",
+              "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Riboflavin"
+            },
+            "per_100_g": null,
+            "per_100_ml": "40",
+            "per_serving": "40",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "niacin",
+        "name": "Vitamin B3 (niacin)",
+        "value": "400",
+        "total_batch": "4",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "400",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 400 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 1,
+            "input_material_id": "vitamin_b3_nicotinamide_declared",
+            "input_material_name": "Vitamin B3 (Nicotinamide), declared active amount",
+            "material_id": "vitamin_b3_nicotinamide_declared",
+            "material_name": "Vitamin B3 (Nicotinamide), declared active amount",
+            "material_path": [
+              "vitamin_b3_nicotinamide_declared"
+            ],
+            "input_mass_g": "0.004",
+            "minimum_input_mass_g": "0.004",
+            "maximum_input_mass_g": "0.004",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "4",
+            "minimum_total_batch": "4",
+            "maximum_total_batch": "4",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+              "label_source": "Nicotinamide"
+            },
+            "per_100_g": null,
+            "per_100_ml": "400",
+            "per_serving": "400",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "vitamin_b6",
+        "name": "Vitamin B6",
+        "value": "20",
+        "total_batch": "0.2",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "20",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 20 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 5,
+            "input_material_id": "vitamin_b6_hydrochloride_declared",
+            "input_material_name": "Vitamin B6 (Pyridoxine hydrochloride), declared active amount",
+            "material_id": "vitamin_b6_hydrochloride_declared",
+            "material_name": "Vitamin B6 (Pyridoxine hydrochloride), declared active amount",
+            "material_path": [
+              "vitamin_b6_hydrochloride_declared"
+            ],
+            "input_mass_g": "0.0002",
+            "minimum_input_mass_g": "0.0002",
+            "maximum_input_mass_g": "0.0002",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "0.2",
+            "minimum_total_batch": "0.2",
+            "maximum_total_batch": "0.2",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+              "label_source": "Pyridoxine hydrochloride"
+            },
+            "per_100_g": null,
+            "per_100_ml": "20",
+            "per_serving": "20",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "vitamin_b12",
+        "name": "Vitamin B12",
+        "value": "40",
+        "total_batch": "0.4",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "40",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 40 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 6,
+            "input_material_id": "vitamin_b12_cyanocobalamin_declared",
+            "input_material_name": "Vitamin B12 (Cyanocobalamin), declared active amount",
+            "material_id": "vitamin_b12_cyanocobalamin_declared",
+            "material_name": "Vitamin B12 (Cyanocobalamin), declared active amount",
+            "material_path": [
+              "vitamin_b12_cyanocobalamin_declared"
+            ],
+            "input_mass_g": "0.0000004",
+            "minimum_input_mass_g": "0.0000004",
+            "maximum_input_mass_g": "0.0000004",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000000",
+            "profile_minimum": "100000000",
+            "profile_maximum": "100000000",
+            "profile_unit": "ug",
+            "total_batch": "0.4",
+            "minimum_total_batch": "0.4",
+            "maximum_total_batch": "0.4",
+            "unit": "ug",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+              "label_source": "Cyanocobalamin"
+            },
+            "per_100_g": null,
+            "per_100_ml": "40",
+            "per_serving": "40",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "iodine",
+        "name": "Iodine",
+        "value": "4500",
+        "total_batch": "45",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "4500",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 4500 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 8,
+            "input_material_id": "iodine_potassium_iodide_declared",
+            "input_material_name": "Iodine (as potassium iodide), declared active amount",
+            "material_id": "iodine_potassium_iodide_declared",
+            "material_name": "Iodine (as potassium iodide), declared active amount",
+            "material_path": [
+              "iodine_potassium_iodide_declared"
+            ],
+            "input_mass_g": "0.000045",
+            "minimum_input_mass_g": "0.000045",
+            "maximum_input_mass_g": "0.000045",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000000",
+            "profile_minimum": "100000000",
+            "profile_maximum": "100000000",
+            "profile_unit": "ug",
+            "total_batch": "45",
+            "minimum_total_batch": "45",
+            "maximum_total_batch": "45",
+            "unit": "ug",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+              "label_source": "Potassium iodide",
+              "url": "https://ods.od.nih.gov/factsheets/Iodine-HealthProfessional/"
+            },
+            "per_100_g": null,
+            "per_100_ml": "4500",
+            "per_serving": "4500",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "pantothenic_acid",
+        "name": "Vitamin B5 (pantothenic acid equivalent)",
+        "value": "160.2168087697929354445797807",
+        "total_batch": "1.602168087697929354445797807",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "160.2168087697929354445797807",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 160.2168087697929354445797807 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 2,
+            "input_material_id": "d_panthenol_pure_assumed",
+            "input_material_name": "D-panthenol",
+            "material_id": "d_panthenol_pure_assumed",
+            "material_name": "D-panthenol",
+            "material_path": [
+              "d_panthenol_pure_assumed"
+            ],
+            "input_mass_g": "0.0015",
+            "minimum_input_mass_g": "0.0015",
+            "maximum_input_mass_g": "0.0015",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "106811.2058465286236297198538",
+            "profile_minimum": "106811.2058465286236297198538",
+            "profile_maximum": "106811.2058465286236297198538",
+            "profile_unit": "mg",
+            "total_batch": "1.602168087697929354445797807",
+            "minimum_total_batch": "1.602168087697929354445797807",
+            "maximum_total_batch": "1.602168087697929354445797807",
+            "unit": "mg",
+            "source": {
+              "kind": "theoretical_conversion_assumption",
+              "reference": "SCF 2002: panthenol can be oxidised in vivo to pantothenic acid; pantothenic acid MW 219.23. PubChem CID 131204: D-panthenol MW 205.25. Assumes pure D-isomer and complete 1:1 molar conversion; not a bioavailability claim.",
+              "url": "https://food.ec.europa.eu/system/files/2020-12/sci-com_scf_out80k_en.pdf"
+            },
+            "per_100_g": null,
+            "per_100_ml": "160.2168087697929354445797807",
+            "per_serving": "160.2168087697929354445797807",
+            "retention_factor": "1"
+          }
+        ]
+      }
+    ],
+    "screened_components": [
+      {
+        "id": "energy",
+        "name": "Energy",
+        "value": "80",
+        "total_batch": "0.8",
+        "unit": "kcal",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "80",
+          "upper": null,
+          "unit": "kcal",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 80 kcal",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 9,
+            "input_material_id": "sucrose_pure_assumed",
+            "input_material_name": "Sugar (pure sucrose assumption)",
+            "material_id": "sucrose_pure_assumed",
+            "material_name": "Sugar (pure sucrose assumption)",
+            "material_path": [
+              "sucrose_pure_assumed"
+            ],
+            "input_mass_g": "0.2",
+            "minimum_input_mass_g": "0.2",
+            "maximum_input_mass_g": "0.2",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "400",
+            "profile_minimum": "400",
+            "profile_maximum": "400",
+            "profile_unit": "kcal",
+            "total_batch": "0.8",
+            "minimum_total_batch": "0.8",
+            "maximum_total_batch": "0.8",
+            "unit": "kcal",
+            "source": {
+              "kind": "operator_assumption",
+              "reference": "Pure sucrose assumed without carriers; carbohydrate at 4 kcal/g. Applied only to the named sugared multivitamin/mineral recipe or an explicitly selected profile."
+            },
+            "per_100_g": null,
+            "per_100_ml": "80",
+            "per_serving": "80",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "protein",
+        "name": "Protein",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "carbohydrate",
+        "name": "Carbohydrate",
+        "value": "20",
+        "total_batch": "0.2",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "20",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 20 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 9,
+            "input_material_id": "sucrose_pure_assumed",
+            "input_material_name": "Sugar (pure sucrose assumption)",
+            "material_id": "sucrose_pure_assumed",
+            "material_name": "Sugar (pure sucrose assumption)",
+            "material_path": [
+              "sucrose_pure_assumed"
+            ],
+            "input_mass_g": "0.2",
+            "minimum_input_mass_g": "0.2",
+            "maximum_input_mass_g": "0.2",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100",
+            "profile_minimum": "100",
+            "profile_maximum": "100",
+            "profile_unit": "g",
+            "total_batch": "0.2",
+            "minimum_total_batch": "0.2",
+            "maximum_total_batch": "0.2",
+            "unit": "g",
+            "source": {
+              "kind": "operator_assumption",
+              "reference": "Pure sucrose assumed without carriers; carbohydrate at 4 kcal/g. Applied only to the named sugared multivitamin/mineral recipe or an explicitly selected profile."
+            },
+            "per_100_g": null,
+            "per_100_ml": "20",
+            "per_serving": "20",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "total_sugars",
+        "name": "Total sugars",
+        "value": "20",
+        "total_batch": "0.2",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "20",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 20 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 9,
+            "input_material_id": "sucrose_pure_assumed",
+            "input_material_name": "Sugar (pure sucrose assumption)",
+            "material_id": "sucrose_pure_assumed",
+            "material_name": "Sugar (pure sucrose assumption)",
+            "material_path": [
+              "sucrose_pure_assumed"
+            ],
+            "input_mass_g": "0.2",
+            "minimum_input_mass_g": "0.2",
+            "maximum_input_mass_g": "0.2",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100",
+            "profile_minimum": "100",
+            "profile_maximum": "100",
+            "profile_unit": "g",
+            "total_batch": "0.2",
+            "minimum_total_batch": "0.2",
+            "maximum_total_batch": "0.2",
+            "unit": "g",
+            "source": {
+              "kind": "operator_assumption",
+              "reference": "Pure sucrose assumed without carriers; carbohydrate at 4 kcal/g. Applied only to the named sugared multivitamin/mineral recipe or an explicitly selected profile."
+            },
+            "per_100_g": null,
+            "per_100_ml": "20",
+            "per_serving": "20",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "added_sugars",
+        "name": "Added sugars",
+        "value": "20",
+        "total_batch": "0.2",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "20",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 20 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 9,
+            "input_material_id": "sucrose_pure_assumed",
+            "input_material_name": "Sugar (pure sucrose assumption)",
+            "material_id": "sucrose_pure_assumed",
+            "material_name": "Sugar (pure sucrose assumption)",
+            "material_path": [
+              "sucrose_pure_assumed"
+            ],
+            "input_mass_g": "0.2",
+            "minimum_input_mass_g": "0.2",
+            "maximum_input_mass_g": "0.2",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100",
+            "profile_minimum": "100",
+            "profile_maximum": "100",
+            "profile_unit": "g",
+            "total_batch": "0.2",
+            "minimum_total_batch": "0.2",
+            "maximum_total_batch": "0.2",
+            "unit": "g",
+            "source": {
+              "kind": "operator_assumption",
+              "reference": "Pure sucrose assumed without carriers; carbohydrate at 4 kcal/g. Applied only to the named sugared multivitamin/mineral recipe or an explicitly selected profile."
+            },
+            "per_100_g": null,
+            "per_100_ml": "20",
+            "per_serving": "20",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "dietary_fibre",
+        "name": "Dietary fibre",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "total_fat",
+        "name": "Total fat",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "saturated_fat",
+        "name": "Saturated fat",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "trans_fat",
+        "name": "Trans fat",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "g",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "g",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 g",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "sodium",
+        "name": "Sodium",
+        "value": "63.50202776291447287826005344",
+        "total_batch": "0.6350202776291447287826005344",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "63.50202776291447287826005344",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 63.50202776291447287826005344 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 3,
+            "input_material_id": "vitamin_b2_phosphate_sodium_declared",
+            "input_material_name": "Vitamin B2 (Riboflavin sodium phosphate), declared active amount",
+            "material_id": "vitamin_b2_phosphate_sodium_declared",
+            "material_name": "Vitamin B2 (Riboflavin sodium phosphate), declared active amount",
+            "material_path": [
+              "vitamin_b2_phosphate_sodium_declared"
+            ],
+            "input_mass_g": "0.0004",
+            "minimum_input_mass_g": "0.0004",
+            "maximum_input_mass_g": "0.0004",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "6108.451822722924859177383356",
+            "profile_minimum": "6108.451822722924859177383356",
+            "profile_maximum": "6108.451822722924859177383356",
+            "profile_unit": "mg",
+            "total_batch": "0.02443380729089169943670953342",
+            "minimum_total_batch": "0.02443380729089169943670953342",
+            "maximum_total_batch": "0.02443380729089169943670953342",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers. Sodium estimate assumes one sodium per riboflavin equivalent: 22.98976928/376.36. Hydration and assay remain unverified.",
+              "label_source": "Riboflavin sodium phosphate",
+              "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Riboflavin"
+            },
+            "per_100_g": null,
+            "per_100_ml": "2.443380729089169943670953342",
+            "per_serving": "2.443380729089169943670953342",
+            "retention_factor": "1"
+          },
+          {
+            "line_index": 10,
+            "input_material_id": "sodium_methylparaben_assumed",
+            "input_material_name": "Sodium methylparaben, assumed from Nepazene",
+            "material_id": "sodium_methylparaben_assumed",
+            "material_name": "Sodium methylparaben, assumed from Nepazene",
+            "material_path": [
+              "sodium_methylparaben_assumed"
+            ],
+            "input_mass_g": "0.001",
+            "minimum_input_mass_g": "0.001",
+            "maximum_input_mass_g": "0.001",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "13202.6470338253029345891001",
+            "profile_minimum": "13202.6470338253029345891001",
+            "profile_maximum": "13202.6470338253029345891001",
+            "profile_unit": "mg",
+            "total_batch": "0.132026470338253029345891001",
+            "minimum_total_batch": "0.132026470338253029345891001",
+            "maximum_total_batch": "0.132026470338253029345891001",
+            "unit": "mg",
+            "source": {
+              "kind": "stoichiometric_assumption",
+              "reference": "PubChem CID 23663626 molecular formula and molecular weight; identity assumed"
+            },
+            "per_100_g": null,
+            "per_100_ml": "13.2026470338253029345891001",
+            "per_serving": "13.2026470338253029345891001",
+            "retention_factor": "1"
+          },
+          {
+            "line_index": 13,
+            "input_material_id": "sodium_benzoate",
+            "input_material_name": "Sodium benzoate",
+            "material_id": "sodium_benzoate",
+            "material_name": "Sodium benzoate",
+            "material_path": [
+              "sodium_benzoate"
+            ],
+            "input_mass_g": "0.003",
+            "minimum_input_mass_g": "0.003",
+            "maximum_input_mass_g": "0.003",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "15952",
+            "profile_minimum": "15952",
+            "profile_maximum": "15952",
+            "profile_unit": "mg",
+            "total_batch": "0.47856",
+            "minimum_total_batch": "0.47856",
+            "maximum_total_batch": "0.47856",
+            "unit": "mg",
+            "source": {
+              "kind": "stoichiometric",
+              "reference": "Sodium fraction from sodium benzoate molecular mass"
+            },
+            "per_100_g": null,
+            "per_100_ml": "47.856",
+            "per_serving": "47.856",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "iron",
+        "name": "Iron",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "zinc",
+        "name": "Zinc",
+        "value": "300",
+        "total_batch": "3",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "300",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 300 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 7,
+            "input_material_id": "zinc_sulphate_declared",
+            "input_material_name": "Zinc (as zinc sulphate), declared elemental basis",
+            "material_id": "zinc_sulphate_declared",
+            "material_name": "Zinc (as zinc sulphate), declared elemental basis",
+            "material_path": [
+              "zinc_sulphate_declared"
+            ],
+            "input_mass_g": "0.003",
+            "minimum_input_mass_g": "0.003",
+            "maximum_input_mass_g": "0.003",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "3",
+            "minimum_total_batch": "3",
+            "maximum_total_batch": "3",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered Zinc (as Zinc Sulphate) is treated as elemental zinc, not the weighed zinc sulphate mass. Confirm elemental versus salt basis, hydrate, zinc assay, actual salt weight and carriers. No hydrate or salt-weight conversion is assumed.",
+              "label_source": "Zinc sulphate",
+              "url": "https://ods.od.nih.gov/factsheets/Zinc-HealthProfessional/"
+            },
+            "per_100_g": null,
+            "per_100_ml": "300",
+            "per_serving": "300",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "calcium",
+        "name": "Calcium",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "magnesium",
+        "name": "Magnesium",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "potassium",
+        "name": "Potassium",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "phosphorus",
+        "name": "Phosphorus",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "copper",
+        "name": "Copper",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "manganese",
+        "name": "Manganese",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "selenium",
+        "name": "Selenium",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "vitamin_a_rae",
+        "name": "Vitamin A",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "vitamin_c",
+        "name": "Vitamin C",
+        "value": "400",
+        "total_batch": "4",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "400",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 400 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 0,
+            "input_material_id": "vitamin_c_ascorbic_declared",
+            "input_material_name": "Vitamin C (Ascorbic acid), declared active amount",
+            "material_id": "vitamin_c_ascorbic_declared",
+            "material_name": "Vitamin C (Ascorbic acid), declared active amount",
+            "material_path": [
+              "vitamin_c_ascorbic_declared"
+            ],
+            "input_mass_g": "0.004",
+            "minimum_input_mass_g": "0.004",
+            "maximum_input_mass_g": "0.004",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "4",
+            "minimum_total_batch": "4",
+            "maximum_total_batch": "4",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+              "label_source": "Ascorbic acid"
+            },
+            "per_100_g": null,
+            "per_100_ml": "400",
+            "per_serving": "400",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "vitamin_d",
+        "name": "Vitamin D",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "vitamin_e",
+        "name": "Vitamin E",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "vitamin_k",
+        "name": "Vitamin K",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "thiamin",
+        "name": "Vitamin B1 (thiamin)",
+        "value": "30",
+        "total_batch": "0.3",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "30",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 30 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 4,
+            "input_material_id": "vitamin_b1_hydrochloride_declared",
+            "input_material_name": "Vitamin B1 (Thiamine hydrochloride), declared active amount",
+            "material_id": "vitamin_b1_hydrochloride_declared",
+            "material_name": "Vitamin B1 (Thiamine hydrochloride), declared active amount",
+            "material_path": [
+              "vitamin_b1_hydrochloride_declared"
+            ],
+            "input_mass_g": "0.0003",
+            "minimum_input_mass_g": "0.0003",
+            "maximum_input_mass_g": "0.0003",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "0.3",
+            "minimum_total_batch": "0.3",
+            "maximum_total_batch": "0.3",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+              "label_source": "Thiamine hydrochloride"
+            },
+            "per_100_g": null,
+            "per_100_ml": "30",
+            "per_serving": "30",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "riboflavin",
+        "name": "Vitamin B2 (riboflavin)",
+        "value": "40",
+        "total_batch": "0.4",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "40",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 40 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 3,
+            "input_material_id": "vitamin_b2_phosphate_sodium_declared",
+            "input_material_name": "Vitamin B2 (Riboflavin sodium phosphate), declared active amount",
+            "material_id": "vitamin_b2_phosphate_sodium_declared",
+            "material_name": "Vitamin B2 (Riboflavin sodium phosphate), declared active amount",
+            "material_path": [
+              "vitamin_b2_phosphate_sodium_declared"
+            ],
+            "input_mass_g": "0.0004",
+            "minimum_input_mass_g": "0.0004",
+            "maximum_input_mass_g": "0.0004",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "0.4",
+            "minimum_total_batch": "0.4",
+            "maximum_total_batch": "0.4",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers. Sodium estimate assumes one sodium per riboflavin equivalent: 22.98976928/376.36. Hydration and assay remain unverified.",
+              "label_source": "Riboflavin sodium phosphate",
+              "url": "https://pubchem.ncbi.nlm.nih.gov/compound/Riboflavin"
+            },
+            "per_100_g": null,
+            "per_100_ml": "40",
+            "per_serving": "40",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "niacin",
+        "name": "Vitamin B3 (niacin)",
+        "value": "400",
+        "total_batch": "4",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "400",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 400 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 1,
+            "input_material_id": "vitamin_b3_nicotinamide_declared",
+            "input_material_name": "Vitamin B3 (Nicotinamide), declared active amount",
+            "material_id": "vitamin_b3_nicotinamide_declared",
+            "material_name": "Vitamin B3 (Nicotinamide), declared active amount",
+            "material_path": [
+              "vitamin_b3_nicotinamide_declared"
+            ],
+            "input_mass_g": "0.004",
+            "minimum_input_mass_g": "0.004",
+            "maximum_input_mass_g": "0.004",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "4",
+            "minimum_total_batch": "4",
+            "maximum_total_batch": "4",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+              "label_source": "Nicotinamide"
+            },
+            "per_100_g": null,
+            "per_100_ml": "400",
+            "per_serving": "400",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "vitamin_b6",
+        "name": "Vitamin B6",
+        "value": "20",
+        "total_batch": "0.2",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "20",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 20 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 5,
+            "input_material_id": "vitamin_b6_hydrochloride_declared",
+            "input_material_name": "Vitamin B6 (Pyridoxine hydrochloride), declared active amount",
+            "material_id": "vitamin_b6_hydrochloride_declared",
+            "material_name": "Vitamin B6 (Pyridoxine hydrochloride), declared active amount",
+            "material_path": [
+              "vitamin_b6_hydrochloride_declared"
+            ],
+            "input_mass_g": "0.0002",
+            "minimum_input_mass_g": "0.0002",
+            "maximum_input_mass_g": "0.0002",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000",
+            "profile_minimum": "100000",
+            "profile_maximum": "100000",
+            "profile_unit": "mg",
+            "total_batch": "0.2",
+            "minimum_total_batch": "0.2",
+            "maximum_total_batch": "0.2",
+            "unit": "mg",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+              "label_source": "Pyridoxine hydrochloride"
+            },
+            "per_100_g": null,
+            "per_100_ml": "20",
+            "per_serving": "20",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "folic_acid",
+        "name": "Folic acid",
+        "value": "0",
+        "total_batch": "0",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "0",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 0 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": []
+      },
+      {
+        "id": "vitamin_b12",
+        "name": "Vitamin B12",
+        "value": "40",
+        "total_batch": "0.4",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "40",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 40 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 6,
+            "input_material_id": "vitamin_b12_cyanocobalamin_declared",
+            "input_material_name": "Vitamin B12 (Cyanocobalamin), declared active amount",
+            "material_id": "vitamin_b12_cyanocobalamin_declared",
+            "material_name": "Vitamin B12 (Cyanocobalamin), declared active amount",
+            "material_path": [
+              "vitamin_b12_cyanocobalamin_declared"
+            ],
+            "input_mass_g": "0.0000004",
+            "minimum_input_mass_g": "0.0000004",
+            "maximum_input_mass_g": "0.0000004",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000000",
+            "profile_minimum": "100000000",
+            "profile_maximum": "100000000",
+            "profile_unit": "ug",
+            "total_batch": "0.4",
+            "minimum_total_batch": "0.4",
+            "maximum_total_batch": "0.4",
+            "unit": "ug",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+              "label_source": "Cyanocobalamin"
+            },
+            "per_100_g": null,
+            "per_100_ml": "40",
+            "per_serving": "40",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "iodine",
+        "name": "Iodine",
+        "value": "4500",
+        "total_batch": "45",
+        "unit": "ug",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "4500",
+          "upper": null,
+          "unit": "ug",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 4500 ug",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "d_panthenol_pure_assumed",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 8,
+            "input_material_id": "iodine_potassium_iodide_declared",
+            "input_material_name": "Iodine (as potassium iodide), declared active amount",
+            "material_id": "iodine_potassium_iodide_declared",
+            "material_name": "Iodine (as potassium iodide), declared active amount",
+            "material_path": [
+              "iodine_potassium_iodide_declared"
+            ],
+            "input_mass_g": "0.000045",
+            "minimum_input_mass_g": "0.000045",
+            "maximum_input_mass_g": "0.000045",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "100000000",
+            "profile_minimum": "100000000",
+            "profile_maximum": "100000000",
+            "profile_unit": "ug",
+            "total_batch": "45",
+            "minimum_total_batch": "45",
+            "maximum_total_batch": "45",
+            "unit": "ug",
+            "source": {
+              "kind": "declared_active_assumption",
+              "reference": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+              "label_source": "Potassium iodide",
+              "url": "https://ods.od.nih.gov/factsheets/Iodine-HealthProfessional/"
+            },
+            "per_100_g": null,
+            "per_100_ml": "4500",
+            "per_serving": "4500",
+            "retention_factor": "1"
+          }
+        ]
+      },
+      {
+        "id": "pantothenic_acid",
+        "name": "Vitamin B5 (pantothenic acid equivalent)",
+        "value": "160.2168087697929354445797807",
+        "total_batch": "1.602168087697929354445797807",
+        "unit": "mg",
+        "range": {
+          "kind": "lower_bound",
+          "lower": "160.2168087697929354445797807",
+          "upper": null,
+          "unit": "mg",
+          "basis": "Propagated from the supplied profile and formula bounds"
+        },
+        "range_label": "at least 160.2168087697929354445797807 mg",
+        "confidence": {
+          "score": "0.67",
+          "band": "medium",
+          "meaning": "evidence quality; not a statistical probability",
+          "components": {
+            "identity": "0.6",
+            "composition": "0.7",
+            "quantity": "0.85",
+            "yield": "0.6"
+          }
+        },
+        "status": "partial",
+        "unknown_materials": [
+          "iodine_potassium_iodide_declared",
+          "sucrose_pure_assumed",
+          "vitamin_b12_cyanocobalamin_declared",
+          "vitamin_b1_hydrochloride_declared",
+          "vitamin_b2_phosphate_sodium_declared",
+          "vitamin_b3_nicotinamide_declared",
+          "vitamin_b6_hydrochloride_declared",
+          "vitamin_c_ascorbic_declared",
+          "zinc_sulphate_declared"
+        ],
+        "contributions": [
+          {
+            "line_index": 2,
+            "input_material_id": "d_panthenol_pure_assumed",
+            "input_material_name": "D-panthenol",
+            "material_id": "d_panthenol_pure_assumed",
+            "material_name": "D-panthenol",
+            "material_path": [
+              "d_panthenol_pure_assumed"
+            ],
+            "input_mass_g": "0.0015",
+            "minimum_input_mass_g": "0.0015",
+            "maximum_input_mass_g": "0.0015",
+            "profile_basis": {
+              "value": "100",
+              "unit": "g"
+            },
+            "profile_value": "106811.2058465286236297198538",
+            "profile_minimum": "106811.2058465286236297198538",
+            "profile_maximum": "106811.2058465286236297198538",
+            "profile_unit": "mg",
+            "total_batch": "1.602168087697929354445797807",
+            "minimum_total_batch": "1.602168087697929354445797807",
+            "maximum_total_batch": "1.602168087697929354445797807",
+            "unit": "mg",
+            "source": {
+              "kind": "theoretical_conversion_assumption",
+              "reference": "SCF 2002: panthenol can be oxidised in vivo to pantothenic acid; pantothenic acid MW 219.23. PubChem CID 131204: D-panthenol MW 205.25. Assumes pure D-isomer and complete 1:1 molar conversion; not a bioavailability claim.",
+              "url": "https://food.ec.europa.eu/system/files/2020-12/sci-com_scf_out80k_en.pdf"
+            },
+            "per_100_g": null,
+            "per_100_ml": "160.2168087697929354445797807",
+            "per_serving": "160.2168087697929354445797807",
+            "retention_factor": "1"
+          }
+        ]
+      }
+    ],
+    "ingredient_assumptions": [
+      {
+        "query": "Vitamin C (Ascorbic acid)",
+        "selected_material_id": "vitamin_c_ascorbic_declared",
+        "selected_name": "Vitamin C (Ascorbic acid), declared active amount",
+        "matched_term": "Vitamin C (Ascorbic acid)",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='Vitamin C (Ascorbic acid)'",
+        "alternatives": [
+          {
+            "material_id": "folic_acid_pure",
+            "name": "Folic acid, pure",
+            "matched_term": "vitamin B9 folic acid",
+            "score": 0.772727,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "ascorbic_acid",
+            "name": "Ascorbic acid",
+            "matched_term": "L ascorbic acid",
+            "score": 0.736842,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "vitamin_b3_nicotinamide_declared",
+            "name": "Vitamin B3 (Nicotinamide), declared active amount",
+            "matched_term": "Vitamin B3 (Nicotinamide)",
+            "score": 0.652174,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 0
+      },
+      {
+        "query": "Vitamin B3 (Nicotinamide)",
+        "selected_material_id": "vitamin_b3_nicotinamide_declared",
+        "selected_name": "Vitamin B3 (Nicotinamide), declared active amount",
+        "matched_term": "Vitamin B3 (Nicotinamide)",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='Vitamin B3 (Nicotinamide)'",
+        "alternatives": [
+          {
+            "material_id": "niacinamide_pure",
+            "name": "Niacinamide, pure active basis",
+            "matched_term": "nicotinamide",
+            "score": 0.685714,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "folic_acid_pure",
+            "name": "Folic acid, pure",
+            "matched_term": "vitamin B9 folic acid",
+            "score": 0.681818,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "vitamin_b12_cyanocobalamin_declared",
+            "name": "Vitamin B12 (Cyanocobalamin), declared active amount",
+            "matched_term": "Vitamin B12 (Cyanocobalamin)",
+            "score": 0.653061,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 1
+      },
+      {
+        "query": "Vitamin B5 (D-Panthenol)",
+        "selected_material_id": "d_panthenol_pure_assumed",
+        "selected_name": "D-panthenol",
+        "matched_term": "Vitamin B5 (D-Panthenol)",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "Calculation scenario: pure D-panthenol, 100% assay. Theoretical pantothenic-acid equivalent = mass \u00d7 219.23/205.25 for 1:1 molar oxidation. This is not measured bioavailability or a finished-product assay.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='Vitamin B5 (D-Panthenol)'",
+        "alternatives": [
+          {
+            "material_id": "d_panthenol_unassayed",
+            "name": "D-panthenol",
+            "matched_term": "D-panthenol",
+            "score": 0.675,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "pyridoxine_hydrochloride",
+            "name": "Pyridoxine hydrochloride",
+            "matched_term": "vitamin B6 HCl",
+            "score": 0.666667,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "vitamin_b1_declared",
+            "name": "Vitamin B1, declared active amount",
+            "matched_term": "vitamin B1",
+            "score": 0.5625,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 2
+      },
+      {
+        "query": "Vitamin B2 (Riboflavin sodium phosphate)",
+        "selected_material_id": "vitamin_b2_phosphate_sodium_declared",
+        "selected_name": "Vitamin B2 (Riboflavin sodium phosphate), declared active amount",
+        "matched_term": "Vitamin B2 (Riboflavin sodium phosphate)",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='Vitamin B2 (Riboflavin sodium phosphate)'",
+        "alternatives": [
+          {
+            "material_id": "vitamin_b2_declared",
+            "name": "Vitamin B2, declared active amount",
+            "matched_term": "vitamin B2",
+            "score": 0.5275,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "vitamin_b3_nicotinamide_declared",
+            "name": "Vitamin B3 (Nicotinamide), declared active amount",
+            "matched_term": "Vitamin B3 (Nicotinamide)",
+            "score": 0.52459,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "vitamin_b6_hydrochloride_declared",
+            "name": "Vitamin B6 (Pyridoxine hydrochloride), declared active amount",
+            "matched_term": "Vitamin B6 (Pyridoxine hydrochloride)",
+            "score": 0.520548,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 3
+      },
+      {
+        "query": "Vitamin B1 (Thiamine hydrochloride)",
+        "selected_material_id": "vitamin_b1_hydrochloride_declared",
+        "selected_name": "Vitamin B1 (Thiamine hydrochloride), declared active amount",
+        "matched_term": "Vitamin B1 (Thiamine hydrochloride)",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='Vitamin B1 (Thiamine hydrochloride)'",
+        "alternatives": [
+          {
+            "material_id": "vitamin_b6_hydrochloride_declared",
+            "name": "Vitamin B6 (Pyridoxine hydrochloride), declared active amount",
+            "matched_term": "Vitamin B6 (Pyridoxine hydrochloride)",
+            "score": 0.823529,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "lysine_hcl_pure_assumed",
+            "name": "Lysine hydrochloride",
+            "matched_term": "Lysine hydrochloride",
+            "score": 0.641509,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "lysine_hcl_unassayed",
+            "name": "Lysine hydrochloride",
+            "matched_term": "Lysine hydrochloride",
+            "score": 0.641509,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 4
+      },
+      {
+        "query": "Vitamin B6 (Pyridoxine hydrochloride)",
+        "selected_material_id": "vitamin_b6_hydrochloride_declared",
+        "selected_name": "Vitamin B6 (Pyridoxine hydrochloride), declared active amount",
+        "matched_term": "Vitamin B6 (Pyridoxine hydrochloride)",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='Vitamin B6 (Pyridoxine hydrochloride)'",
+        "alternatives": [
+          {
+            "material_id": "vitamin_b1_hydrochloride_declared",
+            "name": "Vitamin B1 (Thiamine hydrochloride), declared active amount",
+            "matched_term": "Vitamin B1 (Thiamine hydrochloride)",
+            "score": 0.823529,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "pyridoxine_hydrochloride",
+            "name": "Pyridoxine hydrochloride",
+            "matched_term": "Pyridoxine hydrochloride",
+            "score": 0.813559,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "lysine_hcl_pure_assumed",
+            "name": "Lysine hydrochloride",
+            "matched_term": "Lysine hydrochloride",
+            "score": 0.654545,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 5
+      },
+      {
+        "query": "Vitamin B12 (Cyanocobalamin)",
+        "selected_material_id": "vitamin_b12_cyanocobalamin_declared",
+        "selected_name": "Vitamin B12 (Cyanocobalamin), declared active amount",
+        "matched_term": "Vitamin B12 (Cyanocobalamin)",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='Vitamin B12 (Cyanocobalamin)'",
+        "alternatives": [
+          {
+            "material_id": "vitamin_b12_declared",
+            "name": "Vitamin B12, declared active amount",
+            "matched_term": "vitamin B12",
+            "score": 0.700901,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "cyanocobalamin_pure",
+            "name": "Cyanocobalamin, pure",
+            "matched_term": "cyanocobalamin",
+            "score": 0.7,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "vitamin_b3_nicotinamide_declared",
+            "name": "Vitamin B3 (Nicotinamide), declared active amount",
+            "matched_term": "Vitamin B3 (Nicotinamide)",
+            "score": 0.653061,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 6
+      },
+      {
+        "query": "Zinc (as Zinc sulfate)",
+        "selected_material_id": "zinc_sulphate_declared",
+        "selected_name": "Zinc (as zinc sulphate), declared elemental basis",
+        "matched_term": "zinc (as zinc sulfate)",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "Entered Zinc (as Zinc Sulphate) is treated as elemental zinc, not the weighed zinc sulphate mass. Confirm elemental versus salt basis, hydrate, zinc assay, actual salt weight and carriers. No hydrate or salt-weight conversion is assumed.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='Zinc (as Zinc sulfate)'",
+        "alternatives": [
+          {
+            "material_id": "zinc_sulphate_monohydrate_355",
+            "name": "Zinc sulphate monohydrate at 35.5% zinc",
+            "matched_term": "zinc sulfate",
+            "score": 0.770833,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "iron_fac_declared",
+            "name": "Iron (as ferric ammonium citrate), declared elemental basis",
+            "matched_term": "iron (as ferric ammonium citrate)",
+            "score": 0.509804,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "vitamin_c_ascorbic_declared",
+            "name": "Vitamin C (Ascorbic acid), declared active amount",
+            "matched_term": "Vitamin C (Ascorbic acid)",
+            "score": 0.465116,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 7
+      },
+      {
+        "query": "Iodine (as potassium iodide)",
+        "selected_material_id": "iodine_potassium_iodide_declared",
+        "selected_name": "Iodine (as potassium iodide), declared active amount",
+        "matched_term": "Iodine (as potassium iodide)",
+        "score": "1.000000",
+        "confidence": "low",
+        "identity_status": "assumed",
+        "identity_note": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "identity_candidates": [],
+        "correction": "Set material_id to the intended catalog ID instead of ingredient='Iodine (as potassium iodide)'",
+        "alternatives": [
+          {
+            "material_id": "potassium_chloride_food_grade",
+            "name": "Food-grade potassium chloride",
+            "matched_term": "Food-grade potassium chloride",
+            "score": 0.654545,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "sodium_chloride_food_grade",
+            "name": "Food-grade sodium chloride",
+            "matched_term": "Food-grade sodium chloride",
+            "score": 0.538462,
+            "match_type": "fuzzy"
+          },
+          {
+            "material_id": "iron_fac_declared",
+            "name": "Iron (as ferric ammonium citrate), declared elemental basis",
+            "matched_term": "iron (as ferric ammonium citrate)",
+            "score": 0.491228,
+            "match_type": "fuzzy"
+          }
+        ],
+        "line_index": 8
+      }
+    ],
+    "report_assumptions": [
+      "Values are theoretical per 100 mL from the uploaded final-batch quantity.",
+      "Ingredient identities are selected from the current local catalog; review every non-exact match.",
+      "Only non-zero components are shown; screened zero fields remain in the analysis data.",
+      "Supplier specifications, lot assays, actual yield and process retention were not supplied unless stated."
+    ],
+    "missing_information": [
+      {
+        "item": "D-panthenol",
+        "needed": "Confirm D-isomer, purity/assay and carrier or dilution. B5 is a theoretical equivalent; request the supplier macro composition.",
+        "affects": [
+          "Added sugars",
+          "Calcium",
+          "Carbohydrate",
+          "Copper",
+          "Dietary fibre",
+          "Energy",
+          "Folic acid",
+          "Iodine",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Phosphorus",
+          "Potassium",
+          "Protein",
+          "Saturated fat",
+          "Selenium",
+          "Sodium",
+          "Total fat",
+          "Total sugars",
+          "Trans fat",
+          "Vitamin A",
+          "Vitamin B1 (thiamin)",
+          "Vitamin B12",
+          "Vitamin B2 (riboflavin)",
+          "Vitamin B3 (niacin)",
+          "Vitamin B6",
+          "Vitamin C",
+          "Vitamin D",
+          "Vitamin E",
+          "Vitamin K",
+          "Zinc"
+        ]
+      },
+      {
+        "item": "Iodine (as potassium iodide), declared active amount",
+        "needed": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "affects": [
+          "Added sugars",
+          "Calcium",
+          "Carbohydrate",
+          "Copper",
+          "Dietary fibre",
+          "Energy",
+          "Folic acid",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Phosphorus",
+          "Potassium",
+          "Protein",
+          "Saturated fat",
+          "Selenium",
+          "Sodium",
+          "Total fat",
+          "Total sugars",
+          "Trans fat",
+          "Vitamin A",
+          "Vitamin B1 (thiamin)",
+          "Vitamin B12",
+          "Vitamin B2 (riboflavin)",
+          "Vitamin B3 (niacin)",
+          "Vitamin B5 (pantothenic acid equivalent)",
+          "Vitamin B6",
+          "Vitamin C",
+          "Vitamin D",
+          "Vitamin E",
+          "Vitamin K",
+          "Zinc"
+        ]
+      },
+      {
+        "item": "Vitamin B12 (Cyanocobalamin), declared active amount",
+        "needed": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "affects": [
+          "Added sugars",
+          "Calcium",
+          "Carbohydrate",
+          "Copper",
+          "Dietary fibre",
+          "Energy",
+          "Folic acid",
+          "Iodine",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Phosphorus",
+          "Potassium",
+          "Protein",
+          "Saturated fat",
+          "Selenium",
+          "Sodium",
+          "Total fat",
+          "Total sugars",
+          "Trans fat",
+          "Vitamin A",
+          "Vitamin B1 (thiamin)",
+          "Vitamin B2 (riboflavin)",
+          "Vitamin B3 (niacin)",
+          "Vitamin B5 (pantothenic acid equivalent)",
+          "Vitamin B6",
+          "Vitamin C",
+          "Vitamin D",
+          "Vitamin E",
+          "Vitamin K",
+          "Zinc"
+        ]
+      },
+      {
+        "item": "Vitamin B1 (Thiamine hydrochloride), declared active amount",
+        "needed": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "affects": [
+          "Added sugars",
+          "Calcium",
+          "Carbohydrate",
+          "Copper",
+          "Dietary fibre",
+          "Energy",
+          "Folic acid",
+          "Iodine",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Phosphorus",
+          "Potassium",
+          "Protein",
+          "Saturated fat",
+          "Selenium",
+          "Sodium",
+          "Total fat",
+          "Total sugars",
+          "Trans fat",
+          "Vitamin A",
+          "Vitamin B12",
+          "Vitamin B2 (riboflavin)",
+          "Vitamin B3 (niacin)",
+          "Vitamin B5 (pantothenic acid equivalent)",
+          "Vitamin B6",
+          "Vitamin C",
+          "Vitamin D",
+          "Vitamin E",
+          "Vitamin K",
+          "Zinc"
+        ]
+      },
+      {
+        "item": "Vitamin B2 (Riboflavin sodium phosphate), declared active amount",
+        "needed": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "affects": [
+          "Added sugars",
+          "Calcium",
+          "Carbohydrate",
+          "Copper",
+          "Dietary fibre",
+          "Energy",
+          "Folic acid",
+          "Iodine",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Phosphorus",
+          "Potassium",
+          "Protein",
+          "Saturated fat",
+          "Selenium",
+          "Total fat",
+          "Total sugars",
+          "Trans fat",
+          "Vitamin A",
+          "Vitamin B1 (thiamin)",
+          "Vitamin B12",
+          "Vitamin B3 (niacin)",
+          "Vitamin B5 (pantothenic acid equivalent)",
+          "Vitamin B6",
+          "Vitamin C",
+          "Vitamin D",
+          "Vitamin E",
+          "Vitamin K",
+          "Zinc"
+        ]
+      },
+      {
+        "item": "Vitamin B3 (Nicotinamide), declared active amount",
+        "needed": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "affects": [
+          "Added sugars",
+          "Calcium",
+          "Carbohydrate",
+          "Copper",
+          "Dietary fibre",
+          "Energy",
+          "Folic acid",
+          "Iodine",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Phosphorus",
+          "Potassium",
+          "Protein",
+          "Saturated fat",
+          "Selenium",
+          "Sodium",
+          "Total fat",
+          "Total sugars",
+          "Trans fat",
+          "Vitamin A",
+          "Vitamin B1 (thiamin)",
+          "Vitamin B12",
+          "Vitamin B2 (riboflavin)",
+          "Vitamin B5 (pantothenic acid equivalent)",
+          "Vitamin B6",
+          "Vitamin C",
+          "Vitamin D",
+          "Vitamin E",
+          "Vitamin K",
+          "Zinc"
+        ]
+      },
+      {
+        "item": "Vitamin B6 (Pyridoxine hydrochloride), declared active amount",
+        "needed": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "affects": [
+          "Added sugars",
+          "Calcium",
+          "Carbohydrate",
+          "Copper",
+          "Dietary fibre",
+          "Energy",
+          "Folic acid",
+          "Iodine",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Phosphorus",
+          "Potassium",
+          "Protein",
+          "Saturated fat",
+          "Selenium",
+          "Sodium",
+          "Total fat",
+          "Total sugars",
+          "Trans fat",
+          "Vitamin A",
+          "Vitamin B1 (thiamin)",
+          "Vitamin B12",
+          "Vitamin B2 (riboflavin)",
+          "Vitamin B3 (niacin)",
+          "Vitamin B5 (pantothenic acid equivalent)",
+          "Vitamin C",
+          "Vitamin D",
+          "Vitamin E",
+          "Vitamin K",
+          "Zinc"
+        ]
+      },
+      {
+        "item": "Vitamin C (Ascorbic acid), declared active amount",
+        "needed": "Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.",
+        "affects": [
+          "Added sugars",
+          "Calcium",
+          "Carbohydrate",
+          "Copper",
+          "Dietary fibre",
+          "Energy",
+          "Folic acid",
+          "Iodine",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Phosphorus",
+          "Potassium",
+          "Protein",
+          "Saturated fat",
+          "Selenium",
+          "Sodium",
+          "Total fat",
+          "Total sugars",
+          "Trans fat",
+          "Vitamin A",
+          "Vitamin B1 (thiamin)",
+          "Vitamin B12",
+          "Vitamin B2 (riboflavin)",
+          "Vitamin B3 (niacin)",
+          "Vitamin B5 (pantothenic acid equivalent)",
+          "Vitamin B6",
+          "Vitamin D",
+          "Vitamin E",
+          "Vitamin K",
+          "Zinc"
+        ]
+      },
+      {
+        "item": "Zinc (as zinc sulphate), declared elemental basis",
+        "needed": "Entered Zinc (as Zinc Sulphate) is treated as elemental zinc, not the weighed zinc sulphate mass. Confirm elemental versus salt basis, hydrate, zinc assay, actual salt weight and carriers. No hydrate or salt-weight conversion is assumed.",
+        "affects": [
+          "Added sugars",
+          "Calcium",
+          "Carbohydrate",
+          "Copper",
+          "Dietary fibre",
+          "Energy",
+          "Folic acid",
+          "Iodine",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Phosphorus",
+          "Potassium",
+          "Protein",
+          "Saturated fat",
+          "Selenium",
+          "Sodium",
+          "Total fat",
+          "Total sugars",
+          "Trans fat",
+          "Vitamin A",
+          "Vitamin B1 (thiamin)",
+          "Vitamin B12",
+          "Vitamin B2 (riboflavin)",
+          "Vitamin B3 (niacin)",
+          "Vitamin B5 (pantothenic acid equivalent)",
+          "Vitamin B6",
+          "Vitamin C",
+          "Vitamin D",
+          "Vitamin E",
+          "Vitamin K"
+        ]
+      },
+      {
+        "item": "Sugar (pure sucrose assumption)",
+        "needed": "Confirm pure sucrose, assay and carrier composition. Other nutrients remain unknown outside the explicit working-estimate scenario.",
+        "affects": [
+          "Calcium",
+          "Copper",
+          "Dietary fibre",
+          "Folic acid",
+          "Iodine",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Phosphorus",
+          "Potassium",
+          "Protein",
+          "Saturated fat",
+          "Selenium",
+          "Sodium",
+          "Total fat",
+          "Trans fat",
+          "Vitamin A",
+          "Vitamin B1 (thiamin)",
+          "Vitamin B12",
+          "Vitamin B2 (riboflavin)",
+          "Vitamin B3 (niacin)",
+          "Vitamin B5 (pantothenic acid equivalent)",
+          "Vitamin B6",
+          "Vitamin C",
+          "Vitamin D",
+          "Vitamin E",
+          "Vitamin K",
+          "Zinc"
+        ]
+      }
+    ],
+    "warnings": [
+      "9 ingredient identities require review",
+      "9 ingredient match(es) have low confidence; review assumptions",
+      "Per-100-g and mass-yield values are unavailable without final density"
+    ],
+    "input_provenance": {
+      "version": 1,
+      "rows": [
+        {
+          "method": "pasted text",
+          "line": 1,
+          "text": "1 ML",
+          "original": {
+            "item": "FINISHED BATCH",
+            "quantity": "1",
+            "unit": "mL"
+          }
+        },
+        {
+          "method": "pasted text",
+          "line": 2,
+          "text": "Vitamin C (Ascorbic acid)\t4 mg",
+          "original": {
+            "item": "Vitamin C (Ascorbic acid)",
+            "quantity": "4",
+            "unit": "mg"
+          }
+        },
+        {
+          "method": "pasted text",
+          "line": 3,
+          "text": "Vitamin B3 (Nicotinamide)\t4 mg",
+          "original": {
+            "item": "Vitamin B3 (Nicotinamide)",
+            "quantity": "4",
+            "unit": "mg"
+          }
+        },
+        {
+          "method": "pasted text",
+          "line": 4,
+          "text": "Vitamin B5 (D-Panthenol)\t1.5 mg",
+          "original": {
+            "item": "Vitamin B5 (D-Panthenol)",
+            "quantity": "1.5",
+            "unit": "mg"
+          }
+        },
+        {
+          "method": "pasted text",
+          "line": 5,
+          "text": "Vitamin B2 (Riboflavin sodium phosphate)\t400 mcg",
+          "original": {
+            "item": "Vitamin B2 (Riboflavin sodium phosphate)",
+            "quantity": "400",
+            "unit": "ug"
+          }
+        },
+        {
+          "method": "pasted text",
+          "line": 6,
+          "text": "Vitamin B1 (Thiamine hydrochloride)\t300 mcg",
+          "original": {
+            "item": "Vitamin B1 (Thiamine hydrochloride)",
+            "quantity": "300",
+            "unit": "ug"
+          }
+        },
+        {
+          "method": "pasted text",
+          "line": 7,
+          "text": "Vitamin B6 (Pyridoxine hydrochloride)\t200 mcg",
+          "original": {
+            "item": "Vitamin B6 (Pyridoxine hydrochloride)",
+            "quantity": "200",
+            "unit": "ug"
+          }
+        },
+        {
+          "method": "pasted text",
+          "line": 8,
+          "text": "Vitamin B12 (Cyanocobalamin)\t0.4 mcg",
+          "original": {
+            "item": "Vitamin B12 (Cyanocobalamin)",
+            "quantity": "0.4",
+            "unit": "ug"
+          }
+        },
+        {
+          "method": "pasted text",
+          "line": 9,
+          "text": "Zinc (as Zinc sulfate)\t3 mg",
+          "original": {
+            "item": "Zinc (as Zinc sulfate)",
+            "quantity": "3",
+            "unit": "mg"
+          }
+        },
+        {
+          "method": "pasted text",
+          "line": 10,
+          "text": "Iodine (as potassium iodide)\t45 mcg",
+          "original": {
+            "item": "Iodine (as potassium iodide)",
+            "quantity": "45",
+            "unit": "ug"
+          }
+        },
+        {
+          "method": "pasted text",
+          "line": 11,
+          "text": "SUGAR\t200 MG",
+          "original": {
+            "item": "SUGAR",
+            "quantity": "200",
+            "unit": "mg"
+          }
+        },
+        {
+          "method": "pasted text",
+          "line": 12,
+          "text": "NEPAZENE\t1 MG",
+          "original": {
+            "item": "NEPAZENE",
+            "quantity": "1",
+            "unit": "mg"
+          }
+        },
+        {
+          "method": "pasted text",
+          "line": 13,
+          "text": "NEPASOL\t.4 MG",
+          "original": {
+            "item": "NEPASOL",
+            "quantity": ".4",
+            "unit": "mg"
+          }
+        },
+        {
+          "method": "pasted text",
+          "line": 14,
+          "text": "BRONOPAL\t.1 MG",
+          "original": {
+            "item": "BRONOPAL",
+            "quantity": ".1",
+            "unit": "mg"
+          }
+        },
+        {
+          "method": "pasted text",
+          "line": 15,
+          "text": "SOD BENZ\t3 MG",
+          "original": {
+            "item": "SOD BENZ",
+            "quantity": "3",
+            "unit": "mg"
+          }
+        },
+        {
+          "method": "pasted text",
+          "line": 16,
+          "text": "BENZOIC ACID\t1 MG",
+          "original": {
+            "item": "BENZOIC ACID",
+            "quantity": "1",
+            "unit": "mg"
+          }
+        }
+      ]
+    },
+    "input_basis": "dose"
+  },
+  "labelReview": {
+    "signature": "[\"per 100 mL\",\"1\",\"a08e83ca3b392d23f3b10b40a3ec900843b243887ed624abaaa6127e2b0b79ca\",[\"[\\\"finished batch\\\",null,\\\"Final batch basis\\\",\\\"1\\\",\\\"mL\\\",null,null,null]\",\"[\\\"vitamin c (ascorbic acid)\\\",\\\"vitamin_c_ascorbic_declared\\\",\\\"Vitamin C (Ascorbic acid), declared active amount\\\",\\\"4\\\",\\\"mg\\\",null,\\\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\\\",\\\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\\\"]\",\"[\\\"vitamin b3 (nicotinamide)\\\",\\\"vitamin_b3_nicotinamide_declared\\\",\\\"Vitamin B3 (Nicotinamide), declared active amount\\\",\\\"4\\\",\\\"mg\\\",null,\\\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\\\",\\\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\\\"]\",\"[\\\"vitamin b5 (d-panthenol)\\\",\\\"d_panthenol_pure_assumed\\\",\\\"D-panthenol\\\",\\\"1.5\\\",\\\"mg\\\",null,\\\"SCF 2002: panthenol can be oxidised in vivo to pantothenic acid; pantothenic acid MW 219.23. PubChem CID 131204: D-panthenol MW 205.25. Assumes pure D-isomer and complete 1:1 molar conversion; not a bioavailability claim.\\\",\\\"Calculation scenario: pure D-panthenol, 100% assay. Theoretical pantothenic-acid equivalent = mass \u00d7 219.23/205.25 for 1:1 molar oxidation. This is not measured bioavailability or a finished-product assay.\\\"]\",\"[\\\"vitamin b2 (riboflavin sodium phosphate)\\\",\\\"vitamin_b2_phosphate_sodium_declared\\\",\\\"Vitamin B2 (Riboflavin sodium phosphate), declared active amount\\\",\\\"400\\\",\\\"ug\\\",null,\\\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers. Sodium estimate assumes one sodium per riboflavin equivalent: 22.98976928/376.36. Hydration and assay remain unverified.\\\",\\\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\\\"]\",\"[\\\"vitamin b1 (thiamine hydrochloride)\\\",\\\"vitamin_b1_hydrochloride_declared\\\",\\\"Vitamin B1 (Thiamine hydrochloride), declared active amount\\\",\\\"300\\\",\\\"ug\\\",null,\\\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\\\",\\\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\\\"]\",\"[\\\"vitamin b6 (pyridoxine hydrochloride)\\\",\\\"vitamin_b6_hydrochloride_declared\\\",\\\"Vitamin B6 (Pyridoxine hydrochloride), declared active amount\\\",\\\"200\\\",\\\"ug\\\",null,\\\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\\\",\\\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\\\"]\",\"[\\\"vitamin b12 (cyanocobalamin)\\\",\\\"vitamin_b12_cyanocobalamin_declared\\\",\\\"Vitamin B12 (Cyanocobalamin), declared active amount\\\",\\\"0.4\\\",\\\"ug\\\",null,\\\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\\\",\\\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\\\"]\",\"[\\\"zinc (as zinc sulfate)\\\",\\\"zinc_sulphate_declared\\\",\\\"Zinc (as zinc sulphate), declared elemental basis\\\",\\\"3\\\",\\\"mg\\\",null,\\\"Entered Zinc (as Zinc Sulphate) is treated as elemental zinc, not the weighed zinc sulphate mass. Confirm elemental versus salt basis, hydrate, zinc assay, actual salt weight and carriers. No hydrate or salt-weight conversion is assumed.\\\",\\\"Entered Zinc (as Zinc Sulphate) is treated as elemental zinc, not the weighed zinc sulphate mass. Confirm elemental versus salt basis, hydrate, zinc assay, actual salt weight and carriers. No hydrate or salt-weight conversion is assumed.\\\"]\",\"[\\\"iodine (as potassium iodide)\\\",\\\"iodine_potassium_iodide_declared\\\",\\\"Iodine (as potassium iodide), declared active amount\\\",\\\"45\\\",\\\"ug\\\",null,\\\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\\\",\\\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\\\"]\",\"[\\\"sugar\\\",\\\"sucrose_pure_assumed\\\",\\\"Sugar (pure sucrose assumption)\\\",\\\"200\\\",\\\"mg\\\",null,\\\"Pure sucrose assumed without carriers; carbohydrate at 4 kcal/g. Applied only to the named sugared multivitamin/mineral recipe or an explicitly selected profile.\\\",\\\"Sugar is assumed pure sucrose without carriers, using 4 kcal/g carbohydrate; not a supplier assay.\\\"]\",\"[\\\"nepazene\\\",\\\"sodium_methylparaben_assumed\\\",\\\"Sodium methylparaben, assumed from Nepazene\\\",\\\"1\\\",\\\"mg\\\",null,\\\"PubChem CID 23663626 molecular formula and molecular weight; identity assumed\\\",\\\"Leading Nepazene candidate selected for the complete scenario; supplier label or CoA is still required\\\"]\",\"[\\\"nepasol\\\",\\\"propylparaben_assumed\\\",\\\"Propylparaben, assumed from Nepasol\\\",\\\".4\\\",\\\"mg\\\",null,\\\"Non-nutritive propylparaben scenario\\\",\\\"Nepasol treated as likely Nipasol; public sources conflict between propylparaben and sodium propylparaben, so the sodium salt is not assumed\\\"]\",\"[\\\"bronopal\\\",\\\"bronopol\\\",\\\"Bronopol\\\",\\\".1\\\",\\\"mg\\\",null,\\\"Bronopol treated as non-nutritive\\\",null]\",\"[\\\"sod benz\\\",\\\"sodium_benzoate\\\",\\\"Sodium benzoate\\\",\\\"3\\\",\\\"mg\\\",null,\\\"Sodium fraction from sodium benzoate molecular mass\\\",null]\",\"[\\\"benzoic acid\\\",\\\"benzoic_acid\\\",\\\"Benzoic acid\\\",\\\"1\\\",\\\"mg\\\",null,\\\"Benzoic acid treated as non-nutritive\\\",null]\"]]",
+    "inputBasis": "dose",
+    "productName": "Multivitamin & mineral liquid",
+    "servingSize": "1",
+    "servingsPerPack": "",
+    "amountBasis": "serving",
+    "waterBase": true,
+    "assumptionEstimate": true,
+    "productDetails": {
+      "description": "",
+      "category": "",
+      "netQuantity": "",
+      "intendedUsers": "",
+      "usage": "",
+      "duration": "",
+      "directions": "",
+      "storage": "",
+      "cautions": "",
+      "sweetenerDeclaration": "",
+      "allergens": "",
+      "allergenText": "",
+      "dietaryStatus": "",
+      "batchNumber": "",
+      "manufactureDate": "",
+      "expiryDate": "",
+      "mrp": "",
+      "licenceNumber": "",
+      "barcode": ""
+    },
+    "confirmedIdentities": [
+      "[\"vitamin c (ascorbic acid)\",\"vitamin_c_ascorbic_declared\",\"Vitamin C (Ascorbic acid), declared active amount\",\"4\",\"mg\",null,\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\",\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\"]",
+      "[\"vitamin b3 (nicotinamide)\",\"vitamin_b3_nicotinamide_declared\",\"Vitamin B3 (Nicotinamide), declared active amount\",\"4\",\"mg\",null,\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\",\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\"]",
+      "[\"vitamin b5 (d-panthenol)\",\"d_panthenol_pure_assumed\",\"D-panthenol\",\"1.5\",\"mg\",null,\"SCF 2002: panthenol can be oxidised in vivo to pantothenic acid; pantothenic acid MW 219.23. PubChem CID 131204: D-panthenol MW 205.25. Assumes pure D-isomer and complete 1:1 molar conversion; not a bioavailability claim.\",\"Calculation scenario: pure D-panthenol, 100% assay. Theoretical pantothenic-acid equivalent = mass \u00d7 219.23/205.25 for 1:1 molar oxidation. This is not measured bioavailability or a finished-product assay.\"]",
+      "[\"vitamin b2 (riboflavin sodium phosphate)\",\"vitamin_b2_phosphate_sodium_declared\",\"Vitamin B2 (Riboflavin sodium phosphate), declared active amount\",\"400\",\"ug\",null,\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers. Sodium estimate assumes one sodium per riboflavin equivalent: 22.98976928/376.36. Hydration and assay remain unverified.\",\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\"]",
+      "[\"vitamin b1 (thiamine hydrochloride)\",\"vitamin_b1_hydrochloride_declared\",\"Vitamin B1 (Thiamine hydrochloride), declared active amount\",\"300\",\"ug\",null,\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\",\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\"]",
+      "[\"vitamin b6 (pyridoxine hydrochloride)\",\"vitamin_b6_hydrochloride_declared\",\"Vitamin B6 (Pyridoxine hydrochloride), declared active amount\",\"200\",\"ug\",null,\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\",\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\"]",
+      "[\"vitamin b12 (cyanocobalamin)\",\"vitamin_b12_cyanocobalamin_declared\",\"Vitamin B12 (Cyanocobalamin), declared active amount\",\"0.4\",\"ug\",null,\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\",\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\"]",
+      "[\"zinc (as zinc sulfate)\",\"zinc_sulphate_declared\",\"Zinc (as zinc sulphate), declared elemental basis\",\"3\",\"mg\",null,\"Entered Zinc (as Zinc Sulphate) is treated as elemental zinc, not the weighed zinc sulphate mass. Confirm elemental versus salt basis, hydrate, zinc assay, actual salt weight and carriers. No hydrate or salt-weight conversion is assumed.\",\"Entered Zinc (as Zinc Sulphate) is treated as elemental zinc, not the weighed zinc sulphate mass. Confirm elemental versus salt basis, hydrate, zinc assay, actual salt weight and carriers. No hydrate or salt-weight conversion is assumed.\"]",
+      "[\"iodine (as potassium iodide)\",\"iodine_potassium_iodide_declared\",\"Iodine (as potassium iodide), declared active amount\",\"45\",\"ug\",null,\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\",\"Entered quantity is assumed to be the declared active nutrient amount, not raw salt or premix weight. Confirm active versus salt basis, supplier assay, actual ingredient weight and carriers.\"]",
+      "[\"sugar\",\"sucrose_pure_assumed\",\"Sugar (pure sucrose assumption)\",\"200\",\"mg\",null,\"Pure sucrose assumed without carriers; carbohydrate at 4 kcal/g. Applied only to the named sugared multivitamin/mineral recipe or an explicitly selected profile.\",\"Sugar is assumed pure sucrose without carriers, using 4 kcal/g carbohydrate; not a supplier assay.\"]",
+      "[\"nepazene\",\"sodium_methylparaben_assumed\",\"Sodium methylparaben, assumed from Nepazene\",\"1\",\"mg\",null,\"PubChem CID 23663626 molecular formula and molecular weight; identity assumed\",\"Leading Nepazene candidate selected for the complete scenario; supplier label or CoA is still required\"]",
+      "[\"nepasol\",\"propylparaben_assumed\",\"Propylparaben, assumed from Nepasol\",\".4\",\"mg\",null,\"Non-nutritive propylparaben scenario\",\"Nepasol treated as likely Nipasol; public sources conflict between propylparaben and sodium propylparaben, so the sodium salt is not assumed\"]",
+      "[\"bronopal\",\"bronopol\",\"Bronopol\",\".1\",\"mg\",null,\"Bronopol treated as non-nutritive\",null]",
+      "[\"sod benz\",\"sodium_benzoate\",\"Sodium benzoate\",\"3\",\"mg\",null,\"Sodium fraction from sodium benzoate molecular mass\",null]",
+      "[\"benzoic acid\",\"benzoic_acid\",\"Benzoic acid\",\"1\",\"mg\",null,\"Benzoic acid treated as non-nutritive\",null]"
+    ]
+  }
+}
