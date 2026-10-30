@@ -883,7 +883,7 @@ function renderComponents(components, basisLabel) {
   const active = displayedResult();
   const options = labelReviewOptions();
   let label;
-  try { label = buildNutritionLabel(active, { ...options, servingSize: options.servingSize || "100", includeUnavailable: false }); } catch { label = null; }
+  try { label = buildNutritionLabel(active, { ...options, servingSize: options.servingSize || "100" }); } catch { label = null; }
   const useServing = options.amountBasis === "serving" && Boolean(options.servingSize) && Boolean(label);
   const amounts = new Map((label?.nutrients || []).map((nutrient) => [nutrient.id, nutrient]));
   components = active.present_components;
@@ -1056,7 +1056,6 @@ function renderNutritionLabel() {
     if (!document.querySelector("#label-serving-size").value.trim()) throw new Error("Enter the intended serving size or dose to calculate amounts and RDA.");
     const label = buildNutritionLabel(active, {
       ...labelReviewOptions(),
-      includeUnavailable: true,
       waterBase: document.querySelector("#label-base").value === "water",
     });
     preview.hidden = false;
@@ -1143,8 +1142,11 @@ function renderNutritionLabel() {
     document.querySelector("#label-print-review").textContent = [
       readiness.scenario ? "Estimated macros assume water and pure ingredients without nutritive carriers; ≈0 is assumed, not measured. Active forms and assays require confirmation." : "Composition totals and ingredient grades require supplier confirmation.",
       pending.length ? `${pending.length} ingredient interpretations are provisional; supplier identification is required.` : "",
+      label.unavailableSummary,
       label.additiveIssues.length ? `Supplier identity / permitted use to confirm: ${label.additiveIssues.map((issue) => issue.ingredient).join(", ")}. Full details are in the ingredient review.` : "",
-      active.label_draft_note || (active.formula_rows.some((row) => ["iron_fac_declared", "zinc_sulphate_declared"].includes(row.material_id))
+      active.label_draft_note || (active.formula_rows.some((row) => row.material_id === "iodine_potassium_iodide_declared")
+        ? "Vitamin C, B3, B2, B1, B6 and B12 are assumed declared active amounts; zinc and iodine are elemental amounts, not salt weights. B5 is the theoretical equivalent of pure D-panthenol. Sugar is assumed pure sucrose at 4 kcal/g; sodium includes the B2 sodium counterion. Confirm assays and actual ingredient weights; ingredient order is provisional."
+        : active.formula_rows.some((row) => ["iron_fac_declared", "zinc_sulphate_declared"].includes(row.material_id))
         ? "Iron and zinc are treated as declared elemental amounts, not salt weights; confirm that basis, salt assay and actual salt weights. Macro estimates exclude unreported citrate energy; ingredient order is provisional." : ""),
       details.missing.length ? `Incomplete product declarations: ${details.missing.length}. Fields marked “To be confirmed” must be completed before final artwork.` : "Category-specific declarations, additive use permissions and artwork require review.",
     ].filter(Boolean).join(" ");
@@ -1179,7 +1181,7 @@ function renderNutritionLabel() {
         const amount = document.createElement("td");
         amount.dataset.label = amountHeading;
         const value = perServing ? nutrient.perServing : nutrient.perBasis;
-        amount.textContent = value === "Not established" ? "Needs composition" : `${value} ${nutrient.unit}`;
+        amount.textContent = `${value} ${nutrient.unit}`;
         row.append(name, amount);
         for (const [key, title] of [["men", "Men"], ["women", "Women"], ["children", "10–12 years"]]) {
           const rda = document.createElement("td");
@@ -1198,14 +1200,12 @@ function renderNutritionLabel() {
     if (!readiness.scenario && label.hasIncompleteData) {
       warnings.push("≥ is the known contribution under the selected ingredient profiles, with incomplete composition coverage; unverified purity and identities can change it.");
     }
-    if (!readiness.scenario && label.unavailableNutrients.length) {
-      warnings.push("Needs composition = unresolved, not zero. Discuss the flagged specifications with the sender before finalizing macro totals.");
-    }
+    if (label.unavailableSummary) warnings.push(label.unavailableSummary);
     if (label.hasDeclaredActives) {
       warnings.push("Vitamin amounts use the entered active-quantity assumption.");
     }
     if (label.hasEstimatedActives) {
-      warnings.push("≈ assumes pure anhydrous lysine HCl and pure D-panthenol; B5 is a theoretical conversion. Assays are unverified.");
+      warnings.push("≈ uses theoretical conversions under the selected pure-ingredient assumptions; B5 assumes pure D-panthenol. Assays are unverified.");
     }
     if (label.waterBase && !readiness.scenario) {
       warnings.push("Base assumption: water sufficient to make the finished volume; no sugar syrup added. Other ingredients may still contribute energy or macronutrients.");
@@ -1465,7 +1465,7 @@ function currentOutputSnapshot() {
   const exportResult = structuredClone(active);
   exportResult.readiness = buildResultReadiness(active, options);
   exportResult.label_review = labelReviewSnapshot();
-  try { exportResult.label = buildNutritionLabel(active, { ...options, includeUnavailable: true }); }
+  try { exportResult.label = buildNutritionLabel(active, options); }
   catch { exportResult.label = null; }
   delete exportResult.markdown;
   if (active.assumption_scenario?.active) {
@@ -1489,6 +1489,7 @@ function currentOutputMarkdown(snapshot) {
       lines.push(`| **${group.name}** | | | | |`);
       for (const nutrient of group.nutrients) lines.push(`| ${nutrient.name}${nutrient.sourceLabel ? ` (${nutrient.sourceLabel})` : ""} | ${nutrient[basis]} ${nutrient.unit} | ${nutrient.rda.men} | ${nutrient.rda.women} | ${nutrient.rda.children} |`);
     }
+    if (label.unavailableSummary) lines.push("", label.unavailableSummary);
     lines.push("", "## Ingredient statement", "", label.ingredients.join(", "), "");
     lines.push("## Ingredient INS status", "", "| Ingredient | INS status |", "|---|---|",
       ...label.ingredientDetails.map((item) => `| ${item.name} | ${item.insStatusLabel} |`), "");
@@ -1500,7 +1501,7 @@ function currentOutputMarkdown(snapshot) {
       "## Additive identity review", "", ...label.additiveIssues.map((issue) => `- ${issue.ingredient}: ${issue.needed}`), "",
       `[${label.additiveReference.title}](${label.additiveReference.url})`, label.additiveReference.scope, "");
   } else lines.push("Serving details are invalid or missing; specify the dose before finalizing per-serving output.", "");
-  if (snapshot.assumption_scenario?.active) lines.push("Original source results are retained separately in the JSON download. Assumed zero macros are not measured zeros. Chloride is the lysine-HCl contribution only.", "");
+  if (snapshot.assumption_scenario?.active) lines.push("Original source results are retained separately in the JSON download. Assumed zero macros are not measured zeros.", "");
   lines.push(sourceMarkdown(snapshot.formula_rows));
   return lines.join("\n");
 }

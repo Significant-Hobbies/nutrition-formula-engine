@@ -161,7 +161,7 @@ function amountLabel(component, multiplier, batchQuantity) {
 }
 
 function mineralSources(component, confirmedMaterialIds) {
-  if (!MINERAL_ORDER.includes(component.id) && component.id !== "sodium") return [];
+  if (!MINERAL_ORDER.includes(component.id)) return [];
   const unique = new Map();
   for (const contribution of component.contributions || []) {
     if (!isPositiveDecimal(contribution.total_batch)) continue;
@@ -266,8 +266,7 @@ export function buildNutritionLabel(result, options = {}) {
     status: "weighed", identityNote: entry.identity_note,
   }));
   const unavailableNutrients = nutrients.filter((nutrient) => nutrient.perServing === "Not established");
-  const visibleNutrients = options.includeUnavailable && !result.assumption_scenario?.active ? nutrients
-    : nutrients.filter((nutrient) => nutrient.perServing !== "Not established");
+  const visibleNutrients = nutrients.filter((nutrient) => nutrient.perServing !== "Not established");
   // Nutrition rows contain nutrient equivalents only. Raw formulation inputs
   // remain in the ingredient statement and calculation report.
   const groups = CATEGORY_ORDER.map((name) => ({ name, nutrients: visibleNutrients.filter((nutrient) => nutrient.category === name) }))
@@ -307,6 +306,8 @@ export function buildNutritionLabel(result, options = {}) {
     groups,
     weighedIngredients,
     unavailableNutrients,
+    unavailableSummary: unavailableNutrients.length
+      ? `Not established: ${unavailableNutrients.map((nutrient) => nutrient.name).join(", ")}. Missing composition is unknown, not zero; supplier data is required.` : "",
     waterBase,
     hasDeclaredActives: nutrients.some((nutrient) => nutrient.status === "declared"),
     hasEstimatedActives: nutrients.some((nutrient) => nutrient.status === "estimated"),

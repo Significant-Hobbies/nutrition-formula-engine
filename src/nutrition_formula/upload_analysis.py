@@ -72,6 +72,19 @@ ASSUMED_IDENTITIES = {
     },
 }
 
+# A bounded recipe default, below explicit accepted/profile alias decisions.
+# Generic sugar continues to use its USDA profile in every other formula.
+SUGARED_MULTIVITAMIN_NAMES = {
+    normalize_name(name) for name in (
+        "Vitamin C (Ascorbic acid)", "Vitamin B3 (Nicotinamide)",
+        "Vitamin B5 (D-Panthenol)", "Vitamin B2 (Riboflavin sodium phosphate)",
+        "Vitamin B1 (Thiamine hydrochloride)", "Vitamin B6 (Pyridoxine hydrochloride)",
+        "Vitamin B12 (Cyanocobalamin)", "Zinc (as Zinc sulfate)",
+        "Iodine (as potassium iodide)", "SUGAR", "NEPAZENE", "NEPASOL",
+        "BRONOPAL", "SOD BENZ", "BENZOIC ACID",
+    )
+}
+
 
 def _load_json(path: Path) -> dict[str, Any]:
     with path.open(encoding="utf-8") as handle:
@@ -517,10 +530,18 @@ def analyze_formula_upload(
         for alias, material_id in (accepted_aliases or {}).items()
         if material_id in nutrition_catalog["materials"]
     }
+    ingredient_names = {
+        normalize_name(line.get("ingredient", "")) for line in submitted_formula["ingredients"]
+    }
+    recipe_aliases = (
+        {"sugar": "sucrose_pure_assumed"}
+        if len(submitted_formula["ingredients"]) == len(SUGARED_MULTIVITAMIN_NAMES)
+        and ingredient_names == SUGARED_MULTIVITAMIN_NAMES else {}
+    )
     formula_with_aliases = _apply_accepted_aliases(
         submitted_formula,
         nutrition_catalog,
-        {**requested_aliases, **profile_aliases},
+        {**recipe_aliases, **requested_aliases, **profile_aliases},
     )
     formula, visible_assumptions = _apply_visible_assumptions(formula_with_aliases)
     formula, unresolved_assumptions = _retain_unresolved_ingredients(formula, nutrition_catalog)
