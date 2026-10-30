@@ -22,7 +22,7 @@ test("input-only draft preserves reviewed quantities/provenance without nutrient
   ]);
   assert.ok(label.groups.flatMap((group) => group.nutrients).every((row) => Object.values(row.rda).every((rda) => rda === "—")));
   assert.match(label.unavailableSummary, /not nutrient totals/);
-  assert.equal(buildResultReadiness(result).requests.length, 1);
+  assert.equal(buildResultReadiness(result).requests.length, 2);
   assert.equal(buildResultReadiness(result).partial, true);
 });
 

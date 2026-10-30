@@ -62,7 +62,14 @@
       </nav>
     </header>
 
+    <noscript><p>The calculator needs JavaScript. Keep a copy of your input, enable JavaScript and reload this page.</p></noscript>
     <main>
+      <p id="app-load-status" role="status" hidden>The calculator could not finish loading. Keep a copy of your input, then reload this page to retry.</p>
+      <script>
+        setTimeout(() => {
+          if (!window.formulaAppReady) document.querySelector("#app-load-status").hidden = false;
+        }, 10000);
+      </script>
       <section class="intro" aria-labelledby="page-title">
         <p class="eyebrow">Formula calculator</p>
         <h1 id="page-title">Turn a formula into a printable label</h1>

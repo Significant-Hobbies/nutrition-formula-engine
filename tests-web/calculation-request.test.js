@@ -1,8 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createCalculationRequests } from "../public/calculation-request.js";
+import { readFile } from "node:fs/promises";
+import { createCalculationRequests, validCalculationReport } from "../public/calculation-request.js";
 
-const report = { product_name: "Formula", formula_rows: [{ item: "FINISHED BATCH" }, { item: "Sugar" }], screened_components: [], present_components: [], report_assumptions: [], missing_information: [], coverage: {}, label_batch_quantity: "1", basis_label: "per 100 mL" };
+import { buildInputOnlyResult } from "../public/draft-result.js";
+import { normalizeText } from "../public/input-normalizer.js";
+const report = buildInputOnlyResult(normalizeText("1 mL\nSugar 200 mg").rows);
 const response = (data = report, status = 200) => new Response(JSON.stringify(data), { status });
 
 for (const status of [404, 408, 429, 500, 503]) test(`HTTP ${status} allows an honest input-only fallback`, async () => {
@@ -51,5 +54,12 @@ for (const [name, data] of [["unreadable JSON", "not JSON"], ["malformed success
   test(`${name} cannot leave a blank result`, async () => {
     const runner = createCalculationRequests({ fetchImpl: async () => new Response(data) });
     await assert.rejects(runner.start().fetchJson("/api/analyze"), (error) => error.fallback);
+  });
+}
+
+for (const slug of ["multivitamin-mineral-1ml", "b-vitamins-lysine", "iron-lysine-folate-zinc", "papain-lysine"]) {
+  test(`existing ${slug} report remains accepted by the render contract`, async () => {
+    const snapshot = JSON.parse(await readFile(new URL(`../public/saved-products/${slug}.json`, import.meta.url), "utf8"));
+    assert.equal(validCalculationReport(snapshot.report), true);
   });
 }

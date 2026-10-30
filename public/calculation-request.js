@@ -1,3 +1,43 @@
+// Validate before committing state: rendering must never turn malformed data into a total.
+const object = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
+const text = (value) => typeof value === "string" && value.trim().length > 0;
+const decimal = (value) => typeof value === "string" && /^(?:\d+(?:\.\d*)?|\.\d+)$/.test(value);
+const nullableDecimal = (value) => value === null || decimal(value);
+const strings = (value) => Array.isArray(value) && value.every((item) => typeof item === "string");
+function validComponent(component) {
+  return object(component) && ["id", "name", "unit", "status"].every((key) => text(component[key])) &&
+    ["value", "total_batch"].every((key) => nullableDecimal(component[key])) &&
+    strings(component.unknown_materials) && Array.isArray(component.contributions) &&
+    component.contributions.every((entry) => object(entry) && text(entry.material_name) && text(entry.unit) &&
+      Number.isInteger(entry.line_index) && entry.line_index >= 0 &&
+      ["total_batch", "per_100_g", "per_100_ml", "per_serving"].every((key) => nullableDecimal(entry[key])) &&
+      object(entry.source) && text(entry.source.kind) && text(entry.source.reference)) &&
+    (component.range == null || (object(component.range) && nullableDecimal(component.range.lower) && nullableDecimal(component.range.upper))) &&
+    (component.confidence == null || (object(component.confidence) && decimal(component.confidence.score) && text(component.confidence.band)));
+}
+export function validCalculationReport(report) {
+  return object(report) && text(report.product_name) && decimal(report.label_batch_quantity) && /[1-9]/.test(report.label_batch_quantity) &&
+    ["per 100 mL", "per 100 g"].includes(report.basis_label) &&
+    Array.isArray(report.formula_rows) && report.formula_rows.length >= 2 && report.formula_rows.every((row, index) =>
+      object(row) && ["item", "submitted_unit", "normalized_equivalent", "interpretation", "confidence"].every((key) => text(row[key])) &&
+      decimal(row.submitted_quantity) && (index > 0 || /[1-9]/.test(row.submitted_quantity)) &&
+      ["kg", "g", "mg", "ug", "µg", "L", "mL"].includes(row.submitted_unit) && strings(row.alternatives) &&
+      typeof row.needs_review === "boolean" && (index === 0 || typeof row.unresolved === "boolean") &&
+      (row.material_id == null || text(row.material_id)) &&
+      (row.input_source == null || (object(row.input_source) && text(row.input_source.method) &&
+        object(row.input_source.original) && ["item", "quantity", "unit"].every((key) => typeof row.input_source.original[key] === "string")))) &&
+    ["screened_components", "present_components"].every((key) => Array.isArray(report[key]) && report[key].every(validComponent)) &&
+    report.present_components.every((component) => decimal(component.value)) &&
+    strings(report.report_assumptions) && object(report.coverage) &&
+    ["characterized_percent", "uncharacterized_percent"].every((key) => nullableDecimal(report.coverage[key])) &&
+    Array.isArray(report.missing_information) && report.missing_information.every((entry) =>
+      object(entry) && text(entry.item) && text(entry.needed) && (entry.affects == null || strings(entry.affects))) &&
+    (report.label_entries == null || (Array.isArray(report.label_entries) && report.label_entries.every((entry) =>
+      object(entry) && text(entry.name) && text(entry.unit) && decimal(entry.batch_amount)))) &&
+    (report.ingredient_assumptions == null || (Array.isArray(report.ingredient_assumptions) &&
+      report.ingredient_assumptions.every((entry) => object(entry) && Number.isInteger(entry.line_index) && entry.line_index >= 0)));
+}
+
 export class CalculationRequestError extends Error {
   constructor(message, { fallback = false, status = null } = {}) {
     super(message);
@@ -38,11 +78,7 @@ export function createCalculationRequests({ fetchImpl = (...args) => fetch(...ar
                   fallback: response.status >= 500 || [404, 408, 429].includes(response.status), status: response.status,
                 });
                 const report = data.report || data;
-                if (!Array.isArray(report.formula_rows) || report.formula_rows.length < 2 ||
-                  !["screened_components", "present_components", "report_assumptions", "missing_information"].every((key) => Array.isArray(report[key])) ||
-                  !report.coverage || typeof report.product_name !== "string" ||
-                  !/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(String(report.label_batch_quantity)) || !/[1-9]/.test(report.label_batch_quantity) ||
-                  !["per 100 mL", "per 100 g"].includes(report.basis_label)) {
+                if (!validCalculationReport(report)) {
                   throw new CalculationRequestError("The calculation service returned an incomplete response.", { fallback: true, status: response.status });
                 }
                 return { data, status: response.status, requestId: response.headers.get("x-request-id") };
